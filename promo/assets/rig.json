@@ -1,0 +1,398 @@
+{
+ "scale": 2,
+ "chars": {
+  "eng1": {
+   "w": 552,
+   "h": 930,
+   "feet": [
+    279.0,
+    916.0
+   ],
+   "top": 12.0,
+   "layers": {
+    "body": {
+     "file": "tex/eng1_body.png",
+     "x": 108,
+     "y": 290,
+     "w": 344,
+     "h": 631
+    },
+    "head": {
+     "file": "tex/eng1_head.png",
+     "x": 132,
+     "y": 8,
+     "w": 304,
+     "h": 303
+    },
+    "armL": {
+     "file": "tex/eng1_armL.png",
+     "x": 8,
+     "y": 331,
+     "w": 155,
+     "h": 385
+    },
+    "armR": {
+     "file": "tex/eng1_armR.png",
+     "x": 396,
+     "y": 317,
+     "w": 148,
+     "h": 331
+    }
+   },
+   "pivots": {
+    "head": [
+     284,
+     302
+    ],
+    "armL": [
+     140,
+     352
+    ],
+    "armR": [
+     420,
+     352
+    ]
+   },
+   "order": [
+    "body",
+    "head",
+    "armL",
+    "armR"
+   ]
+  },
+  "eng2": {
+   "w": 488,
+   "h": 910,
+   "feet": [
+    243.5,
+    896.0
+   ],
+   "top": 13.0,
+   "layers": {
+    "body": {
+     "file": "tex/eng2_body.png",
+     "x": 74,
+     "y": 282,
+     "w": 406,
+     "h": 619
+    },
+    "head": {
+     "file": "tex/eng2_head.png",
+     "x": 87,
+     "y": 8,
+     "w": 347,
+     "h": 353
+    },
+    "armL": {
+     "file": "tex/eng2_armL.png",
+     "x": 8,
+     "y": 257,
+     "w": 123,
+     "h": 229
+    }
+   },
+   "pivots": {
+    "head": [
+     240,
+     306
+    ],
+    "armL": [
+     116,
+     356
+    ]
+   },
+   "order": [
+    "body",
+    "head",
+    "armL"
+   ]
+  },
+  "eng3": {
+   "w": 632,
+   "h": 1034,
+   "feet": [
+    360.0,
+    1020.0
+   ],
+   "top": 12.0,
+   "layers": {
+    "body": {
+     "file": "tex/eng3_body.png",
+     "x": 192,
+     "y": 197,
+     "w": 338,
+     "h": 827
+    },
+    "head": {
+     "file": "tex/eng3_head.png",
+     "x": 216,
+     "y": 133,
+     "w": 298,
+     "h": 300
+    },
+    "armL": {
+     "file": "tex/eng3_armL.png",
+     "x": 8,
+     "y": 7,
+     "w": 317,
+     "h": 603
+    },
+    "armR": {
+     "file": "tex/eng3_armR.png",
+     "x": 490,
+     "y": 452,
+     "w": 134,
+     "h": 343
+    }
+   },
+   "pivots": {
+    "head": [
+     364,
+     426
+    ],
+    "armL": [
+     240,
+     480
+    ],
+    "armR": [
+     500,
+     480
+    ]
+   },
+   "order": [
+    "body",
+    "head",
+    "armL",
+    "armR"
+   ]
+  },
+  "eng4": {
+   "w": 538,
+   "h": 902,
+   "feet": [
+    257.0,
+    889.0
+   ],
+   "top": 12.0,
+   "layers": {
+    "body": {
+     "file": "tex/eng4_body.png",
+     "x": 8,
+     "y": 292,
+     "w": 522,
+     "h": 601
+    },
+    "head": {
+     "file": "tex/eng4_head.png",
+     "x": 103,
+     "y": 7,
+     "w": 297,
+     "h": 306
+    }
+   },
+   "pivots": {
+    "head": [
+     260,
+     304
+    ]
+   },
+   "order": [
+    "body",
+    "head"
+   ]
+  },
+  "eng5": {
+   "w": 478,
+   "h": 938,
+   "feet": [
+    235.0,
+    925.0
+   ],
+   "top": 12.0,
+   "layers": {
+    "body": {
+     "file": "tex/eng5_body.png",
+     "x": 7,
+     "y": 294,
+     "w": 463,
+     "h": 635
+    },
+    "head": {
+     "file": "tex/eng5_head.png",
+     "x": 93,
+     "y": 8,
+     "w": 299,
+     "h": 307
+    }
+   },
+   "pivots": {
+    "head": [
+     244,
+     306
+    ]
+   },
+   "order": [
+    "body",
+    "head"
+   ]
+  }
+ },
+ "props": {
+  "trophy": {
+   "w": 326,
+   "h": 420,
+   "feet": [
+    163.5,
+    407.0
+   ],
+   "layers": {
+    "main": {
+     "file": "tex/trophy.png",
+     "x": 8,
+     "y": 8,
+     "w": 310,
+     "h": 404
+    }
+   }
+  },
+  "blueprint": {
+   "w": 222,
+   "h": 470,
+   "feet": [
+    65.5,
+    457.0
+   ],
+   "layers": {
+    "main": {
+     "file": "tex/blueprint.png",
+     "x": 7,
+     "y": 8,
+     "w": 207,
+     "h": 454
+    }
+   }
+  },
+  "circuit_board": {
+   "w": 260,
+   "h": 326,
+   "feet": [
+    129.0,
+    310.0
+   ],
+   "layers": {
+    "main": {
+     "file": "tex/circuit_board.png",
+     "x": 10,
+     "y": 10,
+     "w": 239,
+     "h": 305
+    }
+   }
+  },
+  "hard_hat": {
+   "w": 346,
+   "h": 296,
+   "feet": [
+    142.0,
+    283.0
+   ],
+   "layers": {
+    "main": {
+     "file": "tex/hard_hat.png",
+     "x": 7,
+     "y": 7,
+     "w": 331,
+     "h": 281
+    }
+   }
+  },
+  "wind_turbine": {
+   "w": 356,
+   "h": 604,
+   "feet": [
+    190.5,
+    592.0
+   ],
+   "layers": {
+    "tower": {
+     "file": "tex/turbine_tower.png",
+     "x": 120,
+     "y": 216,
+     "w": 142,
+     "h": 381
+    },
+    "rotor": {
+     "file": "tex/turbine_rotor.png",
+     "x": 7,
+     "y": 8,
+     "w": 368,
+     "h": 356
+    }
+   },
+   "pivots": {
+    "rotor": [
+     210.0,
+     216.0
+    ]
+   },
+   "order": [
+    "tower",
+    "rotor"
+   ]
+  },
+  "robot_arm": {
+   "w": 498,
+   "h": 606,
+   "feet": [
+    164.0,
+    593.0
+   ],
+   "layers": {
+    "base": {
+     "file": "tex/robot_base.png",
+     "x": 15,
+     "y": 300,
+     "w": 299,
+     "h": 298
+    },
+    "chain": {
+     "file": "tex/robot_chain.png",
+     "x": 8,
+     "y": 8,
+     "w": 456,
+     "h": 332
+    },
+    "grip": {
+     "file": "tex/robot_grip.png",
+     "x": 321,
+     "y": 170,
+     "w": 169,
+     "h": 213
+    }
+   },
+   "pivots": {
+    "chain": [
+     160,
+     350
+    ],
+    "grip": [
+     406,
+     184
+    ]
+   },
+   "order": [
+    "base",
+    "chain",
+    "grip"
+   ]
+  },
+  "solar_panel": {
+   "face": "tex/solar_face.png"
+  },
+  "laptop": {
+   "screen": "tex/laptop_screen.png",
+   "deck": "tex/laptop_deck.png",
+   "front": "tex/laptop_front.png"
+  }
+ }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "brick-engineers-promo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "15s 1920x1080@60fps brick-toy promo rendered with three.js in headless Chromium",
+  "scripts": {
+    "render": "node render.js"
+  },
+  "dependencies": {
+    "three": "0.170.0"
+  }
+}

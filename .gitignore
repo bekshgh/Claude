@@ -1,0 +1,7 @@
+node_modules/
+promo/frames/
+promo/sprites_raw/
+promo/sprites_2x/
+*.log
+*.part.mkv
+__pycache__/
