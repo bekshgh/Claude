@@ -1,0 +1,45 @@
+import { NextRequest, NextResponse } from "next/server";
+import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+
+// Public endpoints: login, the incoming Tilda webhook, and the on-page
+// conversion beacon. /api/webhooks/test stays private (it is an admin action).
+const PUBLIC = [
+  "/login",
+  "/api/auth/login",
+  "/api/auth/logout",
+  "/api/webhooks/tilda-lead",
+  "/api/track/conversion",
+];
+
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // allow public paths and redirect routes
+  if (
+    PUBLIC.some((p) => pathname.startsWith(p)) ||
+    pathname.startsWith("/r/") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon")
+  ) {
+    return NextResponse.next();
+  }
+
+  if (await verifySessionToken(req.cookies.get(SESSION_COOKIE)?.value)) {
+    return NextResponse.next();
+  }
+
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const loginUrl = req.nextUrl.clone();
+  loginUrl.pathname = "/login";
+  loginUrl.search = "";
+  const res = NextResponse.redirect(loginUrl);
+  res.cookies.delete(SESSION_COOKIE);
+  return res;
+}
+
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+};
