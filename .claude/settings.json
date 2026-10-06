@@ -5,9 +5,16 @@
         "source": "github",
         "repo": "obra/superpowers-marketplace"
       }
+    },
+    "context-mode": {
+      "source": {
+        "source": "github",
+        "repo": "mksglu/context-mode"
+      }
     }
   },
   "enabledPlugins": {
-    "superpowers@superpowers-marketplace": true
+    "superpowers@superpowers-marketplace": true,
+    "context-mode@context-mode": true
   }
 }
