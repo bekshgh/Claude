@@ -1,0 +1,30 @@
+{
+  "extraKnownMarketplaces": {
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "context-mode": {
+      "source": {
+        "source": "github",
+        "repo": "mksglu/context-mode"
+      }
+    },
+    "thedotmack": {
+      "source": {
+        "source": "github",
+        "repo": "thedotmack/claude-mem"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true,
+    "context-mode@context-mode": true,
+    "claude-mem@thedotmack": true
+  },
+  "env": {
+    "CLAUDE_MEM_TELEMETRY": "0"
+  }
+}
