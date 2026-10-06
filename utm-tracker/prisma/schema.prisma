@@ -1,0 +1,165 @@
+// ───────────────────────────────────────────────────────────────
+// Prisma schema — UTM / link tracker
+// Core idea: ClickEvent gets a unique clickId, which is forwarded to
+// Tilda. When Tilda fires the webhook, the incoming clickId lets us
+// attach the Lead to the exact ClickEvent (exact attribution).
+// ───────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum AttributionStatus {
+  exact // matched via click_id
+  estimated // matched via utm + time window heuristic
+  unknown // no match found
+}
+
+enum WebhookStatus {
+  success
+  failed
+  missing_click_id
+  duplicated
+  unauthorized
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+
+  campaigns Campaign[]
+  links     TrackingLink[]
+}
+
+model Campaign {
+  id          String   @id @default(cuid())
+  userId      String?
+  name        String // utm_campaign value, e.g. "icy_s26"
+  label       String? // human label, e.g. "ICY S'26"
+  description String?
+  funnel      String? // e.g. "Projects"
+  season      String? // e.g. "spring 2026"
+  type        String? // e.g. "Event"
+  status      String   @default("active") // active | paused | archived
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user  User?          @relation(fields: [userId], references: [id])
+  links TrackingLink[]
+
+  @@index([userId])
+}
+
+model TrackingLink {
+  id             String  @id @default(cuid())
+  userId         String?
+  campaignId     String?
+  name           String // description for the team
+  slug           String  @unique // short id used in /r/{slug}
+  destinationUrl String
+  utmSource      String?
+  utmMedium      String?
+  utmCampaign    String?
+  utmContent     String?
+  utmTerm        String?
+  customParams   Json? // { key: value }
+  tags           String[] @default([])
+  notes          String?
+  isActive       Boolean  @default(true)
+  isArchived     Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User?        @relation(fields: [userId], references: [id])
+  campaign Campaign?    @relation(fields: [campaignId], references: [id])
+  clicks   ClickEvent[]
+  leads    Lead[]
+
+  @@index([userId])
+  @@index([campaignId])
+  @@index([slug])
+}
+
+model ClickEvent {
+  id             String   @id @default(cuid())
+  trackingLinkId String
+  clickId        String   @unique // forwarded to Tilda, used for exact attribution
+  timestamp      DateTime @default(now())
+
+  userAgent String?
+  ipHash    String? // hashed, never the raw IP
+  referrer  String?
+  country   String?
+  city      String?
+  device    String? // mobile | desktop | tablet
+  browser   String?
+  os        String?
+
+  isUnique  Boolean @default(true) // first click from this ipHash on this link
+  rawParams Json? // full query string captured at click time
+
+  trackingLink TrackingLink @relation(fields: [trackingLinkId], references: [id], onDelete: Cascade)
+  leads        Lead[]
+
+  @@index([trackingLinkId])
+  @@index([clickId])
+  @@index([timestamp])
+  @@index([ipHash])
+}
+
+model Lead {
+  id             String  @id @default(cuid())
+  trackingLinkId String?
+  clickEventId   String?
+  clickId        String?
+
+  name      String?
+  phone     String?
+  email     String?
+  formName  String?
+  pageUrl   String?
+
+  // UTM as actually received from Tilda (may differ / be missing)
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  utmTerm     String?
+
+  submittedAt       DateTime
+  sourcePayload     Json // full raw webhook body
+  attributionStatus AttributionStatus @default(unknown)
+  dedupeKey         String            @unique // prevents duplicate leads
+
+  createdAt DateTime @default(now())
+
+  trackingLink TrackingLink? @relation(fields: [trackingLinkId], references: [id], onDelete: SetNull)
+  clickEvent   ClickEvent?   @relation(fields: [clickEventId], references: [id], onDelete: SetNull)
+
+  @@index([trackingLinkId])
+  @@index([clickEventId])
+  @@index([clickId])
+  @@index([submittedAt])
+}
+
+model WebhookLog {
+  id        String        @id @default(cuid())
+  provider  String        @default("tilda")
+  payload   Json
+  status    WebhookStatus
+  message   String?
+  leadId    String?
+  createdAt DateTime      @default(now())
+
+  @@index([createdAt])
+  @@index([status])
+}
