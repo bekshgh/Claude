@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { tildaWebhookSchema } from "@/lib/validation";
-import { buildDedupeKey } from "@/lib/utils";
-import { resolveAttribution, type NormalisedLead } from "@/lib/attribution";
+import { recordLead } from "@/lib/leads";
+import { type NormalisedLead } from "@/lib/attribution";
 import { WebhookStatus } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -88,70 +88,14 @@ export async function POST(req: NextRequest) {
     submittedAt,
   };
 
-  const dedupeKey = buildDedupeKey({
-    clickId: lead.clickId,
-    email: lead.email,
-    phone: lead.phone,
-    formName: lead.formName,
-    submittedAt,
-  });
-
-  // --- dedupe: repeated webhooks must not create duplicate leads ---
-  const existing = await prisma.lead.findUnique({ where: { dedupeKey }, select: { id: true } });
-  if (existing) {
-    await prisma.webhookLog.create({
-      data: {
-        provider: "tilda",
-        payload: body,
-        status: WebhookStatus.duplicated,
-        message: "Duplicate lead ignored",
-        leadId: existing.id,
-      },
-    });
-    return NextResponse.json({ ok: true, deduped: true, leadId: existing.id });
-  }
-
-  // --- attribution ---
-  const attribution = await resolveAttribution(lead);
-
-  const created = await prisma.lead.create({
-    data: {
-      trackingLinkId: attribution.trackingLinkId,
-      clickEventId: attribution.clickEventId,
-      clickId: lead.clickId ?? null,
-      name: lead.name ?? null,
-      phone: lead.phone ?? null,
-      email: lead.email ?? null,
-      formName: lead.formName ?? null,
-      pageUrl: lead.pageUrl ?? null,
-      utmSource: lead.utmSource ?? null,
-      utmMedium: lead.utmMedium ?? null,
-      utmCampaign: lead.utmCampaign ?? null,
-      utmContent: lead.utmContent ?? null,
-      utmTerm: lead.utmTerm ?? null,
-      submittedAt,
-      sourcePayload: body,
-      attributionStatus: attribution.status,
-      dedupeKey,
-    },
-  });
-
-  const status = lead.clickId ? WebhookStatus.success : WebhookStatus.missing_click_id;
-  await prisma.webhookLog.create({
-    data: {
-      provider: "tilda",
-      payload: body,
-      status,
-      message: `Lead created (${attribution.status})`,
-      leadId: created.id,
-    },
-  });
+  const result = await recordLead(lead, { provider: "tilda", rawPayload: body });
 
   return NextResponse.json({
     ok: true,
-    leadId: created.id,
-    attribution: attribution.status,
-    hasClickId: Boolean(lead.clickId),
+    leadId: result.leadId,
+    deduped: result.deduped,
+    attribution: result.attribution,
+    hasClickId: result.hasClickId,
   });
 }
 

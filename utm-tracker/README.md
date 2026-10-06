@@ -111,17 +111,24 @@ npm run dev              # http://localhost:3000
 
 ## 7. Tilda setup
 
-**a) Forward `click_id` + UTM into the form.** In Tilda add a *T123 / HTML* block (or
+**a) Add the snippet (this alone counts leads).** In Tilda add a *T123 / HTML* block (or
 Site Settings → More → HTML code in `<head>`) with the snippet shown on the **Webhook**
-page. It reads `click_id` and the five UTM params from the URL and injects them as
-hidden inputs into every form on the page (it re-runs after load because Tilda renders
-forms late).
+page. One snippet, pasted once, works for every project page. It does two jobs:
+- reads `click_id` and the five UTM params from the URL and injects them as hidden
+  inputs into every form on the page (it re-runs after load because Tilda renders forms
+  late), and
+- when a Tilda form is submitted successfully, it reports a conversion to
+  `/api/track/conversion`, so a lead is counted **without any webhook**. The conversion
+  endpoint only accepts a `click_id` that matches a real recorded click, and a lead with
+  a given `click_id` is stored once, so this never inflates or double-counts.
 
-**b) Point the webhook at this app.** Tilda → Form → *Webhook*:
+**b) (Optional) Point a webhook at this app** for a 100% server-side channel. Tilda →
+Form → *Webhook*:
 ```
 URL: https://<your-domain>/api/webhooks/tilda-lead?secret=<WEBHOOK_SECRET>
 ```
-The secret may also be sent as the header `X-Webhook-Secret`.
+The secret may also be sent as the header `X-Webhook-Secret`. Safe to run alongside the
+snippet — a submission arriving through both channels is deduplicated by `click_id`.
 
 **c) Make sure the form posts these fields:** `name`, `email`, `phone`, `click_id`,
 `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`.
