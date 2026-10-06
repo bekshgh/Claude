@@ -26,7 +26,7 @@ async function parseBody(req: NextRequest): Promise<Record<string, any>> {
 
 function checkSecret(req: NextRequest, body: Record<string, any>): boolean {
   const expected = process.env.WEBHOOK_SECRET;
-  if (!expected) return true; // not configured → allow (dev)
+  if (!expected) return process.env.NODE_ENV !== "production"; // not configured → allow only in dev
   const fromHeader = req.headers.get("x-webhook-secret");
   const fromQuery = req.nextUrl.searchParams.get("secret");
   const fromBody = body.secret || body.token;

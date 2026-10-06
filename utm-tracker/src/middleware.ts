@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 
-const PUBLIC = ["/login", "/api/auth/login", "/api/auth/logout", "/api/webhooks"];
+// Only the incoming Tilda webhook is public; /api/webhooks/test is an admin action.
+const PUBLIC = ["/login", "/api/auth/login", "/api/auth/logout", "/api/webhooks/tilda-lead"];
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // allow public paths and redirect routes
@@ -15,14 +17,20 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const session = req.cookies.get("ewa_session")?.value;
-  if (!session) {
-    const loginUrl = req.nextUrl.clone();
-    loginUrl.pathname = "/login";
-    return NextResponse.redirect(loginUrl);
+  if (await verifySessionToken(req.cookies.get(SESSION_COOKIE)?.value)) {
+    return NextResponse.next();
   }
 
-  return NextResponse.next();
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const loginUrl = req.nextUrl.clone();
+  loginUrl.pathname = "/login";
+  loginUrl.search = "";
+  const res = NextResponse.redirect(loginUrl);
+  res.cookies.delete(SESSION_COOKIE);
+  return res;
 }
 
 export const config = {

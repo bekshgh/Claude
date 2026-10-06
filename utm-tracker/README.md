@@ -66,7 +66,7 @@ npm install
 # 2. configure environment
 cp .env.example .env
 #   then fill in DATABASE_URL, DIRECT_URL, NEXT_PUBLIC_BASE_URL,
-#   WEBHOOK_SECRET and IP_HASH_SALT
+#   WEBHOOK_SECRET, IP_HASH_SALT, AUTH_EMAIL, AUTH_PASSWORD and AUTH_SECRET
 
 # 3. create the schema
 npm run db:push          # or: npm run db:migrate  (creates a migration)
@@ -92,6 +92,9 @@ npm run dev              # http://localhost:3000
 | `NEXT_PUBLIC_BASE_URL` | ✅ | Public URL of this tracker, no trailing slash |
 | `WEBHOOK_SECRET` | ✅ | Shared secret authorising the Tilda webhook |
 | `IP_HASH_SALT` | ➖ | Salt for hashing visitor IPs |
+| `AUTH_EMAIL` | ✅ | Login email for the dashboard |
+| `AUTH_PASSWORD` | ✅ | Login password for the dashboard |
+| `AUTH_SECRET` | ✅ | Signs session cookies, 16+ characters |
 
 ---
 
@@ -99,7 +102,7 @@ npm run dev              # http://localhost:3000
 
 1. Push this repo to GitHub and **Import** it in Vercel.
 2. Add a PostgreSQL database (Vercel Postgres / Neon / Supabase).
-3. In **Project → Settings → Environment Variables**, add all five variables above.
+3. In **Project → Settings → Environment Variables**, add all the variables above.
    Set `NEXT_PUBLIC_BASE_URL` to your real Vercel domain.
 4. The build runs `prisma generate && next build` automatically.
 5. After the first deploy, run migrations against production:
