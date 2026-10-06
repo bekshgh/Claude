@@ -104,12 +104,8 @@ npm run dev              # http://localhost:3000
 2. Add a PostgreSQL database (Vercel Postgres / Neon / Supabase).
 3. In **Project → Settings → Environment Variables**, add all the variables above.
    Set `NEXT_PUBLIC_BASE_URL` to your real Vercel domain.
-4. The build runs `prisma generate && next build` automatically.
-5. After the first deploy, run migrations against production:
-   ```bash
-   npm run db:deploy        # prisma migrate deploy
-   ```
-   (Run locally with the production `DATABASE_URL`/`DIRECT_URL`, or as a one-off job.)
+4. Vercel runs `npm run vercel-build` (`prisma generate && prisma migrate deploy && next build`),
+   so database migrations are applied automatically on every deploy.
 
 ---
 
