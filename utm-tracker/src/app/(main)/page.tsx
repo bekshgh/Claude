@@ -43,19 +43,20 @@ export default async function DashboardPage({
       <PageHeader
         breadcrumb="Dashboard"
         title="Conversion overview"
-        subtitle="Clicks, leads and conversion across all your campaigns."
+        subtitle="Clicks, form submits, leads and conversion across all your campaigns."
         action={<RangeTabs current={range} />}
       />
 
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <section className="grid grid-cols-2 gap-4 lg:grid-cols-5">
         <StatCard label="Total clicks"    value={formatNumber(overview.totalClicks)}     sub="all recorded clicks" accent="clicks" />
         <StatCard label="Unique clicks"   value={formatNumber(overview.uniqueClicks)}    sub="one per device / IP" accent="clicks" />
+        <StatCard label="Form submits"    value={formatNumber(overview.totalSubmits)}    sub="pressed “Отправить заявку”" accent="submits" />
         <StatCard label="Total leads"     value={formatNumber(overview.totalLeads)}      sub="form submissions"    accent="leads"  />
         <StatCard label="Conversion rate" value={formatPercent(overview.conversionRate)} sub="clicks → leads"      accent="accent" />
       </section>
 
       <section className="mt-6 card p-6">
-        <h2 className="font-display text-lg font-semibold">Clicks &amp; leads over time</h2>
+        <h2 className="font-display text-lg font-semibold">Clicks, submits &amp; leads over time</h2>
         <div className="mt-4">
           <ClicksLeadsChart data={series} />
         </div>
@@ -64,7 +65,7 @@ export default async function DashboardPage({
       <section className="mt-6 card p-6">
         <h2 className="font-display text-lg font-semibold">Conversion funnel</h2>
         <div className="mt-5">
-          <Funnel clicks={overview.totalClicks} leads={overview.totalLeads} cr={overview.conversionRate} />
+          <Funnel clicks={overview.totalClicks} submits={overview.totalSubmits} leads={overview.totalLeads} />
         </div>
       </section>
 

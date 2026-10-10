@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { recordLead } from "@/lib/leads";
 import { type NormalisedLead } from "@/lib/attribution";
+import { CORS, beaconOk, readInput, str } from "@/lib/beacon";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -19,64 +20,13 @@ export const runtime = "nodejs";
  * already-existing click_id. Requests without a valid click_id are no-ops.
  */
 
-// 1x1 transparent GIF for the <img> pixel fallback.
-const PIXEL = Buffer.from(
-  "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
-  "base64",
-);
-
-const CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
-
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: CORS });
 }
 
-function str(v: unknown): string | undefined {
-  if (v === undefined || v === null) return undefined;
-  const s = String(v).trim();
-  return s === "" ? undefined : s;
-}
-
-async function readInput(req: NextRequest): Promise<Record<string, unknown>> {
-  if (req.method === "GET") {
-    const o: Record<string, unknown> = {};
-    req.nextUrl.searchParams.forEach((v, k) => (o[k] = v));
-    return o;
-  }
-  const ct = req.headers.get("content-type") || "";
-  if (ct.includes("application/json")) {
-    return (await req.json().catch(() => ({}))) as Record<string, unknown>;
-  }
-  if (ct.includes("form")) {
-    const fd = await req.formData().catch(() => null);
-    const o: Record<string, unknown> = {};
-    if (fd) fd.forEach((v, k) => (o[k] = typeof v === "string" ? v : v.name));
-    return o;
-  }
-  // sendBeacon sends a text/plain Blob whose body is the JSON string.
-  const txt = await req.text().catch(() => "");
-  try {
-    return txt ? (JSON.parse(txt) as Record<string, unknown>) : {};
-  } catch {
-    return {};
-  }
-}
-
 async function handle(req: NextRequest) {
   const body = await readInput(req);
-  const wantsPixel = req.method === "GET";
-
-  const ok = (extra: Record<string, unknown> = {}) =>
-    wantsPixel
-      ? new NextResponse(PIXEL, {
-          status: 200,
-          headers: { ...CORS, "Content-Type": "image/gif", "Cache-Control": "no-store, max-age=0" },
-        })
-      : NextResponse.json({ ok: true, ...extra }, { headers: CORS });
+  const ok = (extra?: Record<string, unknown>) => beaconOk(req, extra);
 
   const clickId = str(body.click_id) || str(body.clickId);
   if (!clickId) return ok({ ignored: "no_click_id" });

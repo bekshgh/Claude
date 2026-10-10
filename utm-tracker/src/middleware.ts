@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 
 // Public endpoints: login, the incoming Tilda webhook, and the on-page
-// conversion beacon. /api/webhooks/test stays private (it is an admin action).
+// conversion / submit beacons. /api/webhooks/test stays private (it is an admin action).
 const PUBLIC = [
   "/login",
   "/api/auth/login",
   "/api/auth/logout",
   "/api/webhooks/tilda-lead",
   "/api/track/conversion",
+  "/api/track/submit",
 ];
 
 export async function middleware(req: NextRequest) {

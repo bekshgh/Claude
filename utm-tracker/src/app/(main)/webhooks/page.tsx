@@ -12,10 +12,11 @@ const BASE = process.env.NEXT_PUBLIC_BASE_URL || "https://aieseckz.vercel.app";
 
 function buildSnippet(base: string): string {
   return `<script>
-// Trackline — one snippet does two jobs:
+// Trackline — one snippet does three jobs:
 //   1. copy click_id + UTM from the URL into hidden fields of every form;
 //   2. report a conversion when a Tilda form is submitted successfully,
-//      so leads are counted even without a server-side webhook.
+//      so leads are counted even without a server-side webhook;
+//   3. report every press of the submit button ("Отправить заявку").
 (function () {
   var TRACKER = "${base}";
   var FIELDS = ["click_id","utm_source","utm_medium","utm_campaign","utm_content","utm_term"];
@@ -48,6 +49,16 @@ function buildSnippet(base: string): string {
   window.addEventListener("load", fill);
   setTimeout(fill, 1500);
 
+  function send(path, data) {
+    var url = TRACKER + path;
+    var json = JSON.stringify(data);
+    if (navigator.sendBeacon) { navigator.sendBeacon(url, new Blob([json], { type: "text/plain" })); }
+    else { fetch(url, { method: "POST", body: json, keepalive: true, mode: "no-cors", headers: { "Content-Type": "text/plain" } }); }
+  }
+  function formName(form) {
+    return (form && form.getAttribute && (form.getAttribute("name") || form.getAttribute("data-formactiontype"))) || "";
+  }
+
   // 2. Report the conversion on a successful submit.
   var done = {};
   window.tlConversion = function ($form) {
@@ -56,13 +67,9 @@ function buildSnippet(base: string): string {
       if (!clickId || done[clickId]) return;
       done[clickId] = true;
       var form = ($form && $form[0]) ? $form[0] : $form;
-      var data = { click_id: clickId, pageUrl: location.href,
-        formname: (form && (form.getAttribute("name") || form.getAttribute("data-formactiontype"))) || "" };
+      var data = { click_id: clickId, pageUrl: location.href, formname: formName(form) };
       FIELDS.forEach(function (n) { if (n !== "click_id") data[n] = val(n); });
-      var url = TRACKER + "/api/track/conversion";
-      var json = JSON.stringify(data);
-      if (navigator.sendBeacon) { navigator.sendBeacon(url, new Blob([json], { type: "text/plain" })); }
-      else { fetch(url, { method: "POST", body: json, keepalive: true, mode: "no-cors", headers: { "Content-Type": "text/plain" } }); }
+      send("/api/track/conversion", data);
     } catch (e) {}
   };
   // Chain our callback after any existing success-callback the form already has.
@@ -87,6 +94,24 @@ function buildSnippet(base: string): string {
   window.addEventListener("load", attach);
   setTimeout(attach, 1500);
   setTimeout(attach, 3000);
+
+  // 3. Report a press of the submit button, even if the form then fails validation.
+  var lastSubmit = 0;
+  function reportSubmit(form) {
+    try {
+      var clickId = val("click_id");
+      var now = Date.now();
+      // the button click and the form's submit event fire together — count once
+      if (!clickId || now - lastSubmit < 1500) return;
+      lastSubmit = now;
+      send("/api/track/submit", { click_id: clickId, pageUrl: location.href, formname: formName(form) });
+    } catch (e) {}
+  }
+  document.addEventListener("click", function (e) {
+    var btn = e.target && e.target.closest && e.target.closest('.t-submit, button[type="submit"], input[type="submit"]');
+    if (btn) reportSubmit(btn.closest("form"));
+  }, true);
+  document.addEventListener("submit", function (e) { reportSubmit(e.target); }, true);
 })();
 </script>`;
 }
@@ -146,7 +171,7 @@ export default async function WebhookPage() {
       <div className="card mb-6 p-6">
         <h2 className="font-display text-lg font-semibold">2 · Add this snippet to your page</h2>
         <p className="mt-1 mb-4 text-sm text-ink-muted">
-          Insert via an HTML block or Site settings → More → HTML code for the &lt;head&gt;. One snippet, pasted once, works for every project page. It copies <code className="text-ink-muted">click_id</code> and UTM into hidden form fields <strong>and</strong> reports a conversion when a Tilda form is submitted — so leads are counted even without the webhook above.
+          Insert via an HTML block or Site settings → More → HTML code for the &lt;head&gt;. One snippet, pasted once, works for every project page. It copies <code className="text-ink-muted">click_id</code> and UTM into hidden form fields <strong>and</strong> reports a conversion when a Tilda form is submitted — so leads are counted even without the webhook above. It also records every press of the submit button (“Отправить заявку”), shown as <strong>Submits</strong> in the stats. <strong>If you installed an older version of the snippet, replace it with this one.</strong>
         </p>
         <CodeBlock code={buildSnippet(BASE)} label="paste into your page" />
       </div>
