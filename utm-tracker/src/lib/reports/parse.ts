@@ -37,9 +37,16 @@ export async function parseReport(
 }
 
 async function parseInner(buf: Buffer | Uint8Array, forced?: ReportType): Promise<ReportDocument> {
-  let type: ReportType | null = forced ?? null;
+  let type: ReportType | null = null;
   const wb = await readWorkbook(buf, (name, all) => {
-    type ??= detectType(all);
+    if (!type) {
+      const detected = detectType(all);
+      // A manual choice is for files we cannot recognise, not to override a clear signature.
+      if (forced && detected && forced !== detected) {
+        throw new ReportFileError("type_mismatch", `This file looks like a ${detected} analysis, not ${forced}.`);
+      }
+      type = forced ?? detected;
+    }
     return type ? sheetConfigFor(CONFIGS[type], name) !== undefined : false;
   });
   if (!type) {

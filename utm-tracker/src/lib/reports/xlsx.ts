@@ -14,7 +14,9 @@ const MAX_UNCOMPRESSED_BYTES = 80 * 1024 * 1024;
 
 export class ReportFileError extends Error {
   constructor(
-    public code: "empty" | "too_large" | "not_xlsx" | "macro" | "zip_bomb" | "no_cache" | "unknown_type" | "timeout" | "corrupt",
+    public code:
+      | "empty" | "too_large" | "not_xlsx" | "macro" | "zip_bomb" | "no_cache"
+      | "unknown_type" | "type_mismatch" | "timeout" | "corrupt",
     message: string,
   ) {
     super(message);
