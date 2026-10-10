@@ -5,3 +5,7 @@ promo/sprites_2x/
 *.log
 *.part.mkv
 __pycache__/
+
+# Real analysis workbooks contain personal data — never commit them.
+# Sanitised copies for tests live in utm-tracker/fixtures/reports/.
+/*.xlsx

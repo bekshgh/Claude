@@ -1,0 +1,3228 @@
+{
+  "schemaVersion": 1,
+  "parserVersion": "1.0.0",
+  "type": "feedback",
+  "title": "ÖZGE Forum S'26 — Feedback Form Analytics",
+  "subtitle": "Post-event participant survey · n = 30 respondents · 28 matched to registration · responses 22 Aug – 9 Sep",
+  "meta": {
+    "eventName": "ÖZGE Forum S'26",
+    "period": "22 Aug – 9 Sep",
+    "sampleSize": 30
+  },
+  "sheets": [
+    {
+      "key": "overview",
+      "label": "Обзор",
+      "title": "ÖZGE Forum S'26 — Feedback Form Analytics",
+      "subtitle": "Post-event participant survey · n = 30 respondents · 28 matched to registration · responses 22 Aug – 9 Sep",
+      "sections": [
+        {
+          "kind": "kpiGroup",
+          "id": "core-event-metrics",
+          "title": "CORE EVENT METRICS",
+          "cards": [
+            {
+              "label": "AVG ORGANIZATION",
+              "value": 9.46666666666667,
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              },
+              "subtext": "out of 10 · median 10"
+            },
+            {
+              "label": "ORGANIZATION NPS",
+              "value": 86.6666666666667,
+              "format": {
+                "kind": "number",
+                "decimals": 0,
+                "signed": true
+              },
+              "subtext": "27 promoters / 1 detractors"
+            },
+            {
+              "label": "SPEAKER SESSIONS",
+              "value": 9.33333333333333,
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              },
+              "subtext": "80% rated 9–10"
+            },
+            {
+              "label": "COMPOSITE SCORE",
+              "value": 9.29523809523809,
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              },
+              "subtext": "all 7 ratings, normalised /10"
+            },
+            {
+              "label": "TOTAL RESPONSES",
+              "value": 30,
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              },
+              "subtext": "= 5% of 603 registrants"
+            }
+          ]
+        },
+        {
+          "kind": "kpiGroup",
+          "id": "operational-scores",
+          "title": "OPERATIONAL SCORES",
+          "cards": [
+            {
+              "label": "ORGANIZER SUPPORT",
+              "value": 4.93333333333333,
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              },
+              "subtext": "out of 5 · 93% gave 5"
+            },
+            {
+              "label": "TELEGRAM CHAT",
+              "value": 4.56666666666667,
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              },
+              "subtext": "out of 5 · 67% gave 5"
+            },
+            {
+              "label": "NETWORKING QUALITY",
+              "value": 4.43333333333333,
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              },
+              "subtext": "lowest score in the survey",
+              "tone": "warn"
+            },
+            {
+              "label": "COFFEE BREAK",
+              "value": 9.4,
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              },
+              "subtext": "out of 10 · 83% rated 9–10"
+            },
+            {
+              "label": "COFFEE-ZONE LOCATION",
+              "value": 9,
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              },
+              "subtext": "out of 10 · 4 rated ≤6"
+            }
+          ]
+        },
+        {
+          "kind": "kpiGroup",
+          "id": "who-answered",
+          "title": "WHO ANSWERED",
+          "subtitle": "matched to registration data by email",
+          "cards": [
+            {
+              "label": "MATCHED",
+              "value": 0.933333333333333,
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              },
+              "subtext": "28 of 30 respondents"
+            },
+            {
+              "label": "FROM NU",
+              "value": 0.321428571428571,
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              },
+              "subtext": "vs 51% among all registrants"
+            },
+            {
+              "label": "NEW TO AIESEC",
+              "value": 0.607142857142857,
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              },
+              "subtext": "no previous AIESEC project"
+            },
+            {
+              "label": "CAME VIA TELEGRAM",
+              "value": 0.464285714285714,
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              },
+              "subtext": "registration channel group"
+            },
+            {
+              "label": "ANSWERED ON DAY 1",
+              "value": 0.266666666666667,
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              },
+              "subtext": "8 responses on event day"
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "score-summary",
+          "title": "SCORE SUMMARY",
+          "subtitle": "ALL RESPONDENTS vs NU / OTHER UNIVERSITIES",
+          "columns": [
+            {
+              "key": "metric",
+              "label": "Metric",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "scale",
+              "label": "Scale",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "mean",
+              "label": "Mean",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "median",
+              "label": "Median",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "score-10",
+              "label": "Score /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "top-box-pct",
+              "label": "Top-box %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "low-pct",
+              "label": "Low %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "nu",
+              "label": "NU",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "other-univ",
+              "label": "Other univ.",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "gap-nu-other",
+              "label": "Gap (NU−Other)",
+              "format": {
+                "kind": "number",
+                "decimals": 2,
+                "signed": true
+              }
+            }
+          ],
+          "rows": [
+            [
+              "Overall organization",
+              "1–10",
+              9.46666666666667,
+              10,
+              9.46666666666667,
+              0.9,
+              0.0333333333333333,
+              9.88888888888889,
+              9.21052631578947,
+              0.678362573099415
+            ],
+            [
+              "Speaker sessions",
+              "1–10",
+              9.33333333333333,
+              10,
+              9.33333333333333,
+              0.8,
+              0.0333333333333333,
+              9.11111111111111,
+              9.36842105263158,
+              -0.257309941520468
+            ],
+            [
+              "Coffee break",
+              "1–10",
+              9.4,
+              10,
+              9.4,
+              0.833333333333333,
+              0.0333333333333333,
+              9.77777777777778,
+              9.1578947368421,
+              0.619883040935674
+            ],
+            [
+              "Coffee-zone location",
+              "1–10",
+              9,
+              10,
+              9,
+              0.766666666666667,
+              0.133333333333333,
+              9.66666666666667,
+              8.68421052631579,
+              0.982456140350877
+            ],
+            [
+              "Organizer support",
+              "1–5",
+              4.93333333333333,
+              5,
+              9.86666666666667,
+              0.933333333333333,
+              0,
+              5,
+              4.89473684210526,
+              0.105263157894737
+            ],
+            [
+              "Telegram chat",
+              "1–5",
+              4.56666666666667,
+              5,
+              9.13333333333333,
+              0.666666666666667,
+              0.0333333333333333,
+              4.55555555555556,
+              4.57894736842105,
+              -0.0233918128654969
+            ],
+            [
+              "Networking quality",
+              "1–5",
+              4.43333333333333,
+              5,
+              8.86666666666667,
+              0.633333333333333,
+              0.133333333333333,
+              4.55555555555556,
+              4.42105263157895,
+              0.134502923976608
+            ]
+          ],
+          "note": "* Organization NPS = % rating 9–10 minus % rating ≤6 on the 1–10 organization question (NPS-style proxy; the form has no 'recommend' question). Top-box = 9–10 or 5/5 · Low = ≤6/10 or ≤3/5.",
+          "views": [
+            {
+              "type": "heat",
+              "from": 9,
+              "diverging": true
+            },
+            {
+              "type": "bars",
+              "label": 0,
+              "values": [
+                4
+              ],
+              "horizontal": true
+            }
+          ]
+        },
+        {
+          "kind": "callouts",
+          "id": "key-signals",
+          "title": "KEY SIGNALS",
+          "subtitle": "live formulas",
+          "items": [
+            {
+              "text": "Best-rated: Organizer support 9.9/10 · weakest: Networking quality 8.9/10 · gap 1 pts",
+              "tone": "warn"
+            },
+            {
+              "text": "Organization NPS 87 · 27 of 30 rated 9–10 · only 1 detractor(s)",
+              "tone": "info"
+            },
+            {
+              "text": "Most praised: Speakers & content (17 of 30)",
+              "tone": "info"
+            },
+            {
+              "text": "Top pain point: Passive format / too little networking (8 of 30)",
+              "tone": "info"
+            },
+            {
+              "text": "Top request: More interactive: games, workshops, activities (10 of 30)",
+              "tone": "info"
+            },
+            {
+              "text": "Coverage: 30 responses = 5% of registrants → read as the engaged core, not the full audience",
+              "tone": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "themes",
+      "label": "Темы и отзывы",
+      "title": "Satisfaction & Open-Feedback Themes",
+      "subtitle": "What delighted respondents, what hurt, and what they ask for next time · hand-coded from 30 open answers",
+      "sections": [
+        {
+          "kind": "table",
+          "id": "1-5-scales",
+          "title": "1–5 SCALES",
+          "subtitle": "Organizer Support · Telegram Chat · Networking",
+          "columns": [
+            {
+              "key": "question",
+              "label": "Question",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "mean",
+              "label": "Mean",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "5-pct",
+              "label": "5 %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "4-5-pct",
+              "label": "4–5 %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "3-pct",
+              "label": "3 %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "2-pct",
+              "label": "≤2 %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              "Organizer support",
+              4.93333333333333,
+              0.933333333333333,
+              1,
+              0,
+              0
+            ],
+            [
+              "Telegram chat",
+              4.56666666666667,
+              0.666666666666667,
+              0.966666666666667,
+              0,
+              0.0333333333333333
+            ],
+            [
+              "Networking quality",
+              4.43333333333333,
+              0.633333333333333,
+              0.866666666666667,
+              0.1,
+              0.0333333333333333
+            ]
+          ],
+          "views": [
+            {
+              "type": "heat",
+              "from": 1
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "what-they-liked",
+          "title": "WHAT THEY LIKED",
+          "subtitle": "unprompted praise",
+          "columns": [
+            {
+              "key": "rank",
+              "label": "Rank",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "theme",
+              "label": "Theme",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "mentions",
+              "label": "Mentions",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "pct-of-resp",
+              "label": "% of resp.",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "example-verbatim",
+              "label": "Example (verbatim)",
+              "format": {
+                "kind": "text"
+              }
+            }
+          ],
+          "rows": [
+            [
+              1,
+              "Speakers & content",
+              17,
+              0.566666666666667,
+              "Много опытных и крутых спикеров, каждый говорит про реальные кейсы"
+            ],
+            [
+              2,
+              "Organization, timing & structure",
+              14,
+              0.466666666666667,
+              "Всё прошло чётко по расписанию, структура насыщенная, но не перегруженная"
+            ],
+            [
+              3,
+              "Games & energizers (Monopoly, roll call, quiz, dance)",
+              13,
+              0.433333333333333,
+              "Roll call дал позитивный настрой · монополия — хороший формат"
+            ],
+            [
+              4,
+              "Friendly team & atmosphere",
+              10,
+              0.333333333333333,
+              "Очень доброжелательные AIESEC-еры, все были helpful"
+            ],
+            [
+              5,
+              "Coffee break & food (unprompted)",
+              9,
+              0.3,
+              "Керемет кофе-брейк және спикерлер"
+            ],
+            [
+              6,
+              "Gifts & prizes",
+              4,
+              0.133333333333333,
+              "Подарки делегатам — приятное завершение форума"
+            ]
+          ],
+          "views": [
+            {
+              "type": "ranked",
+              "label": 1,
+              "value": 2,
+              "share": 3,
+              "quote": 4
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "pain-points",
+          "title": "PAIN POINTS",
+          "subtitle": "what went wrong",
+          "columns": [
+            {
+              "key": "rank",
+              "label": "Rank",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "theme",
+              "label": "Theme",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "mentions",
+              "label": "Mentions",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "pct-of-resp",
+              "label": "% of resp.",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "example-verbatim",
+              "label": "Example (verbatim)",
+              "format": {
+                "kind": "text"
+              }
+            }
+          ],
+          "rows": [
+            [
+              1,
+              "Passive format / too little networking",
+              8,
+              0.266666666666667,
+              "Единственный момент пообщаться — кофе-брейк"
+            ],
+            [
+              2,
+              "Schedule delays / speaker time cut",
+              5,
+              0.166666666666667,
+              "Из-за задержки второго спикера пришлось сократить"
+            ],
+            [
+              2,
+              "Drinks (Basta lemonade) / no water",
+              5,
+              0.166666666666667,
+              "Были напитки, но не было воды · Баста химозная"
+            ],
+            [
+              2,
+              "Telegram chat: spam, bot, not added",
+              5,
+              0.166666666666667,
+              "Игра в чате — люди спамят во время форума"
+            ],
+            [
+              5,
+              "Venue & logistics (space, queue, entry, Wi-Fi)",
+              4,
+              0.133333333333333,
+              "Мало места на кофе-брейке для такого потока"
+            ],
+            [
+              6,
+              "Late agenda & announcements",
+              3,
+              0.1,
+              "Адженда выпущена в последний момент"
+            ],
+            [
+              6,
+              "Q&A too short / no access to speakers",
+              3,
+              0.1,
+              "Один микрофон — люди по сторонам не успели спросить"
+            ],
+            [
+              8,
+              "Disappointed by a specific speaker",
+              1,
+              0.0333333333333333,
+              "Первый спикер не отвечал на конкретные вопросы"
+            ]
+          ],
+          "views": [
+            {
+              "type": "ranked",
+              "label": 1,
+              "value": 2,
+              "share": 3,
+              "quote": 4
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "requests-for-next-time",
+          "title": "REQUESTS FOR NEXT TIME",
+          "columns": [
+            {
+              "key": "rank",
+              "label": "Rank",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "theme",
+              "label": "Theme",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "mentions",
+              "label": "Mentions",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "pct-of-resp",
+              "label": "% of resp.",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "example-verbatim",
+              "label": "Example (verbatim)",
+              "format": {
+                "kind": "text"
+              }
+            }
+          ],
+          "rows": [
+            [
+              1,
+              "More interactive: games, workshops, activities",
+              10,
+              0.333333333333333,
+              "Больше воркшопа и интерактива, игр вместе со спикерами"
+            ],
+            [
+              2,
+              "Different / stronger speakers & topics",
+              7,
+              0.233333333333333,
+              "Молодые айтишники, которые недавно встали на ноги"
+            ],
+            [
+              2,
+              "Water & drink options",
+              7,
+              0.233333333333333,
+              "Кулер воды обязательно · айран и су"
+            ],
+            [
+              4,
+              "Structured networking time (1:1, groups)",
+              6,
+              0.2,
+              "Раздать номера на регистрации и поделить на группы"
+            ],
+            [
+              5,
+              "Longer Q&A / more time with speakers",
+              4,
+              0.133333333333333,
+              "Поговорить лично со спикерами после презентации"
+            ],
+            [
+              6,
+              "Earlier agenda & start-time announcements",
+              3,
+              0.1,
+              "Такое надо делать за 5–7 дней до форума"
+            ],
+            [
+              7,
+              "More about AIESEC roles & internships",
+              2,
+              0.0666666666666667,
+              "Подробнее про роли мемберов, о стажировках"
+            ]
+          ],
+          "views": [
+            {
+              "type": "ranked",
+              "label": 1,
+              "value": 2,
+              "share": 3,
+              "quote": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "scorecard",
+      "label": "Операционный скоркард",
+      "title": "Operational Scorecard — Organization, Speakers, Communication, Logistics",
+      "subtitle": "Where did execution succeed and where does it need improvement?",
+      "sections": [
+        {
+          "kind": "table",
+          "id": "score-distribution",
+          "title": "SCORE DISTRIBUTION",
+          "subtitle": "1–10 questions · count & share per rating band",
+          "columns": [
+            {
+              "key": "metric",
+              "label": "Metric",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "mean",
+              "label": "Mean",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "med",
+              "label": "Med",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "1-3-low",
+              "label": "1–3 (Low)",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "1-3-low-pct",
+              "label": "1–3 (Low) %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "4-6-mid",
+              "label": "4–6 (Mid)",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "4-6-mid-pct",
+              "label": "4–6 (Mid) %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "7-8-good",
+              "label": "7–8 (Good)",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "7-8-good-pct",
+              "label": "7–8 (Good) %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "9-10-exc",
+              "label": "9–10 (Exc)",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "9-10-exc-pct",
+              "label": "9–10 (Exc) %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              "Overall organization",
+              9.46666666666667,
+              10,
+              0,
+              0,
+              1,
+              0.0333333333333333,
+              2,
+              0.0666666666666667,
+              27,
+              0.9
+            ],
+            [
+              "Speaker sessions",
+              9.33333333333333,
+              10,
+              0,
+              0,
+              1,
+              0.0333333333333333,
+              5,
+              0.166666666666667,
+              24,
+              0.8
+            ],
+            [
+              "Coffee break",
+              9.4,
+              10,
+              0,
+              0,
+              1,
+              0.0333333333333333,
+              4,
+              0.133333333333333,
+              25,
+              0.833333333333333
+            ],
+            [
+              "Coffee-zone location",
+              9,
+              10,
+              0,
+              0,
+              4,
+              0.133333333333333,
+              3,
+              0.1,
+              23,
+              0.766666666666667
+            ]
+          ],
+          "views": [
+            {
+              "type": "table"
+            },
+            {
+              "type": "bars",
+              "label": 0,
+              "values": [
+                3,
+                5,
+                7,
+                9
+              ],
+              "stacked": true,
+              "horizontal": true
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "score-distribution-2",
+          "title": "SCORE DISTRIBUTION",
+          "subtitle": "1–5 questions",
+          "columns": [
+            {
+              "key": "metric",
+              "label": "Metric",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "mean",
+              "label": "Mean",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "med",
+              "label": "Med",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "1-2",
+              "label": "1–2",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "1-2-pct",
+              "label": "1–2 %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "3",
+              "label": "3",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "3-pct",
+              "label": "3 %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "4",
+              "label": "4",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "4-pct",
+              "label": "4 %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "5",
+              "label": "5",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "5-pct",
+              "label": "5 %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              "Organizer support",
+              4.93333333333333,
+              5,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0.0666666666666667,
+              28,
+              0.933333333333333
+            ],
+            [
+              "Telegram chat",
+              4.56666666666667,
+              5,
+              1,
+              0.0333333333333333,
+              0,
+              0,
+              9,
+              0.3,
+              20,
+              0.666666666666667
+            ],
+            [
+              "Networking quality",
+              4.43333333333333,
+              5,
+              1,
+              0.0333333333333333,
+              3,
+              0.1,
+              7,
+              0.233333333333333,
+              19,
+              0.633333333333333
+            ]
+          ],
+          "views": [
+            {
+              "type": "table"
+            },
+            {
+              "type": "bars",
+              "label": 0,
+              "values": [
+                3,
+                5,
+                7,
+                9
+              ],
+              "stacked": true,
+              "horizontal": true
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "operational-scores-by-university",
+          "title": "OPERATIONAL SCORES BY UNIVERSITY",
+          "subtitle": "NU vs Other universities (matched respondents)",
+          "columns": [
+            {
+              "key": "metric",
+              "label": "Metric",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "nu-mean",
+              "label": "NU mean",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "nu-med",
+              "label": "NU med",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "other-mean",
+              "label": "Other mean",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "other-med",
+              "label": "Other med",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "gap-nu-other",
+              "label": "Gap (NU−Other)",
+              "format": {
+                "kind": "number",
+                "decimals": 2,
+                "signed": true
+              }
+            },
+            {
+              "key": "winner",
+              "label": "Winner",
+              "format": {
+                "kind": "text"
+              }
+            }
+          ],
+          "rows": [
+            [
+              "Overall organization",
+              9.88888888888889,
+              10,
+              9.21052631578947,
+              10,
+              0.678362573099415,
+              "NU"
+            ],
+            [
+              "Speaker sessions",
+              9.11111111111111,
+              10,
+              9.36842105263158,
+              10,
+              -0.257309941520468,
+              "Other"
+            ],
+            [
+              "Coffee break",
+              9.77777777777778,
+              10,
+              9.1578947368421,
+              10,
+              0.619883040935674,
+              "NU"
+            ],
+            [
+              "Coffee-zone location",
+              9.66666666666667,
+              10,
+              8.68421052631579,
+              9,
+              0.982456140350877,
+              "NU"
+            ],
+            [
+              "Organizer support",
+              5,
+              5,
+              4.89473684210526,
+              5,
+              0.105263157894737,
+              "NU"
+            ],
+            [
+              "Telegram chat",
+              4.55555555555556,
+              5,
+              4.57894736842105,
+              5,
+              -0.0233918128654969,
+              "Tie"
+            ],
+            [
+              "Networking quality",
+              4.55555555555556,
+              5,
+              4.42105263157895,
+              5,
+              0.134502923976608,
+              "NU"
+            ]
+          ],
+          "note": "n: NU = 9 · Other univ. = 19 · not matched = 2 — small samples: treat gaps < 0.5 as noise",
+          "views": [
+            {
+              "type": "heat",
+              "from": 5,
+              "diverging": true
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "networking",
+          "title": "NETWORKING",
+          "subtitle": "what actually worked (open answers)",
+          "columns": [
+            {
+              "key": "rank",
+              "label": "Rank",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "format-speaker-topic",
+              "label": "Format / speaker / topic",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "mentions",
+              "label": "Mentions",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "pct-of-resp",
+              "label": "% of resp.",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              1,
+              "Coffee break",
+              10,
+              0.333333333333333
+            ],
+            [
+              2,
+              "Games, quiz, tasks & icebreakers",
+              6,
+              0.2
+            ],
+            [
+              3,
+              "Monopoly game",
+              5,
+              0.166666666666667
+            ],
+            [
+              4,
+              "Roll call / dance opener",
+              3,
+              0.1
+            ],
+            [
+              5,
+              "Q&A with speakers",
+              2,
+              0.0666666666666667
+            ],
+            [
+              5,
+              "Telegram chat",
+              2,
+              0.0666666666666667
+            ]
+          ],
+          "views": [
+            {
+              "type": "ranked",
+              "label": 1,
+              "value": 2,
+              "share": 3
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "speakers-topics",
+          "title": "SPEAKERS & TOPICS",
+          "subtitle": "named as most useful",
+          "columns": [
+            {
+              "key": "rank",
+              "label": "Rank",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "format-speaker-topic",
+              "label": "Format / speaker / topic",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "mentions",
+              "label": "Mentions",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "pct-of-resp",
+              "label": "% of resp.",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              1,
+              "Topic · Startups & business",
+              7,
+              0.233333333333333
+            ],
+            [
+              1,
+              "Topic · Personal growth, career & brand",
+              7,
+              0.233333333333333
+            ],
+            [
+              3,
+              "Olzhas Satiev",
+              5,
+              0.166666666666667
+            ],
+            [
+              3,
+              "Dagar Davletov",
+              5,
+              0.166666666666667
+            ],
+            [
+              3,
+              "Opening panel / first speakers",
+              5,
+              0.166666666666667
+            ],
+            [
+              6,
+              "Cybersecurity (CARKA)",
+              4,
+              0.133333333333333
+            ],
+            [
+              6,
+              "Closing speaker (Adil)",
+              4,
+              0.133333333333333
+            ],
+            [
+              8,
+              "Raiymbek",
+              2,
+              0.0666666666666667
+            ]
+          ],
+          "views": [
+            {
+              "type": "ranked",
+              "label": 1,
+              "value": 2,
+              "share": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "segments",
+      "label": "Сегменты",
+      "title": "Segment Analysis — By University, Study Stage, Channel, AIESEC Background & Response Timing",
+      "subtitle": "How do respondent segments rate the forum? (segments joined from the registration file by email)",
+      "sections": [
+        {
+          "kind": "table",
+          "id": "university",
+          "title": "UNIVERSITY",
+          "subtitle": "mean scores",
+          "columns": [
+            {
+              "key": "segment",
+              "label": "Segment",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "n",
+              "label": "n",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "org-10",
+              "label": "Org /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "speakers-10",
+              "label": "Speakers /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "coffee-10",
+              "label": "Coffee /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "support-5",
+              "label": "Support /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "telegram-5",
+              "label": "Telegram /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "network-5",
+              "label": "Network /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "composite",
+              "label": "Composite",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "promoter-pct",
+              "label": "Promoter %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              "NU",
+              9,
+              9.88888888888889,
+              9.11111111111111,
+              9.77777777777778,
+              5,
+              4.55555555555556,
+              4.55555555555556,
+              9.52380952380952,
+              1
+            ],
+            [
+              "Other univ.",
+              19,
+              9.21052631578947,
+              9.36842105263158,
+              9.1578947368421,
+              4.89473684210526,
+              4.57894736842105,
+              4.42105263157895,
+              9.17293233082707,
+              0.842105263157895
+            ],
+            [
+              "Not matched",
+              2,
+              10,
+              10,
+              10,
+              5,
+              4.5,
+              4,
+              9.42857142857143,
+              1
+            ],
+            [
+              "All respondents",
+              30,
+              9.46666666666667,
+              9.33333333333333,
+              9.4,
+              4.93333333333333,
+              4.56666666666667,
+              4.43333333333333,
+              9.29523809523809,
+              0.9
+            ]
+          ],
+          "totalRow": 3,
+          "views": [
+            {
+              "type": "segments"
+            },
+            {
+              "type": "heat",
+              "from": 2
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "study-stage",
+          "title": "STUDY STAGE",
+          "subtitle": "mean scores",
+          "columns": [
+            {
+              "key": "segment",
+              "label": "Segment",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "n",
+              "label": "n",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "org-10",
+              "label": "Org /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "speakers-10",
+              "label": "Speakers /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "coffee-10",
+              "label": "Coffee /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "support-5",
+              "label": "Support /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "telegram-5",
+              "label": "Telegram /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "network-5",
+              "label": "Network /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "composite",
+              "label": "Composite",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "promoter-pct",
+              "label": "Promoter %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              "Early (Y1–Y2)",
+              12,
+              9.33333333333333,
+              8.66666666666667,
+              9.08333333333333,
+              4.83333333333333,
+              4.33333333333333,
+              4.16666666666667,
+              8.94047619047619,
+              0.916666666666667
+            ],
+            [
+              "Senior (Y3–Y4)",
+              7,
+              10,
+              10,
+              9.85714285714286,
+              5,
+              4.71428571428571,
+              4.85714285714286,
+              9.85714285714286,
+              1
+            ],
+            [
+              "Grad / Postgrad",
+              6,
+              8.83333333333333,
+              9.33333333333333,
+              9.33333333333333,
+              5,
+              4.83333333333333,
+              4.83333333333333,
+              9.38095238095238,
+              0.666666666666667
+            ],
+            [
+              "Pre-uni / Other",
+              3,
+              9.66666666666667,
+              10,
+              9.33333333333333,
+              5,
+              4.66666666666667,
+              4,
+              9.14285714285714,
+              1
+            ],
+            [
+              "Not matched",
+              2,
+              10,
+              10,
+              10,
+              5,
+              4.5,
+              4,
+              9.42857142857143,
+              1
+            ],
+            [
+              "All respondents",
+              30,
+              9.46666666666667,
+              9.33333333333333,
+              9.4,
+              4.93333333333333,
+              4.56666666666667,
+              4.43333333333333,
+              9.29523809523809,
+              0.9
+            ]
+          ],
+          "totalRow": 5,
+          "views": [
+            {
+              "type": "segments"
+            },
+            {
+              "type": "heat",
+              "from": 2
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "registration-channel-group",
+          "title": "REGISTRATION CHANNEL GROUP",
+          "subtitle": "mean scores",
+          "columns": [
+            {
+              "key": "segment",
+              "label": "Segment",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "n",
+              "label": "n",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "org-10",
+              "label": "Org /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "speakers-10",
+              "label": "Speakers /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "coffee-10",
+              "label": "Coffee /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "support-5",
+              "label": "Support /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "telegram-5",
+              "label": "Telegram /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "network-5",
+              "label": "Network /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "composite",
+              "label": "Composite",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "promoter-pct",
+              "label": "Promoter %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              "Telegram",
+              13,
+              9.61538461538462,
+              9.30769230769231,
+              9.30769230769231,
+              5,
+              4.69230769230769,
+              4.76923076923077,
+              9.45054945054945,
+              0.846153846153846
+            ],
+            [
+              "Instagram",
+              7,
+              9.57142857142857,
+              9.71428571428571,
+              9.42857142857143,
+              4.85714285714286,
+              4.71428571428571,
+              4.42857142857143,
+              9.38775510204082,
+              1
+            ],
+            [
+              "Email",
+              5,
+              9.6,
+              8.8,
+              9.8,
+              5,
+              4.6,
+              4.2,
+              9.28571428571429,
+              1
+            ],
+            [
+              "Partners",
+              3,
+              8,
+              9,
+              8.66666666666667,
+              4.66666666666667,
+              3.66666666666667,
+              3.66666666666667,
+              8.33333333333333,
+              0.666666666666667
+            ],
+            [
+              "Offline",
+              0,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              "Direct / Other",
+              0,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              "Not matched",
+              2,
+              10,
+              10,
+              10,
+              5,
+              4.5,
+              4,
+              9.42857142857143,
+              1
+            ],
+            [
+              "All respondents",
+              30,
+              9.46666666666667,
+              9.33333333333333,
+              9.4,
+              4.93333333333333,
+              4.56666666666667,
+              4.43333333333333,
+              9.29523809523809,
+              0.9
+            ]
+          ],
+          "totalRow": 7,
+          "views": [
+            {
+              "type": "segments"
+            },
+            {
+              "type": "heat",
+              "from": 2
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "aiesec-background",
+          "title": "AIESEC BACKGROUND",
+          "subtitle": "mean scores",
+          "columns": [
+            {
+              "key": "segment",
+              "label": "Segment",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "n",
+              "label": "n",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "org-10",
+              "label": "Org /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "speakers-10",
+              "label": "Speakers /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "coffee-10",
+              "label": "Coffee /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "support-5",
+              "label": "Support /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "telegram-5",
+              "label": "Telegram /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "network-5",
+              "label": "Network /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "composite",
+              "label": "Composite",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "promoter-pct",
+              "label": "Promoter %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              "New to AIESEC",
+              17,
+              9.52941176470588,
+              9.23529411764706,
+              9.35294117647059,
+              4.88235294117647,
+              4.47058823529412,
+              4.29411764705882,
+              9.21008403361345,
+              0.941176470588235
+            ],
+            [
+              "Returning",
+              11,
+              9.27272727272727,
+              9.36363636363636,
+              9.36363636363636,
+              5,
+              4.72727272727273,
+              4.72727272727273,
+              9.4025974025974,
+              0.818181818181818
+            ],
+            [
+              "Not matched",
+              2,
+              10,
+              10,
+              10,
+              5,
+              4.5,
+              4,
+              9.42857142857143,
+              1
+            ],
+            [
+              "All respondents",
+              30,
+              9.46666666666667,
+              9.33333333333333,
+              9.4,
+              4.93333333333333,
+              4.56666666666667,
+              4.43333333333333,
+              9.29523809523809,
+              0.9
+            ]
+          ],
+          "totalRow": 3,
+          "views": [
+            {
+              "type": "segments"
+            },
+            {
+              "type": "heat",
+              "from": 2
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "response-timing",
+          "title": "RESPONSE TIMING",
+          "subtitle": "mean scores",
+          "columns": [
+            {
+              "key": "segment",
+              "label": "Segment",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "n",
+              "label": "n",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "org-10",
+              "label": "Org /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "speakers-10",
+              "label": "Speakers /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "coffee-10",
+              "label": "Coffee /10",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "support-5",
+              "label": "Support /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "telegram-5",
+              "label": "Telegram /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "network-5",
+              "label": "Network /5",
+              "format": {
+                "kind": "number",
+                "decimals": 2
+              }
+            },
+            {
+              "key": "composite",
+              "label": "Composite",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "promoter-pct",
+              "label": "Promoter %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              "Day 1 (event day)",
+              8,
+              9.75,
+              9.375,
+              9.875,
+              5,
+              4.625,
+              4.375,
+              9.46428571428572,
+              1
+            ],
+            [
+              "Day 2",
+              8,
+              9.75,
+              9.375,
+              9.375,
+              4.875,
+              4.5,
+              4.375,
+              9.30357142857143,
+              1
+            ],
+            [
+              "Day 3+",
+              14,
+              9.14285714285714,
+              9.28571428571429,
+              9.14285714285714,
+              4.92857142857143,
+              4.57142857142857,
+              4.5,
+              9.19387755102041,
+              0.785714285714286
+            ],
+            [
+              "All respondents",
+              30,
+              9.46666666666667,
+              9.33333333333333,
+              9.4,
+              4.93333333333333,
+              4.56666666666667,
+              4.43333333333333,
+              9.29523809523809,
+              0.9
+            ]
+          ],
+          "totalRow": 3,
+          "note": "Colour compares segments within each column (orange = lowest, green = highest). Segments with n < 5 are shown in grey — directional only.",
+          "views": [
+            {
+              "type": "segments"
+            },
+            {
+              "type": "heat",
+              "from": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "patterns",
+      "label": "Паттерны и выбросы",
+      "title": "Pattern Discovery — Outliers, Distributions & Key Signals",
+      "subtitle": "Where are the outliers? What patterns emerge across the data?",
+      "sections": [
+        {
+          "kind": "table",
+          "id": "score-frequency-distribution",
+          "title": "SCORE FREQUENCY DISTRIBUTION",
+          "subtitle": "1–10 scale · count (share) bar",
+          "columns": [
+            {
+              "key": "score",
+              "label": "Score",
+              "format": {
+                "kind": "number"
+              }
+            },
+            {
+              "key": "overall-organization",
+              "label": "Overall organization",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "overall-organization-pct",
+              "label": "Overall organization %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "speaker-sessions",
+              "label": "Speaker sessions",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "speaker-sessions-pct",
+              "label": "Speaker sessions %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "coffee-break",
+              "label": "Coffee break",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "coffee-break-pct",
+              "label": "Coffee break %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "coffee-zone-location",
+              "label": "Coffee-zone location",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "coffee-zone-location-pct",
+              "label": "Coffee-zone location %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              1,
+              0.03,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              5,
+              0,
+              0,
+              1,
+              0.03,
+              0,
+              0,
+              2,
+              0.07
+            ],
+            [
+              6,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0.03,
+              2,
+              0.07
+            ],
+            [
+              7,
+              1,
+              0.03,
+              2,
+              0.07,
+              1,
+              0.03,
+              0,
+              0
+            ],
+            [
+              8,
+              1,
+              0.03,
+              3,
+              0.1,
+              3,
+              0.1,
+              3,
+              0.1
+            ],
+            [
+              9,
+              5,
+              0.17,
+              3,
+              0.1,
+              5,
+              0.17,
+              6,
+              0.2
+            ],
+            [
+              10,
+              22,
+              0.73,
+              21,
+              0.7,
+              20,
+              0.67,
+              17,
+              0.57
+            ]
+          ],
+          "views": [
+            {
+              "type": "bars",
+              "label": 0,
+              "values": [
+                1,
+                3,
+                5,
+                7
+              ]
+            },
+            {
+              "type": "table"
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "score-frequency-distribution-2",
+          "title": "SCORE FREQUENCY DISTRIBUTION",
+          "subtitle": "1–5 scale",
+          "columns": [
+            {
+              "key": "score",
+              "label": "Score",
+              "format": {
+                "kind": "number"
+              }
+            },
+            {
+              "key": "organizer-support",
+              "label": "Organizer support",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "organizer-support-pct",
+              "label": "Organizer support %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "telegram-chat",
+              "label": "Telegram chat",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "telegram-chat-pct",
+              "label": "Telegram chat %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "networking-quality",
+              "label": "Networking quality",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "networking-quality-pct",
+              "label": "Networking quality %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            }
+          ],
+          "rows": [
+            [
+              1,
+              0,
+              0,
+              1,
+              0.03,
+              1,
+              0.03
+            ],
+            [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              3,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0.1
+            ],
+            [
+              4,
+              2,
+              0.07,
+              9,
+              0.3,
+              7,
+              0.23
+            ],
+            [
+              5,
+              28,
+              0.93,
+              20,
+              0.67,
+              19,
+              0.63
+            ]
+          ],
+          "views": [
+            {
+              "type": "bars",
+              "label": 0,
+              "values": [
+                1,
+                3,
+                5
+              ]
+            },
+            {
+              "type": "table"
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "outlier-respondents",
+          "title": "OUTLIER RESPONDENTS",
+          "subtitle": "any rating ≤ 6/10 or ≤ 3/5",
+          "columns": [
+            {
+              "key": "name",
+              "label": "Респондент",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "org",
+              "label": "Org",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "spk",
+              "label": "Spk",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "coffee",
+              "label": "Coffee",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "loc",
+              "label": "Loc",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "sup",
+              "label": "Sup",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "tg",
+              "label": "TG",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "net",
+              "label": "Net",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "low",
+              "label": "# low",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "key-comment-summarised-from-open-answers",
+              "label": "Key comment (summarised from open answers)",
+              "format": {
+                "kind": "text"
+              }
+            }
+          ],
+          "rows": [
+            [
+              "Респондент 1",
+              10,
+              10,
+              10,
+              8,
+              5,
+              4,
+              3,
+              1,
+              "Один микрофон на весь зал, помещение маленькое, интернет не работал; нетворк только на кофе-брейке"
+            ],
+            [
+              "Респондент 2",
+              10,
+              5,
+              10,
+              10,
+              5,
+              5,
+              3,
+              2,
+              "Разочаровал первый спикер; предлагает раздавать номера на регистрации, чтобы делить на группы"
+            ],
+            [
+              "Респондент 3",
+              9,
+              10,
+              8,
+              5,
+              5,
+              4,
+              3,
+              2,
+              "На кофе-брейке мало места для такого потока; не было воды; формат — в основном слушать"
+            ],
+            [
+              "Респондент 4",
+              7,
+              9,
+              8,
+              6,
+              5,
+              5,
+              4,
+              1,
+              "Хотелось больше времени на вопросы спикерам; напиток «не очень»"
+            ],
+            [
+              "Респондент 5",
+              4,
+              7,
+              6,
+              6,
+              4,
+              1,
+              1,
+              5,
+              "Не было перерывов между спикерами, всё сумбурно; адженда и время начала — в последний момент"
+            ],
+            [
+              "Респондент 6",
+              10,
+              8,
+              7,
+              5,
+              5,
+              5,
+              5,
+              1,
+              "Нет нормальной очереди на кофе-брейке"
+            ]
+          ],
+          "views": [
+            {
+              "type": "table"
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "relationships",
+          "title": "RELATIONSHIPS",
+          "subtitle": "what moves the organization score?",
+          "columns": [
+            {
+              "key": "metric",
+              "label": "Metric",
+              "format": {
+                "kind": "text"
+              }
+            },
+            {
+              "key": "correl-with-org",
+              "label": "Correl. with Org",
+              "format": {
+                "kind": "number",
+                "decimals": 2,
+                "signed": true
+              }
+            },
+            {
+              "key": "strength",
+              "label": "Strength",
+              "format": {
+                "kind": "text"
+              }
+            }
+          ],
+          "rows": [
+            [
+              "Speaker sessions",
+              0.340250088893563,
+              "Moderate"
+            ],
+            [
+              "Coffee break",
+              0.674388043358599,
+              "Strong"
+            ],
+            [
+              "Coffee-zone location",
+              0.514046516081408,
+              "Strong"
+            ],
+            [
+              "Organizer support",
+              0.644048841910808,
+              "Strong"
+            ],
+            [
+              "Telegram chat",
+              0.642540900259208,
+              "Strong"
+            ],
+            [
+              "Networking quality",
+              0.645842142311762,
+              "Strong"
+            ]
+          ],
+          "views": [
+            {
+              "type": "bars",
+              "label": 0,
+              "values": [
+                1
+              ],
+              "horizontal": true
+            },
+            {
+              "type": "table"
+            }
+          ]
+        },
+        {
+          "kind": "table",
+          "id": "response-timing",
+          "title": "RESPONSE TIMING",
+          "subtitle": "post-event decay",
+          "columns": [
+            {
+              "key": "date",
+              "label": "Date",
+              "format": {
+                "kind": "date"
+              }
+            },
+            {
+              "key": "responses",
+              "label": "Responses",
+              "format": {
+                "kind": "number",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "cumul-pct",
+              "label": "Cumul. %",
+              "format": {
+                "kind": "percent",
+                "decimals": 0
+              }
+            },
+            {
+              "key": "avg-org",
+              "label": "Avg org",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            },
+            {
+              "key": "avg-composite",
+              "label": "Avg composite",
+              "format": {
+                "kind": "number",
+                "decimals": 1
+              }
+            }
+          ],
+          "rows": [
+            [
+              "2026-08-22",
+              8,
+              0.266666666666667,
+              9.75,
+              9.46428571428572
+            ],
+            [
+              "2026-08-23",
+              8,
+              0.533333333333333,
+              9.75,
+              9.30357142857143
+            ],
+            [
+              "2026-08-24",
+              8,
+              0.8,
+              8.5,
+              8.66071428571429
+            ],
+            [
+              "2026-08-25",
+              4,
+              0.933333333333333,
+              10,
+              9.85714285714286
+            ],
+            [
+              "2026-08-26",
+              1,
+              0.966666666666667,
+              10,
+              10
+            ],
+            [
+              "2026-09-09",
+              1,
+              1,
+              10,
+              10
+            ]
+          ],
+          "views": [
+            {
+              "type": "bars",
+              "label": 0,
+              "values": [
+                1
+              ]
+            },
+            {
+              "type": "table"
+            }
+          ]
+        },
+        {
+          "kind": "callouts",
+          "id": "key-patterns-anomalies-identified",
+          "title": "KEY PATTERNS & ANOMALIES IDENTIFIED",
+          "items": [
+            {
+              "label": "Networking is the weakest link",
+              "text": "Networking 8.9/10 vs composite 9.3 · 8 say the format was passive · 10 ask for more interactive formats",
+              "tone": "warn"
+            },
+            {
+              "label": "Speakers are the core value",
+              "text": "Speaker sessions 9.3/10 · 17 of 30 praised speakers unprompted · startups/business & personal growth topics lead",
+              "tone": "info"
+            },
+            {
+              "label": "Timing slipped",
+              "text": "5 mention delays / cut speaker time, 3 the late agenda → biggest driver of the lowest org scores",
+              "tone": "warn"
+            },
+            {
+              "label": "Drinks & water, not food",
+              "text": "Coffee break 9.4/10 but 5 complain about drinks (Basta) or no water · 7 ask for water/drinks",
+              "tone": "info"
+            },
+            {
+              "label": "Coffee zone was crowded",
+              "text": "Location 9/10 — lowest 1–10 score · 4 rated ≤6 · space & queue cited",
+              "tone": "warn"
+            },
+            {
+              "label": "Coffee break + Monopoly carry networking",
+              "text": "Coffee break named by 10, Monopoly by 5 as what worked · structured 1:1 / group formats requested by 6",
+              "tone": "info"
+            },
+            {
+              "label": "Telegram works, chat hygiene doesn't",
+              "text": "Telegram 4.57/5 · 5 flag spam from the in-chat game / bot → separate announcement channel from game chat",
+              "tone": "info"
+            },
+            {
+              "label": "Low response rate",
+              "text": "30 of 603 registrants answered (5%) · 27% on event day → push the form in the closing session",
+              "tone": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "methodology",
+      "label": "Методология",
+      "title": "Assumptions, definitions & how to use this workbook",
+      "sections": [
+        {
+          "kind": "definitions",
+          "id": "data-cleaning",
+          "title": "DATA & CLEANING",
+          "items": [
+            {
+              "term": "Source",
+              "definition": "ÖZGE Forum feedback form Responses.xlsx → Form Responses 1 (32 rows). Untouched copy in 09 · Raw Data."
+            },
+            {
+              "term": "Removed rows",
+              "definition": "1 summary row (no timestamp, avg 9.48) and 1 repeat submission (same email, 5 days later; first answer kept) → n = 30."
+            },
+            {
+              "term": "Blank answers",
+              "definition": "Open answers of '.', '-' are treated as blank in 07 · Cleaned Data."
+            },
+            {
+              "term": "Registration link",
+              "definition": "Email is matched to the Özge S'26 registration list (10 · Reg Lookup) to add university, study stage, registration channel and AIESEC background. Unmatched respondents stay as 'Not matched'."
+            }
+          ]
+        },
+        {
+          "kind": "definitions",
+          "id": "scales-metrics",
+          "title": "SCALES & METRICS",
+          "items": [
+            {
+              "term": "1–10 questions",
+              "definition": "Overall organization, coffee break, coffee-zone location, speaker sessions."
+            },
+            {
+              "term": "1–5 questions",
+              "definition": "Organizer support, networking quality, Telegram chat."
+            },
+            {
+              "term": "Score /10",
+              "definition": "1–5 means are ×2 so every question can be compared on one scale."
+            },
+            {
+              "term": "Top-box / Low",
+              "definition": "Top-box = 9–10 (or 5/5). Low = ≤6/10 (or ≤3/5). Outliers = any low rating."
+            },
+            {
+              "term": "Organization NPS*",
+              "definition": "% 9–10 minus % ≤6 on the organization question. The form has no 'would you recommend' question, so this is an NPS-style proxy, not a true NPS."
+            },
+            {
+              "term": "Composite",
+              "definition": "Average of all 7 ratings after normalising to /10."
+            },
+            {
+              "term": "Correlation",
+              "definition": "Pearson CORREL with the organization score. With n = 30 and most scores at 9–10, treat as directional."
+            }
+          ]
+        },
+        {
+          "kind": "definitions",
+          "id": "open-answer-themes",
+          "title": "OPEN-ANSWER THEMES",
+          "items": [
+            {
+              "term": "Method",
+              "definition": "Every open answer was read and hand-coded into themes (08 · Theme Coding). One respondent can hit several themes; each counts once per theme."
+            },
+            {
+              "term": "Liked vs prompted",
+              "definition": "'What they liked' counts unprompted praise (why-org, comfort, org aspects, peer answers); coffee praise inside the coffee question is not counted there."
+            },
+            {
+              "term": "Editing",
+              "definition": "Change the blue 1/0 cells in 08 · Theme Coding to re-code; all theme tables, charts and signals update."
+            },
+            {
+              "term": "Languages",
+              "definition": "Answers are in Russian, Kazakh and English; quotes are kept verbatim."
+            }
+          ]
+        },
+        {
+          "kind": "definitions",
+          "id": "caveats",
+          "title": "CAVEATS",
+          "items": [
+            {
+              "term": "Sample",
+              "definition": "30 responses ≈ 5% of registrants. Respondents are the most engaged attendees — scores are likely optimistic."
+            },
+            {
+              "term": "Ceiling effect",
+              "definition": "Most ratings are 9–10, so small mean differences between segments are noise; look at the low-score tail and the themes instead."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "methodology": [
+    {
+      "kind": "definitions",
+      "id": "data-cleaning",
+      "title": "DATA & CLEANING",
+      "items": [
+        {
+          "term": "Source",
+          "definition": "ÖZGE Forum feedback form Responses.xlsx → Form Responses 1 (32 rows). Untouched copy in 09 · Raw Data."
+        },
+        {
+          "term": "Removed rows",
+          "definition": "1 summary row (no timestamp, avg 9.48) and 1 repeat submission (same email, 5 days later; first answer kept) → n = 30."
+        },
+        {
+          "term": "Blank answers",
+          "definition": "Open answers of '.', '-' are treated as blank in 07 · Cleaned Data."
+        },
+        {
+          "term": "Registration link",
+          "definition": "Email is matched to the Özge S'26 registration list (10 · Reg Lookup) to add university, study stage, registration channel and AIESEC background. Unmatched respondents stay as 'Not matched'."
+        }
+      ]
+    },
+    {
+      "kind": "definitions",
+      "id": "scales-metrics",
+      "title": "SCALES & METRICS",
+      "items": [
+        {
+          "term": "1–10 questions",
+          "definition": "Overall organization, coffee break, coffee-zone location, speaker sessions."
+        },
+        {
+          "term": "1–5 questions",
+          "definition": "Organizer support, networking quality, Telegram chat."
+        },
+        {
+          "term": "Score /10",
+          "definition": "1–5 means are ×2 so every question can be compared on one scale."
+        },
+        {
+          "term": "Top-box / Low",
+          "definition": "Top-box = 9–10 (or 5/5). Low = ≤6/10 (or ≤3/5). Outliers = any low rating."
+        },
+        {
+          "term": "Organization NPS*",
+          "definition": "% 9–10 minus % ≤6 on the organization question. The form has no 'would you recommend' question, so this is an NPS-style proxy, not a true NPS."
+        },
+        {
+          "term": "Composite",
+          "definition": "Average of all 7 ratings after normalising to /10."
+        },
+        {
+          "term": "Correlation",
+          "definition": "Pearson CORREL with the organization score. With n = 30 and most scores at 9–10, treat as directional."
+        }
+      ]
+    },
+    {
+      "kind": "definitions",
+      "id": "open-answer-themes",
+      "title": "OPEN-ANSWER THEMES",
+      "items": [
+        {
+          "term": "Method",
+          "definition": "Every open answer was read and hand-coded into themes (08 · Theme Coding). One respondent can hit several themes; each counts once per theme."
+        },
+        {
+          "term": "Liked vs prompted",
+          "definition": "'What they liked' counts unprompted praise (why-org, comfort, org aspects, peer answers); coffee praise inside the coffee question is not counted there."
+        },
+        {
+          "term": "Editing",
+          "definition": "Change the blue 1/0 cells in 08 · Theme Coding to re-code; all theme tables, charts and signals update."
+        },
+        {
+          "term": "Languages",
+          "definition": "Answers are in Russian, Kazakh and English; quotes are kept verbatim."
+        }
+      ]
+    },
+    {
+      "kind": "definitions",
+      "id": "caveats",
+      "title": "CAVEATS",
+      "items": [
+        {
+          "term": "Sample",
+          "definition": "30 responses ≈ 5% of registrants. Respondents are the most engaged attendees — scores are likely optimistic."
+        },
+        {
+          "term": "Ceiling effect",
+          "definition": "Most ratings are 9–10, so small mean differences between segments are noise; look at the low-score tail and the themes instead."
+        }
+      ]
+    }
+  ],
+  "warnings": [],
+  "skippedSheets": [
+    {
+      "name": "06 · Charts",
+      "rows": 89
+    },
+    {
+      "name": "07 · Cleaned Data",
+      "rows": 31
+    },
+    {
+      "name": "08 · Theme Coding",
+      "rows": 34
+    },
+    {
+      "name": "09 · Raw Data",
+      "rows": 33
+    },
+    {
+      "name": "10 · Reg Lookup",
+      "rows": 604
+    }
+  ]
+}
