@@ -111,16 +111,24 @@ npm run dev              # http://localhost:3000
 
 ## 7. Tilda setup
 
-**a) Add the snippet (this alone counts leads).** In Tilda add a *T123 / HTML* block (or
-Site Settings → More → HTML code in `<head>`) with the snippet shown on the **Webhook**
-page. One snippet, pasted once, works for every project page. It does two jobs:
+**a) Add one line (this alone counts leads).** In Tilda → Site Settings → *Insert code*
+(Вставка кода) → HEAD, paste the line shown on the **Webhook** page:
+```html
+<script src="https://<your-domain>/t.js" async></script>
+```
+One line, pasted once, works for every project page. The script is served by the tracker
+(`/t.js`, built in `src/lib/tracker-script.ts`), so script fixes reach live pages within
+minutes without touching Tilda again, and the tracker address is always the domain the
+script was loaded from. It does two jobs:
 - reads `click_id` and the five UTM params from the URL and injects them as hidden
   inputs into every form on the page (it re-runs after load because Tilda renders forms
   late), and
-- when a Tilda form is submitted successfully, it reports a conversion to
-  `/api/track/conversion`, so a lead is counted **without any webhook**. The conversion
-  endpoint only accepts a `click_id` that matches a real recorded click, and a lead with
-  a given `click_id` is stored once, so this never inflates or double-counts.
+- when a form is submitted successfully, it reports a conversion to
+  `/api/track/conversion`, so a lead is counted **without any webhook**. A success is
+  detected by any of: Tilda's success-callback, Tilda's "thank you" box becoming visible,
+  or a `tildaform:aftersuccess` event. The conversion endpoint only accepts a `click_id`
+  that matches a real recorded click, and a lead with a given `click_id` is stored once,
+  so this never inflates or double-counts.
 
 **b) (Optional) Point a webhook at this app** for a 100% server-side channel. Tilda →
 Form → *Webhook*:

@@ -5,91 +5,13 @@ import { CopyButton } from "@/components/ui/CopyButton";
 import { WebhookTester } from "@/components/WebhookTester";
 import { prisma } from "@/lib/db";
 import { formatDateTime } from "@/lib/utils";
+import { headers } from "next/headers";
+import { originFromHeaders } from "@/lib/origin";
 
 export const dynamic = "force-dynamic";
 
-const BASE = process.env.NEXT_PUBLIC_BASE_URL || "https://aieseckz.vercel.app";
-
-function buildSnippet(base: string): string {
-  return `<script>
-// Trackline — one snippet does two jobs:
-//   1. copy click_id + UTM from the URL into hidden fields of every form;
-//   2. report a conversion when a Tilda form is submitted successfully,
-//      so leads are counted even without a server-side webhook.
-(function () {
-  var TRACKER = "${base}";
-  var FIELDS = ["click_id","utm_source","utm_medium","utm_campaign","utm_content","utm_term"];
-  var p = new URLSearchParams(window.location.search);
-
-  // Persist the params to a cookie so they survive a redirect to a thank-you page.
-  FIELDS.forEach(function (name) {
-    var v = p.get(name);
-    if (v) { try { document.cookie = "tl_" + name + "=" + encodeURIComponent(v) + ";path=/;max-age=86400;SameSite=Lax"; } catch (e) {} }
-  });
-  function cookie(name) {
-    var m = document.cookie.match(new RegExp("(?:^|; )tl_" + name + "=([^;]*)"));
-    return m ? decodeURIComponent(m[1]) : "";
-  }
-  function val(name) { return p.get(name) || cookie(name) || ""; }
-
-  // 1. Fill hidden fields.
-  function fill() {
-    document.querySelectorAll("form").forEach(function (form) {
-      FIELDS.forEach(function (name) {
-        var v = val(name);
-        if (!v) return;
-        var input = form.querySelector('input[name="' + name + '"]');
-        if (!input) { input = document.createElement("input"); input.type = "hidden"; input.name = name; form.appendChild(input); }
-        input.value = v;
-      });
-    });
-  }
-  fill();
-  window.addEventListener("load", fill);
-  setTimeout(fill, 1500);
-
-  // 2. Report the conversion on a successful submit.
-  var done = {};
-  window.tlConversion = function ($form) {
-    try {
-      var clickId = val("click_id");
-      if (!clickId || done[clickId]) return;
-      done[clickId] = true;
-      var form = ($form && $form[0]) ? $form[0] : $form;
-      var data = { click_id: clickId, pageUrl: location.href,
-        formname: (form && (form.getAttribute("name") || form.getAttribute("data-formactiontype"))) || "" };
-      FIELDS.forEach(function (n) { if (n !== "click_id") data[n] = val(n); });
-      var url = TRACKER + "/api/track/conversion";
-      var json = JSON.stringify(data);
-      if (navigator.sendBeacon) { navigator.sendBeacon(url, new Blob([json], { type: "text/plain" })); }
-      else { fetch(url, { method: "POST", body: json, keepalive: true, mode: "no-cors", headers: { "Content-Type": "text/plain" } }); }
-    } catch (e) {}
-  };
-  // Chain our callback after any existing success-callback the form already has.
-  window.tlConversionChain = function ($form) {
-    try {
-      var form = ($form && $form[0]) ? $form[0] : $form;
-      var prev = form && form.getAttribute("data-tl-prev");
-      if (prev) { var fn = prev.indexOf("window.") === 0 ? window[prev.slice(7)] : window[prev]; if (typeof fn === "function") fn($form); }
-    } catch (e) {}
-    window.tlConversion($form);
-  };
-  function attach() {
-    if (!window.jQuery) return;
-    window.jQuery(".t-form").each(function () {
-      var cur = window.jQuery(this).data("success-callback");
-      if (cur === "window.tlConversion" || cur === "window.tlConversionChain") return;
-      if (cur) { this.setAttribute("data-tl-prev", cur); window.jQuery(this).data("success-callback", "window.tlConversionChain"); }
-      else { window.jQuery(this).data("success-callback", "window.tlConversion"); }
-    });
-  }
-  attach();
-  window.addEventListener("load", attach);
-  setTimeout(attach, 1500);
-  setTimeout(attach, 3000);
-})();
-</script>`;
-}
+// Fallback only; the live address is read from the request (see originFromHeaders).
+const ENV_BASE = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 const PAYLOAD_EXAMPLE = `{
   "name": "Askarov Eldos",
@@ -106,7 +28,10 @@ const PAYLOAD_EXAMPLE = `{
 
 export default async function WebhookPage() {
   const logs = await prisma.webhookLog.findMany({ orderBy: { createdAt: "desc" }, take: 20 });
-  const endpoint = `${BASE}/api/webhooks/tilda-lead`;
+  const h = headers();
+  const base = originFromHeaders((n) => h.get(n), ENV_BASE);
+  const endpoint = `${base}/api/webhooks/tilda-lead`;
+  const snippet = `<script src="${base}/t.js" async></script>`;
   const last = logs[0];
 
   return (
@@ -146,9 +71,9 @@ export default async function WebhookPage() {
       <div className="card mb-6 p-6">
         <h2 className="font-display text-lg font-semibold">2 · Add this snippet to your page</h2>
         <p className="mt-1 mb-4 text-sm text-ink-muted">
-          Insert via an HTML block or Site settings → More → HTML code for the &lt;head&gt;. One snippet, pasted once, works for every project page. It copies <code className="text-ink-muted">click_id</code> and UTM into hidden form fields <strong>and</strong> reports a conversion when a Tilda form is submitted — so leads are counted even without the webhook above.
+          One line, pasted once into Tilda → Site settings → <strong>Insert code</strong> (Вставка кода) → HEAD, works for every project page. It loads the tracker script from this site, which copies <code className="text-ink-muted">click_id</code> and UTM into hidden form fields <strong>and</strong> reports a conversion when a form is submitted successfully — so leads are counted even without the webhook above. Improvements to the script reach your pages automatically; you never need to paste it again. If an older, longer snippet is already in Tilda, delete it and keep only this line.
         </p>
-        <CodeBlock code={buildSnippet(BASE)} label="paste into your page" />
+        <CodeBlock code={snippet} label="paste into your page" />
       </div>
 
       {/* fields */}

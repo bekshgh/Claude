@@ -9,6 +9,7 @@ const PUBLIC = [
   "/api/auth/logout",
   "/api/webhooks/tilda-lead",
   "/api/track/conversion",
+  "/t.js",
 ];
 
 export async function middleware(req: NextRequest) {
