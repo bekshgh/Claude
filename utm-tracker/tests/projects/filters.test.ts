@@ -53,6 +53,8 @@ const ids = (query: string) => q(query).items.map((r) => r.id).sort();
 describe("registry → query, one test per filter kind", () => {
   it("search: case, ё/е and diacritics insensitive, cyrillic and latin", () => {
     expect(ids("q=ozge")).toEqual(["ozge"]);
+    expect(ids("q=озге")).toEqual(["ozge"]); // transliterated
+    expect(ids("q=ÖZGE%20форум")).toEqual(["ozge"]);
     expect(ids("q=форум")).toEqual(["f1", "f2", "f3", "f4", "ozge"]); // type name
     expect(ids("q=business")).toEqual(["c1"]); // tag
     expect(ids("q=almaty")).toEqual(["f2"]);

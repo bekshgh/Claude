@@ -158,7 +158,7 @@ async function demo(n: number) {
       hasFeedbackReport: hasFb,
       hasWarnings: hasReg && rnd() < 0.1,
       reportVisibilities: hasReg ? [pick(["private", "link", "public"])] : [],
-      reportsUpdatedAt: hasReg ? new Date(start.getTime() + 10 * 86_400_000) : null,
+      reportsUpdatedAt: hasReg ? new Date(Math.min(now.getTime(), start.getTime() + 10 * 86_400_000)) : null,
       metricsVersion: METRICS_VERSION,
     };
     metrics.isBursty = metrics.peakDayShare === null || metrics.peakDayShare === undefined ? null : (metrics.peakDayShare as number) > 0.2;

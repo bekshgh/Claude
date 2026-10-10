@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Pill } from "@/components/ui/Pill";
 import { ReportAdminActions } from "@/components/reports/ReportAdminActions";
+import { ReportProjectSelect, ThemeMappingEditor } from "@/components/reports/ReportProjectLinks";
 import { ReportUpload } from "@/components/reports/ReportUpload";
 import { ReportView } from "@/components/reports/ReportView";
 import { prisma } from "@/lib/db";
@@ -18,7 +19,13 @@ export default async function ReportAdminPage({
   params: { id: string };
   searchParams: { tab?: string };
 }) {
-  const report = await prisma.report.findUnique({ where: { id: params.id } });
+  const [report, projects] = await Promise.all([
+    prisma.report.findUnique({
+      where: { id: params.id },
+      include: { themeMappings: { orderBy: { rawLabel: "asc" } } },
+    }),
+    prisma.project.findMany({ orderBy: { startDate: "desc" }, select: { id: true, name: true } }),
+  ]);
   if (!report) notFound();
   const doc = report.data as unknown as ReportDocument;
 
@@ -52,6 +59,9 @@ export default async function ReportAdminPage({
             <Pill label={report.status === "published" ? "опубликован" : "черновик"} tone={report.status === "published" ? "success" : "paused"} />
           </div>
           <ReportAdminActions id={report.id} slug={report.slug} status={report.status} visibility={report.visibility} />
+          <div className="mt-4 border-t border-line pt-4">
+            <ReportProjectSelect reportId={report.id} projectId={report.projectId} projects={projects} />
+          </div>
         </section>
 
         <section className="card p-6">
@@ -86,6 +96,18 @@ export default async function ReportAdminPage({
           )}
         </section>
       </div>
+
+      {report.themeMappings.length > 0 && (
+        <details className="card mb-6 p-6" open={report.themeMappings.some((m) => !m.confirmed)}>
+          <summary className="cursor-pointer font-display text-lg font-semibold">Темы открытых ответов → общий словарь</summary>
+          <div className="mt-4">
+            <ThemeMappingEditor
+              reportId={report.id}
+              mappings={report.themeMappings.map((m) => ({ id: m.id, kind: m.kind, rawLabel: m.rawLabel, canonical: m.canonical, confirmed: m.confirmed }))}
+            />
+          </div>
+        </details>
+      )}
 
       <details className="card mb-6 p-6">
         <summary className="cursor-pointer font-display text-lg font-semibold">Заменить файл (новая версия того же события)</summary>

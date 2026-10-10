@@ -10,10 +10,13 @@ export const dynamic = "force-dynamic";
 const VIS = { private: "приватный", link: "по ссылке", public: "публичный" } as const;
 
 export default async function ReportsPage() {
-  const reports = await prisma.report.findMany({
-    orderBy: { createdAt: "desc" },
-    select: { id: true, title: true, eventName: true, type: true, status: true, visibility: true, createdAt: true },
-  });
+  const [reports, projects] = await Promise.all([
+    prisma.report.findMany({
+      orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, eventName: true, type: true, status: true, visibility: true, createdAt: true, project: { select: { name: true } } },
+    }),
+    prisma.project.findMany({ orderBy: { startDate: "desc" }, select: { id: true, name: true } }),
+  ]);
 
   return (
     <>
@@ -25,7 +28,7 @@ export default async function ReportsPage() {
 
       <section className="card mb-6 p-6">
         <h2 className="mb-4 font-display text-lg font-semibold">Новый отчёт</h2>
-        <ReportUpload mode="create" />
+        <ReportUpload mode="create" projects={projects} />
       </section>
 
       <section className="card overflow-hidden">
@@ -53,7 +56,7 @@ export default async function ReportsPage() {
                 <tr key={r.id} className="hover:bg-bg-hover/40">
                   <td className="px-6 py-3">
                     <Link href={`/reports/${r.id}`} className="font-medium text-ink hover:text-accent">{r.title}</Link>
-                    {r.eventName && <p className="text-xs text-ink-faint">{r.eventName}</p>}
+                    <p className="text-xs text-ink-faint">{r.project ? `Проект: ${r.project.name}` : r.eventName ?? ""}</p>
                   </td>
                   <td className="px-6 py-3 text-ink-muted">{r.type === "feedback" ? "Feedback" : "Registration"}</td>
                   <td className="px-6 py-3">

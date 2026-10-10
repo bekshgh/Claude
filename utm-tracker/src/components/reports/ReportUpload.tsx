@@ -10,12 +10,21 @@ const MAX_MB = 4;
  * Drop-zone upload. "create" makes a new draft and opens it; "replace" swaps
  * the data of an existing report (same link) and refreshes the page.
  */
-export function ReportUpload({ mode, reportId }: { mode: "create" | "replace"; reportId?: string }) {
+export function ReportUpload({
+  mode,
+  reportId,
+  projects = [],
+}: {
+  mode: "create" | "replace";
+  reportId?: string;
+  projects?: { id: string; name: string }[];
+}) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [type, setType] = useState("auto");
   const [eventName, setEventName] = useState("");
+  const [projectId, setProjectId] = useState("");
   const [drag, setDrag] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +46,7 @@ export function ReportUpload({ mode, reportId }: { mode: "create" | "replace"; r
     fd.set("file", file);
     fd.set("type", type);
     if (eventName.trim()) fd.set("eventName", eventName.trim());
+    if (projectId) fd.set("projectId", projectId);
     const res = await fetch(mode === "create" ? "/api/reports" : `/api/reports/${reportId}/file`, { method: "POST", body: fd }).catch(() => null);
     const body = res ? await res.json().catch(() => ({})) : {};
     setBusy(false);
@@ -90,6 +100,15 @@ export function ReportUpload({ mode, reportId }: { mode: "create" | "replace"; r
             <option value="registration">Registration Form Analysis</option>
           </select>
         </div>
+        {mode === "create" && projects.length > 0 && (
+          <div className="sm:col-span-2">
+            <label className="label" htmlFor="rep-proj">Проект</label>
+            <select id="rep-proj" className="input" value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+              <option value="">Не привязывать (можно позже)</option>
+              {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          </div>
+        )}
         {mode === "create" && (
           <div>
             <label className="label" htmlFor="rep-event">Название события</label>
