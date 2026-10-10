@@ -62,7 +62,7 @@ export default async function WebhookPage() {
           <code className="flex-1 break-all text-sm text-accent">{endpoint}</code>
           <CopyButton value={endpoint} />
         </div>
-        <p className="hint">Tilda must also send the secret. Add header <code className="text-ink-muted">X-Webhook-Secret</code> or append <code className="text-ink-muted">?secret=YOUR_SECRET</code> to the URL. The secret is set in your environment variable <code className="text-ink-muted">WEBHOOK_SECRET</code>.</p>
+        <p className="hint">Tilda must also send the secret. Prefer the header <code className="text-ink-muted">X-Webhook-Secret</code>; appending <code className="text-ink-muted">?secret=YOUR_SECRET</code> to the URL also works, but URLs end up in server logs. The secret is set in your environment variable <code className="text-ink-muted">WEBHOOK_SECRET</code>.</p>
       </div>
 
       {/* snippet */}

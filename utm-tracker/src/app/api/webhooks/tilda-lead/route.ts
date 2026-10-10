@@ -4,6 +4,7 @@ import { tildaWebhookSchema } from "@/lib/validation";
 import { recordLead } from "@/lib/leads";
 import { type NormalisedLead } from "@/lib/attribution";
 import { WebhookStatus } from "@prisma/client";
+import { safeEqual } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -30,7 +31,13 @@ function checkSecret(req: NextRequest, body: Record<string, any>): boolean {
   const fromHeader = req.headers.get("x-webhook-secret");
   const fromQuery = req.nextUrl.searchParams.get("secret");
   const fromBody = body.secret || body.token;
-  return [fromHeader, fromQuery, fromBody].some((v) => v && v === expected);
+  return [fromHeader, fromQuery, fromBody].some((v) => typeof v === "string" && safeEqual(v, expected));
+}
+
+/** The body as stored in logs and on the lead: never keep the shared secret. */
+function withoutSecret(body: Record<string, any>): Record<string, any> {
+  const { secret: _secret, token: _token, ...rest } = body;
+  return rest;
 }
 
 function pick(body: Record<string, any>, ...keys: string[]): string | undefined {
@@ -43,7 +50,17 @@ function pick(body: Record<string, any>, ...keys: string[]): string | undefined 
 }
 
 export async function POST(req: NextRequest) {
-  const body = await parseBody(req);
+  const raw = await parseBody(req);
+  const authorised = checkSecret(req, raw);
+  const body = withoutSecret(raw);
+
+  // --- auth --- (before anything else, the test ping included, so strangers cannot write to the log)
+  if (!authorised) {
+    await prisma.webhookLog.create({
+      data: { provider: "tilda", payload: body, status: WebhookStatus.unauthorized, message: "Bad or missing secret" },
+    });
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
 
   // Tilda sends a test ping like { "test": "test" } when you press "Send test".
   if (body.test !== undefined && Object.keys(body).length <= 2) {
@@ -51,14 +68,6 @@ export async function POST(req: NextRequest) {
       data: { provider: "tilda", payload: body, status: WebhookStatus.success, message: "Test ping received" },
     });
     return NextResponse.json({ ok: true, message: "Test ping received" });
-  }
-
-  // --- auth ---
-  if (!checkSecret(req, body)) {
-    await prisma.webhookLog.create({
-      data: { provider: "tilda", payload: body, status: WebhookStatus.unauthorized, message: "Bad or missing secret" },
-    });
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
   const parsed = tildaWebhookSchema.safeParse(body);

@@ -135,7 +135,8 @@ Form → *Webhook*:
 ```
 URL: https://<your-domain>/api/webhooks/tilda-lead?secret=<WEBHOOK_SECRET>
 ```
-The secret may also be sent as the header `X-Webhook-Secret`. Safe to run alongside the
+Prefer sending the secret as the header `X-Webhook-Secret` where you can: a `?secret=` in
+the URL works, but URLs are written to server and proxy logs. Safe to run alongside the
 snippet — a submission arriving through both channels is deduplicated by `click_id`.
 
 **c) Make sure the form posts these fields:** `name`, `email`, `phone`, `click_id`,
@@ -149,7 +150,8 @@ snippet — a submission arriving through both channels is deduplicated by `clic
 
 - Accepts JSON **or** `application/x-www-form-urlencoded` (Tilda's default).
 - Authorised via `X-Webhook-Secret` header, `?secret=` query, or `secret`/`token` in body.
-- Handles Tilda's "test" ping gracefully.
+- The secret is checked first, Tilda's "test" ping included (a ping without it gets `401`),
+  and is stripped from the payload before it is stored.
 - Validates with Zod, normalises fields, deduplicates, resolves attribution, logs the event.
 
 Statuses recorded in `WebhookLog`: `success`, `failed`, `missing_click_id`,
