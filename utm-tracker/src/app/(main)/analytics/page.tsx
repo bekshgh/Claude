@@ -39,17 +39,19 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: { 
                 <th className="px-6 py-3 font-medium">Link</th>
                 <th className="px-6 py-3 font-medium">Source / content</th>
                 <th className="px-6 py-3 text-right font-medium">Clicks</th>
+                <th className="px-6 py-3 text-right font-medium">Submits</th>
                 <th className="px-6 py-3 text-right font-medium">Leads</th>
                 <th className="px-6 py-3 text-right font-medium">CR%</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
-              {links.length === 0 && <tr><td colSpan={5} className="px-6 py-10 text-center text-ink-faint">No data yet.</td></tr>}
+              {links.length === 0 && <tr><td colSpan={6} className="px-6 py-10 text-center text-ink-faint">No data yet.</td></tr>}
               {links.map((l) => (
                 <tr key={l.id} className="hover:bg-bg-hover/40">
                   <td className="px-6 py-3 text-ink">/r/{l.slug}</td>
                   <td className="px-6 py-3 text-ink-muted">{l.utmSource || "—"} · {l.utmContent || "—"}</td>
                   <td className="num px-6 py-3 text-right text-ink">{formatNumber(l.clicks)}</td>
+                  <td className="num px-6 py-3 text-right text-submits">{formatNumber(l.submits)}</td>
                   <td className="num px-6 py-3 text-right text-leads">{formatNumber(l.leads)}</td>
                   <td className="num px-6 py-3 text-right text-ink">{l.clicks ? formatPercent(l.cr) : "—"}</td>
                 </tr>
@@ -62,7 +64,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: { 
   );
 }
 
-function Breakdown({ title, head, rows, showPct }: { title: string; head: string; rows: { key: string; clicks: number; leads: number; cr: number }[]; showPct?: boolean }) {
+function Breakdown({ title, head, rows, showPct }: { title: string; head: string; rows: { key: string; clicks: number; submits: number; leads: number; cr: number }[]; showPct?: boolean }) {
   const totalLeads = rows.reduce((s, r) => s + r.leads, 0) || 1;
   return (
     <div className="card p-6">
@@ -72,16 +74,18 @@ function Breakdown({ title, head, rows, showPct }: { title: string; head: string
           <tr className="text-left text-xs uppercase tracking-wide text-ink-faint">
             <th className="pb-2 font-medium">{head}</th>
             <th className="pb-2 text-right font-medium">Clicks</th>
+            <th className="pb-2 text-right font-medium">Submits</th>
             <th className="pb-2 text-right font-medium">Leads</th>
             <th className="pb-2 text-right font-medium">{showPct ? "% leads" : "CR%"}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-line">
-          {rows.length === 0 && <tr><td colSpan={4} className="py-6 text-center text-ink-faint">No data yet.</td></tr>}
+          {rows.length === 0 && <tr><td colSpan={5} className="py-6 text-center text-ink-faint">No data yet.</td></tr>}
           {rows.map((r) => (
             <tr key={r.key}>
               <td className="py-2.5 text-ink">{r.key}</td>
               <td className="num py-2.5 text-right text-ink-muted">{formatNumber(r.clicks)}</td>
+              <td className="num py-2.5 text-right text-ink-muted">{formatNumber(r.submits)}</td>
               <td className="num py-2.5 text-right text-ink-muted">{formatNumber(r.leads)}</td>
               <td className="num py-2.5 text-right text-ink">
                 {showPct ? formatPercent((r.leads / totalLeads) * 100) : r.clicks ? formatPercent(r.cr) : "—"}

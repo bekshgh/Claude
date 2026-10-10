@@ -45,7 +45,7 @@ is never blocked by a database error.
 
 ## 3. Data model (Prisma)
 
-`User` · `Campaign` · `TrackingLink` · `ClickEvent` · `Lead` · `WebhookLog`.
+`User` · `Campaign` · `TrackingLink` · `ClickEvent` · `FormSubmit` · `Lead` · `WebhookLog`.
 
 Key points:
 - `ClickEvent.clickId` is **unique** and forwarded to Tilda — this enables exact attribution.
@@ -121,6 +121,10 @@ page. One snippet, pasted once, works for every project page. It does two jobs:
   `/api/track/conversion`, so a lead is counted **without any webhook**. The conversion
   endpoint only accepts a `click_id` that matches a real recorded click, and a lead with
   a given `click_id` is stored once, so this never inflates or double-counts.
+- whenever the visitor presses the submit button ("Отправить заявку"), it reports a
+  **submit** to `/api/track/submit` — even if the form then fails validation. Submits are
+  counted once per click (repeat presses only bump `attempts`) and shown as the middle
+  step of the funnel: clicks → submits → leads.
 
 **b) (Optional) Point a webhook at this app** for a 100% server-side channel. Tilda →
 Form → *Webhook*:
