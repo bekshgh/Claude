@@ -11,7 +11,7 @@ export default async function LinksPage() {
     getLinkStats("all"),
     prisma.trackingLink.findMany({
       where: { isArchived: true },
-      include: { campaign: true, _count: { select: { clicks: true, submits: true, leads: true } } },
+      include: { campaign: true, _count: { select: { clicks: true, leads: true } } },
       orderBy: { createdAt: "desc" },
     }),
   ]);
@@ -23,14 +23,14 @@ export default async function LinksPage() {
       id: l.id, name: l.name, slug: l.slug,
       utmSource: l.utmSource, utmMedium: l.utmMedium, utmContent: l.utmContent,
       campaignName: l.campaign?.label || l.campaign?.name || l.utmCampaign,
-      clicks: l.clicks, submits: l.submits, leads: l.leads, cr: l.cr,
+      clicks: l.clicks, leads: l.leads, cr: l.cr,
       isActive: l.isActive, isArchived: l.isArchived, createdAt: l.createdAt.toISOString(),
     })),
     ...archived.map((l) => ({
       id: l.id, name: l.name, slug: l.slug,
       utmSource: l.utmSource, utmMedium: l.utmMedium, utmContent: l.utmContent,
       campaignName: l.campaign?.label || l.campaign?.name || l.utmCampaign,
-      clicks: l._count.clicks, submits: l._count.submits, leads: l._count.leads,
+      clicks: l._count.clicks, leads: l._count.leads,
       cr: l._count.clicks ? (l._count.leads / l._count.clicks) * 100 : 0,
       isActive: l.isActive, isArchived: l.isArchived, createdAt: l.createdAt.toISOString(),
     })),

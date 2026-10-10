@@ -12,11 +12,10 @@ const BASE = process.env.NEXT_PUBLIC_BASE_URL || "https://aieseckz.vercel.app";
 
 function buildSnippet(base: string): string {
   return `<script>
-// Trackline — one snippet does three jobs:
+// Trackline — one snippet does two jobs:
 //   1. copy click_id + UTM from the URL into hidden fields of every form;
-//   2. report a conversion when a Tilda form is submitted successfully,
-//      so leads are counted even without a server-side webhook;
-//   3. report every press of the submit button ("Отправить заявку").
+//   2. report a conversion (lead) when the submit button ("Отправить заявку")
+//      is pressed, so leads are counted even without a server-side webhook.
 (function () {
   var TRACKER = "${base}";
   var FIELDS = ["click_id","utm_source","utm_medium","utm_campaign","utm_content","utm_term"];
@@ -59,7 +58,8 @@ function buildSnippet(base: string): string {
     return (form && form.getAttribute && (form.getAttribute("name") || form.getAttribute("data-formactiontype"))) || "";
   }
 
-  // 2. Report the conversion on a successful submit.
+  // 2. Report the conversion: on a press of the submit button, and on Tilda's
+  //    success callback / event as a fallback. Sent once per click_id.
   var done = {};
   window.tlConversion = function ($form) {
     try {
@@ -96,24 +96,11 @@ function buildSnippet(base: string): string {
   setTimeout(attach, 3000);
   // Current Tilda forms (no jQuery) fire this native event on the form after a successful send.
   document.addEventListener("tildaform:aftersuccess", function (e) { window.tlConversion(e.target); }, true);
-
-  // 3. Report a press of the submit button, even if the form then fails validation.
-  var lastSubmit = 0;
-  function reportSubmit(form) {
-    try {
-      var clickId = val("click_id");
-      var now = Date.now();
-      // the button click and the form's submit event fire together — count once
-      if (!clickId || now - lastSubmit < 1500) return;
-      lastSubmit = now;
-      send("/api/track/submit", { click_id: clickId, pageUrl: location.href, formname: formName(form) });
-    } catch (e) {}
-  }
   document.addEventListener("click", function (e) {
     var btn = e.target && e.target.closest && e.target.closest('.t-submit, button[type="submit"], input[type="submit"]');
-    if (btn) reportSubmit(btn.closest("form"));
+    if (btn) window.tlConversion(btn.closest("form"));
   }, true);
-  document.addEventListener("submit", function (e) { reportSubmit(e.target); }, true);
+  document.addEventListener("submit", function (e) { window.tlConversion(e.target); }, true);
 })();
 </script>`;
 }
@@ -173,7 +160,7 @@ export default async function WebhookPage() {
       <div className="card mb-6 p-6">
         <h2 className="font-display text-lg font-semibold">2 · Add this snippet to your page</h2>
         <p className="mt-1 mb-4 text-sm text-ink-muted">
-          Insert via an HTML block or Site settings → More → HTML code for the &lt;head&gt;. One snippet, pasted once, works for every project page. It copies <code className="text-ink-muted">click_id</code> and UTM into hidden form fields <strong>and</strong> reports a conversion when a Tilda form is submitted — so leads are counted even without the webhook above. It also records every press of the submit button (“Отправить заявку”), shown as <strong>Submits</strong> in the stats. <strong>If you installed an older version of the snippet, replace it with this one.</strong>
+          Insert via an HTML block or Site settings → More → HTML code for the &lt;head&gt;. One snippet, pasted once, works for every project page. It copies <code className="text-ink-muted">click_id</code> and UTM into hidden form fields <strong>and</strong> reports a conversion when the submit button (“Отправить заявку”) is pressed — so leads are counted even without the webhook above.
         </p>
         <CodeBlock code={buildSnippet(BASE)} label="paste into your page" />
       </div>

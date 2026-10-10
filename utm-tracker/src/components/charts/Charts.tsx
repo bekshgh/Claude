@@ -23,7 +23,7 @@ const COLORS = [
 const axis = { stroke: "#6b6b76", fontSize: 11, tickLine: false };
 
 /* ─── Line chart ─────────────────────────────────────── */
-export function ClicksLeadsChart({ data }: { data: { date: string; clicks: number; submits: number; leads: number }[] }) {
+export function ClicksLeadsChart({ data }: { data: { date: string; clicks: number; leads: number }[] }) {
   return (
     <div className="h-[280px] w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -43,13 +43,11 @@ export function ClicksLeadsChart({ data }: { data: { date: string; clicks: numbe
             labelStyle={{ color: "#a1a1aa" }}
           />
           <Line type="monotone" dataKey="clicks" stroke="#5b9bff" strokeWidth={2.5} dot={false} name="Clicks" />
-          <Line type="monotone" dataKey="submits" stroke="#a78bfa" strokeWidth={2.5} dot={false} name="Submits" />
           <Line type="monotone" dataKey="leads" stroke="#3ecf8e" strokeWidth={2.5} dot={false} name="Leads" />
         </LineChart>
       </ResponsiveContainer>
       <div className="mt-3 flex items-center justify-center gap-6 text-xs text-ink-muted">
         <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-clicks" />Clicks</span>
-        <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-submits" />Submits</span>
         <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-leads" />Leads</span>
       </div>
     </div>
@@ -57,41 +55,36 @@ export function ClicksLeadsChart({ data }: { data: { date: string; clicks: numbe
 }
 
 /* ─── Funnel ─────────────────────────────────────────── */
-function FunnelStep({ label, count, pct, width, bar, caption }: {
-  label: string; count: number; pct: number; width: number; bar: string; caption: string;
-}) {
-  return (
-    <div>
-      <div className="mb-2 flex items-center justify-between text-sm">
-        <span className="text-ink-muted">{label}</span>
-        <span className="num font-medium text-ink">{count.toLocaleString()} · {pct.toFixed(1)}%</span>
-      </div>
-      <div
-        className={`flex h-12 min-w-[120px] items-center rounded-xl px-4 font-medium text-white transition-all ${bar}`}
-        style={{ width: `${Math.min(width, 100)}%` }}
-      >
-        {caption}
-      </div>
-    </div>
-  );
-}
-
-export function Funnel({ clicks, submits, leads }: { clicks: number; submits: number; leads: number }) {
-  const pct = (n: number) => (clicks > 0 ? (n / clicks) * 100 : 0);
-  const width = (n: number) => (clicks > 0 ? Math.max(pct(n), n > 0 ? 6 : 0) : 0);
+export function Funnel({ clicks, leads, cr }: { clicks: number; leads: number; cr: number }) {
+  const leadWidth = clicks > 0 ? Math.max((leads / clicks) * 100, leads > 0 ? 6 : 0) : 0;
   return (
     <div className="space-y-5">
-      <FunnelStep label="Clicks" count={clicks} pct={clicks > 0 ? 100 : 0} width={100} bar="bg-clicks" caption="Top of funnel" />
+      <div>
+        <div className="mb-2 flex items-center justify-between text-sm">
+          <span className="text-ink-muted">Clicks</span>
+          <span className="num font-medium text-ink">{clicks.toLocaleString()} · 100%</span>
+        </div>
+        <div className="flex h-12 items-center rounded-xl bg-clicks px-4 font-medium text-white">Top of funnel</div>
+      </div>
       <div className="flex justify-center text-ink-faint">↓</div>
-      <FunnelStep label="Submits" count={submits} pct={pct(submits)} width={width(submits)} bar="bg-submits" caption="Pressed “Отправить заявку”" />
-      <div className="flex justify-center text-ink-faint">↓</div>
-      <FunnelStep label="Leads" count={leads} pct={pct(leads)} width={width(leads)} bar="bg-leads" caption="Conversion" />
+      <div>
+        <div className="mb-2 flex items-center justify-between text-sm">
+          <span className="text-ink-muted">Leads</span>
+          <span className="num font-medium text-ink">{leads.toLocaleString()} · {cr.toFixed(1)}%</span>
+        </div>
+        <div
+          className="flex h-12 min-w-[120px] items-center rounded-xl bg-leads px-4 font-medium text-white transition-all"
+          style={{ width: `${Math.min(leadWidth, 100)}%` }}
+        >
+          Conversion
+        </div>
+      </div>
     </div>
   );
 }
 
 /* ─── Donut chart ────────────────────────────────────── */
-type Row = { key: string; clicks: number; submits: number; leads: number; cr: number };
+type Row = { key: string; clicks: number; leads: number; cr: number };
 
 function DonutChart({ data, field }: { data: { name: string; value: number }[]; field: "Clicks" | "Leads" }) {
   const total = data.reduce((s, d) => s + d.value, 0);
@@ -166,7 +159,6 @@ export function BreakdownPanel({ title, head, rows }: { title: string; head: str
                   <th className="pb-2 font-medium">{head}</th>
                   <th className="pb-2 text-right font-medium">Clicks</th>
                   <th className="pb-2 text-right font-medium">% clicks</th>
-                  <th className="pb-2 text-right font-medium">Submits</th>
                   <th className="pb-2 text-right font-medium">Leads</th>
                   <th className="pb-2 text-right font-medium">% leads</th>
                   <th className="pb-2 text-right font-medium">CR%</th>
@@ -183,7 +175,6 @@ export function BreakdownPanel({ title, head, rows }: { title: string; head: str
                     <td className="num py-2.5 text-right text-ink-muted">
                       {totalClicks > 0 ? `${((r.clicks / totalClicks) * 100).toFixed(1)}%` : "—"}
                     </td>
-                    <td className="num py-2.5 text-right text-submits">{formatNumber(r.submits)}</td>
                     <td className="num py-2.5 text-right text-leads">{formatNumber(r.leads)}</td>
                     <td className="num py-2.5 text-right text-ink-muted">
                       {totalLeads > 0 ? `${((r.leads / totalLeads) * 100).toFixed(1)}%` : "—"}
