@@ -17,7 +17,9 @@
     "db:studio": "prisma studio",
     "parse:report": "tsx scripts/parse-report.ts",
     "test": "vitest run",
-    "sanitize:fixture": "tsx scripts/sanitize-fixture.ts"
+    "sanitize:fixture": "tsx scripts/sanitize-fixture.ts",
+    "db:seed:demo": "tsx prisma/seed-demo.ts",
+    "projects:recompute": "tsx scripts/recompute-metrics.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -34,6 +34,7 @@ export interface ParsedUpload {
   doc: ReportDocument;
   fileName: string;
   eventName?: string;
+  projectId?: string;
 }
 
 /**
@@ -59,10 +60,11 @@ export async function readUpload(req: Request): Promise<ParsedUpload | NextRespo
   const typeField = String(form.get("type") ?? "auto");
   const type = typeField === "feedback" || typeField === "registration" ? (typeField as ReportType) : undefined;
   const eventName = String(form.get("eventName") ?? "").trim().slice(0, 120) || undefined;
+  const projectId = String(form.get("projectId") ?? "").trim().slice(0, 40) || undefined;
 
   try {
     const doc = await parseReport(Buffer.from(await file.arrayBuffer()), { type });
-    return { doc, fileName, eventName };
+    return { doc, fileName, eventName, projectId };
   } catch (e) {
     if (e instanceof ReportFileError) return fail(e.message, e.code === "too_large" ? 413 : 422, e.code);
     console.error("report parse failed:", (e as Error)?.name, (e as Error)?.message?.slice(0, 200));

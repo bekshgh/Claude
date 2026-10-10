@@ -59,11 +59,11 @@ model Campaign {
 }
 
 model TrackingLink {
-  id             String  @id @default(cuid())
+  id             String   @id @default(cuid())
   userId         String?
   campaignId     String?
   name           String // description for the team
-  slug           String  @unique // short id used in /r/{slug}
+  slug           String   @unique // short id used in /r/{slug}
   destinationUrl String
   utmSource      String?
   utmMedium      String?
@@ -122,11 +122,11 @@ model Lead {
   clickEventId   String?
   clickId        String?
 
-  name      String?
-  phone     String?
-  email     String?
-  formName  String?
-  pageUrl   String?
+  name     String?
+  phone    String?
+  email    String?
+  formName String?
+  pageUrl  String?
 
   // UTM as actually received from Tilda (may differ / be missing)
   utmSource   String?
@@ -193,7 +193,153 @@ model Report {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   publishedAt    DateTime?
+  projectId      String?
+
+  project       Project?       @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  themeMappings ThemeMapping[]
 
   @@index([status])
   @@index([createdAt])
+  @@index([projectId])
+}
+
+// ─── Projects: events the reports belong to, filtered on /projects ──────
+
+model ProjectType {
+  id        String    @id @default(cuid())
+  key       String    @unique // stable key used in URLs and filter `appliesTo`
+  name      String
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  projects  Project[]
+}
+
+enum ProjectStatus {
+  planned
+  registration
+  done
+  archived
+}
+
+enum ProjectFormat {
+  offline
+  online
+  hybrid
+}
+
+model Project {
+  id        String         @id @default(cuid())
+  slug      String         @unique
+  name      String
+  typeId    String
+  format    ProjectFormat?
+  status    ProjectStatus  @default(planned)
+  startDate DateTime?
+  endDate   DateTime?
+  city      String?
+  venue     String?
+  ownerTeam String?
+  tags      String[]       @default([])
+  demo      Boolean        @default(false) // created by the demo seed
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  type    ProjectType     @relation(fields: [typeId], references: [id])
+  reports Report[]
+  metrics ProjectMetrics?
+
+  @@index([typeId])
+  @@index([status])
+  @@index([startDate])
+}
+
+// Denormalised numbers taken from the project's reports, recomputed whenever a
+// report changes. Every field is nullable: missing data is null, never 0.
+// Scores are stored on a /10 scale.
+model ProjectMetrics {
+  projectId String @id
+
+  // scale
+  registrants  Int?
+  submissions  Int?
+  campaignDays Int?
+  channelCount Int?
+  responses    Int?
+  responseRate Float?
+
+  // results (feedback)
+  orgScore10           Float?
+  nps                  Float?
+  composite10          Float?
+  weakestZone          String? // zone key, see src/lib/projects/zones.ts
+  weakestZoneScore10   Float?
+  strongestZone        String?
+  strongestZoneScore10 Float?
+  topPraiseTheme       String? // canonical theme key
+  topPainTheme         String?
+
+  // acquisition & audience (registration)
+  topChannelGroup    String? // channel group key
+  topChannelShare    Float?
+  topChannel         String? // channel name as in the report
+  topChannelOwnShare Float?
+  hhiGroups          Float?
+  concentrationLevel String? // low | moderate | high
+  peakDayShare       Float?
+  isBursty           Boolean?
+  topUniversityName  String?
+  topUniversityShare Float?
+  newToOrgShare      Float?
+  internshipShare    Float?
+  avgAge             Float?
+  duplicateRate      Float?
+  audienceStage      String? // y1_2 | y3_4 | grad | pre_uni
+  ageBand            String? // most common age band label, e.g. "18–19"
+
+  // service
+  hasRegistrationReport Boolean   @default(false)
+  hasFeedbackReport     Boolean   @default(false)
+  hasWarnings           Boolean   @default(false)
+  reportVisibilities    String[]  @default([])
+  reportsUpdatedAt      DateTime?
+  metricsVersion        Int
+  computedAt            DateTime  @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([registrants])
+  @@index([orgScore10])
+  @@index([weakestZone])
+  @@index([topChannelGroup])
+  @@index([concentrationLevel])
+}
+
+// Open-answer theme of a report → shared theme dictionary, so themes can be
+// compared across projects. Auto-suggested on upload, confirmed by an admin.
+model ThemeMapping {
+  id        String  @id @default(cuid())
+  reportId  String
+  kind      String // praise | pain | request
+  rawLabel  String
+  canonical String? // theme key, null = not mapped (ignored by filters)
+  confirmed Boolean @default(false)
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@unique([reportId, kind, rawLabel])
+}
+
+// Tunable thresholds (sample size, "needs attention"...), editable without a deploy.
+model AppSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+// A named set of project filters + sort.
+model SavedView {
+  id        String   @id @default(cuid())
+  name      String
+  query     String // URL query string, e.g. "type=forum&score10=9..10&sort=-date"
+  createdAt DateTime @default(now())
 }
