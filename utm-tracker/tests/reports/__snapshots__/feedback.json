@@ -978,7 +978,8 @@
                 9
               ],
               "stacked": true,
-              "horizontal": true
+              "horizontal": true,
+              "palette": "scale"
             }
           ]
         },
@@ -1131,7 +1132,8 @@
                 9
               ],
               "stacked": true,
-              "horizontal": true
+              "horizontal": true,
+              "palette": "scale"
             }
           ]
         },

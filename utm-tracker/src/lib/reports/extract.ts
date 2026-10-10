@@ -337,7 +337,10 @@ function buildTable(block: Line[], h: Heading, sheet: string, warnings: ParseWar
     if (strings.length > 0 && strings.every((s) => DECOR_CHARS.test(s))) return;
 
     const numeric = cells.find((c) => c && typeof c.raw.v === "number");
-    columns.push({ key: "", label, format: numeric ? formatOf(numeric.raw) : { kind: "text" } });
+    const format = numeric ? formatOf(numeric.raw) : { kind: "text" as const };
+    const perRow = cells.map((c) => (c && typeof c.raw.v === "number" ? formatOf(c.raw) : null));
+    const mixed = perRow.some((f) => f && JSON.stringify(f) !== JSON.stringify(format));
+    columns.push({ key: "", label, format, ...(mixed ? { cellFormats: perRow } : {}) });
     colData.push(cells.map((c) => {
       if (!c) return null;
       if (c.raw.noCache) { missingCache++; return null; }

@@ -79,7 +79,7 @@ export const FEEDBACK: TypeConfig = {
     { sheet: "themes", title: /LIKED|PAIN|REQUESTS/, views: (t) => ranked(t, /Theme/i, /Mentions/i, /% of resp/i, /Example/i) },
     { sheet: "scorecard", title: /SCORE DISTRIBUTION/, views: (t) => {
       const counts = numericCols(t, 1).filter((i) => !/%|Mean|Med|Score/i.test(t.columns[i].label));
-      return [{ type: "table" }, { type: "bars", label: 0, values: counts, stacked: true, horizontal: true }];
+      return [{ type: "table" }, { type: "bars", label: 0, values: counts, stacked: true, horizontal: true, palette: "scale" }];
     } },
     { sheet: "scorecard", title: /BY UNIVERSITY/, views: (t) => {
       const gap = col(t, /Gap/);

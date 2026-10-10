@@ -105,7 +105,11 @@ export function buildDocument(wb: Workbook, type: ReportType): ReportDocument {
   }
 
   const first = sheets[0];
-  const title = first?.title ?? `${cfg.label} analysis`;
+  // The first sheet may be titled after itself ("Özge S'26 — KPI Dashboard"); name the report instead.
+  const event = first?.title.split(/\s+[—–]\s+/)[0]?.trim();
+  const title = !first ? `${cfg.label} Form Analysis`
+    : /dashboard/i.test(first.title) && event ? `${event} — ${cfg.label} Form Analysis`
+    : first.title;
   const subtitle = first?.subtitle;
   const doc: ReportDocument = {
     schemaVersion: SCHEMA_VERSION,

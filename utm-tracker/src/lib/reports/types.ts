@@ -36,6 +36,9 @@ export interface Column {
   key: string;
   label: string;
   format: ValueFormat;
+  /** Per-row formats, only when rows of this column are formatted differently
+   * (e.g. a "Metric | Value" table mixing counts and shares). */
+  cellFormats?: (ValueFormat | null)[];
 }
 
 export type Row = CellValue[];
@@ -46,7 +49,16 @@ export type TableView =
   | { type: "ranked"; label: number; value: number; share?: number; quote?: number }
   | { type: "heat"; from: number; to?: number; diverging?: boolean }
   | { type: "segments" } // one of several same-shaped tables shown with a switcher
-  | { type: "bars"; label: number; values: number[]; stacked?: boolean; horizontal?: boolean; percent?: boolean }
+  | {
+      type: "bars";
+      label: number;
+      values: number[];
+      stacked?: boolean;
+      horizontal?: boolean;
+      percent?: boolean;
+      /** "scale": series are ordered bands from worst to best (red → green). */
+      palette?: "scale";
+    }
   | { type: "line"; label: number; values: number[] }
   | { type: "doughnut"; label: number; value: number }
   | { type: "concentration"; label: number; value: number; status?: number };

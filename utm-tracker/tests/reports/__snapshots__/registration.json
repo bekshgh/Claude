@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "parserVersion": "1.0.0",
   "type": "registration",
-  "title": "Özge S'26 — KPI Dashboard",
+  "title": "Özge S'26 — Registration Form Analysis",
   "subtitle": "Özge Forum registrations · 10 Aug – 28 Aug · 603 unique registrants · 629 form submissions",
   "meta": {
     "eventName": "Özge S'26",
@@ -3672,7 +3672,57 @@
               "format": {
                 "kind": "number",
                 "decimals": 1
-              }
+              },
+              "cellFormats": [
+                {
+                  "kind": "number",
+                  "decimals": 1
+                },
+                {
+                  "kind": "number",
+                  "decimals": 1
+                },
+                {
+                  "kind": "number",
+                  "decimals": 1
+                },
+                {
+                  "kind": "number",
+                  "decimals": 1
+                },
+                {
+                  "kind": "number",
+                  "decimals": 1
+                },
+                {
+                  "kind": "number",
+                  "decimals": 1
+                },
+                {
+                  "kind": "number",
+                  "decimals": 1
+                },
+                {
+                  "kind": "number",
+                  "decimals": 0
+                },
+                {
+                  "kind": "number",
+                  "decimals": 0
+                },
+                {
+                  "kind": "percent",
+                  "decimals": 1
+                },
+                {
+                  "kind": "number",
+                  "decimals": 0
+                },
+                {
+                  "kind": "number",
+                  "decimals": 0
+                }
+              ]
             }
           ],
           "rows": [
@@ -4285,7 +4335,33 @@
               "format": {
                 "kind": "number",
                 "decimals": 0
-              }
+              },
+              "cellFormats": [
+                {
+                  "kind": "number",
+                  "decimals": 0
+                },
+                {
+                  "kind": "number",
+                  "decimals": 0
+                },
+                {
+                  "kind": "number",
+                  "decimals": 0
+                },
+                {
+                  "kind": "percent",
+                  "decimals": 1
+                },
+                {
+                  "kind": "number",
+                  "decimals": 0
+                },
+                {
+                  "kind": "number",
+                  "decimals": 0
+                }
+              ]
             }
           ],
           "rows": [
