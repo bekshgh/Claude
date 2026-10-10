@@ -17,7 +17,9 @@ export interface RecordLeadResult {
  * Shared by the Tilda webhook (server-side) and the /api/track/conversion
  * endpoint (client-side snippet). Because buildDedupeKey collapses to
  * "ck:<clickId>" whenever a click_id is present, the same submission arriving
- * through both channels is recorded only once.
+ * through both channels is recorded only once. A repeat fills in fields the
+ * stored lead is still missing (e.g. contacts typed after the first press of
+ * the submit button).
  */
 export async function recordLead(
   lead: NormalisedLead,
@@ -32,7 +34,7 @@ export async function recordLead(
   });
 
   const existing = await findByDedupeKey(dedupeKey);
-  if (existing) return logDuplicate(existing, opts);
+  if (existing) return logDuplicate(existing, lead, opts);
 
   const attribution = await resolveAttribution(lead);
 
@@ -63,7 +65,7 @@ export async function recordLead(
     // Two concurrent submissions for the same dedupe key: the loser lands here.
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
       const race = await findByDedupeKey(dedupeKey);
-      if (race) return logDuplicate(race, opts);
+      if (race) return logDuplicate(race, lead, opts);
     }
     throw err;
   }
@@ -87,17 +89,36 @@ export async function recordLead(
   };
 }
 
+const MERGE_FIELDS = [
+  "name", "phone", "email", "formName", "pageUrl",
+  "utmSource", "utmMedium", "utmCampaign", "utmContent", "utmTerm",
+] as const;
+
 function findByDedupeKey(dedupeKey: string) {
   return prisma.lead.findUnique({
     where: { dedupeKey },
-    select: { id: true, attributionStatus: true, clickId: true },
+    select: {
+      id: true, attributionStatus: true, clickId: true,
+      ...Object.fromEntries(MERGE_FIELDS.map((f) => [f, true])) as Record<(typeof MERGE_FIELDS)[number], true>,
+    },
   });
 }
 
+type ExistingLead = NonNullable<Awaited<ReturnType<typeof findByDedupeKey>>>;
+
 async function logDuplicate(
-  existing: { id: string; attributionStatus: AttributionStatus; clickId: string | null },
+  existing: ExistingLead,
+  lead: NormalisedLead,
   opts: { provider: string; rawPayload: Prisma.InputJsonValue },
 ): Promise<RecordLeadResult> {
+  const fill: Prisma.LeadUpdateInput = {};
+  for (const f of MERGE_FIELDS) {
+    if (!existing[f] && lead[f]) fill[f] = lead[f];
+  }
+  if (Object.keys(fill).length > 0) {
+    await prisma.lead.update({ where: { id: existing.id }, data: fill });
+  }
+
   await prisma.webhookLog.create({
     data: {
       provider: opts.provider,

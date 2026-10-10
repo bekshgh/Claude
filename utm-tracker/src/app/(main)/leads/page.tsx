@@ -4,8 +4,8 @@ import { prisma } from "@/lib/db";
 import { LeadsWithTabs } from "@/components/LeadsWithTabs";
 export const dynamic = "force-dynamic";
 export default async function LeadsPage() {
-  const leads = await prisma.lead.findMany({ orderBy: { submittedAt: "desc" }, take: 500, include: { trackingLink: { select: { slug: true, utmCampaign: true } } } });
-  const serialized = leads.map((l) => ({ ...l, submittedAt: l.submittedAt.toISOString(), createdAt: l.createdAt.toISOString(), campaign: l.trackingLink?.utmCampaign ?? l.utmCampaign ?? null, slug: l.trackingLink?.slug ?? null }));
+  const leads = await prisma.lead.findMany({ orderBy: { submittedAt: "desc" }, take: 500, include: { trackingLink: { select: { slug: true, utmSource: true, utmCampaign: true } } } });
+  const serialized = leads.map((l) => ({ ...l, submittedAt: l.submittedAt.toISOString(), createdAt: l.createdAt.toISOString(), utmSource: l.utmSource ?? l.trackingLink?.utmSource ?? null, campaign: l.trackingLink?.utmCampaign ?? l.utmCampaign ?? null, slug: l.trackingLink?.slug ?? null }));
   return (
     <>
       <PageHeader breadcrumb="Leads" title="Leads" subtitle={`${leads.length} lead${leads.length === 1 ? "" : "s"} from forms`} />
