@@ -7,9 +7,9 @@ type Status = "draft" | "published";
 type Visibility = "private" | "link" | "public";
 
 const VIS_LABEL: Record<Visibility, string> = {
-  private: "Приватный — только админы",
-  link: "По ссылке — кто знает ссылку (не индексируется)",
-  public: "Публичный — может попасть в поиск",
+  private: "Private — admins only",
+  link: "Link — anyone with the link (not indexed)",
+  public: "Public — may appear in search engines",
 };
 
 export function ReportAdminActions({
@@ -38,7 +38,7 @@ export function ReportAdminActions({
       body: JSON.stringify(data),
     }).catch(() => null);
     setBusy(null);
-    if (!res?.ok) setError("Не удалось сохранить. Попробуйте ещё раз.");
+    if (!res?.ok) setError("Could not save. Please try again.");
     router.refresh();
   }
 
@@ -46,7 +46,7 @@ export function ReportAdminActions({
     setBusy("delete");
     const res = await fetch(`/api/reports/${id}`, { method: "DELETE" }).catch(() => null);
     setBusy(null);
-    if (!res?.ok) return setError("Не удалось удалить.");
+    if (!res?.ok) return setError("Could not delete.");
     router.push("/reports");
     router.refresh();
   }
@@ -56,14 +56,14 @@ export function ReportAdminActions({
       <div className="flex flex-wrap items-center gap-2">
         {status === "draft" ? (
           <button className="btn-primary" disabled={!!busy} onClick={() => patch({ status: "published" }, "publish")}>
-            {busy === "publish" ? "Публикую…" : "Опубликовать"}
+            {busy === "publish" ? "Publishing…" : "Publish"}
           </button>
         ) : (
           <button className="btn-ghost" disabled={!!busy} onClick={() => patch({ status: "draft" }, "unpublish")}>
-            {busy === "unpublish" ? "Снимаю…" : "Снять с публикации"}
+            {busy === "unpublish" ? "Unpublishing…" : "Unpublish"}
           </button>
         )}
-        <a href={`/report/${slug}`} target="_blank" rel="noreferrer" className="btn-ghost">Открыть страницу ↗</a>
+        <a href={`/report/${slug}`} target="_blank" rel="noreferrer" className="btn-ghost">Open page ↗</a>
         <button
           className="btn-ghost"
           onClick={async () => {
@@ -72,12 +72,12 @@ export function ReportAdminActions({
             setTimeout(() => setCopied(false), 1500);
           }}
         >
-          {copied ? "Скопировано" : "Копировать ссылку"}
+          {copied ? "Copied" : "Copy link"}
         </button>
       </div>
 
       <div className="max-w-md">
-        <label className="label" htmlFor="rep-vis">Видимость</label>
+        <label className="label" htmlFor="rep-vis">Visibility</label>
         <select
           id="rep-vis"
           className="input"
@@ -89,17 +89,17 @@ export function ReportAdminActions({
             <option key={v} value={v}>{VIS_LABEL[v]}</option>
           ))}
         </select>
-        <p className="hint">Черновики видны только админам при любой видимости.</p>
+        <p className="hint">Drafts are visible to admins only, whatever the visibility.</p>
       </div>
 
       <div className="border-t border-line pt-4">
         {!confirm ? (
-          <button className="btn-danger" onClick={() => setConfirm(true)}>Удалить отчёт</button>
+          <button className="btn-danger" onClick={() => setConfirm(true)}>Delete report</button>
         ) : (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm text-ink-muted">Удалить без возможности восстановления?</span>
-            <button className="btn-danger" disabled={!!busy} onClick={remove}>{busy === "delete" ? "Удаляю…" : "Да, удалить"}</button>
-            <button className="btn-ghost" onClick={() => setConfirm(false)}>Отмена</button>
+            <span className="text-sm text-ink-muted">Delete permanently?</span>
+            <button className="btn-danger" disabled={!!busy} onClick={remove}>{busy === "delete" ? "Deleting…" : "Yes, delete"}</button>
+            <button className="btn-ghost" onClick={() => setConfirm(false)}>Cancel</button>
           </div>
         )}
       </div>

@@ -10,12 +10,21 @@ const MAX_MB = 4;
  * Drop-zone upload. "create" makes a new draft and opens it; "replace" swaps
  * the data of an existing report (same link) and refreshes the page.
  */
-export function ReportUpload({ mode, reportId }: { mode: "create" | "replace"; reportId?: string }) {
+export function ReportUpload({
+  mode,
+  reportId,
+  projects = [],
+}: {
+  mode: "create" | "replace";
+  reportId?: string;
+  projects?: { id: string; name: string }[];
+}) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [type, setType] = useState("auto");
   const [eventName, setEventName] = useState("");
+  const [projectId, setProjectId] = useState("");
   const [drag, setDrag] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,24 +32,25 @@ export function ReportUpload({ mode, reportId }: { mode: "create" | "replace"; r
   const pick = (f: File | undefined) => {
     setError(null);
     if (!f) return;
-    if (!/\.xlsx$/i.test(f.name)) return setError(/\.xlsm$/i.test(f.name) ? "Файлы с макросами (.xlsm) не принимаются — сохраните как .xlsx." : "Нужен файл .xlsx.");
-    if (f.size > MAX_MB * 1024 * 1024) return setError(`Файл больше ${MAX_MB} МБ.`);
+    if (!/\.xlsx$/i.test(f.name)) return setError(/\.xlsm$/i.test(f.name) ? "Macro-enabled files (.xlsm) are not accepted — save it as .xlsx." : "Please choose an .xlsx file.");
+    if (f.size > MAX_MB * 1024 * 1024) return setError(`The file is larger than ${MAX_MB} MB.`);
     setFile(f);
   };
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!file) return setError("Выберите файл.");
+    if (!file) return setError("Choose a file.");
     setBusy(true);
     setError(null);
     const fd = new FormData();
     fd.set("file", file);
     fd.set("type", type);
     if (eventName.trim()) fd.set("eventName", eventName.trim());
+    if (projectId) fd.set("projectId", projectId);
     const res = await fetch(mode === "create" ? "/api/reports" : `/api/reports/${reportId}/file`, { method: "POST", body: fd }).catch(() => null);
     const body = res ? await res.json().catch(() => ({})) : {};
     setBusy(false);
-    if (!res || !res.ok) return setError(body.error ?? "Не удалось загрузить файл. Попробуйте ещё раз.");
+    if (!res || !res.ok) return setError(body.error ?? "Upload failed. Please try again.");
     if (mode === "create") router.push(`/reports/${body.id}`);
     else {
       setFile(null);
@@ -53,7 +63,7 @@ export function ReportUpload({ mode, reportId }: { mode: "create" | "replace"; r
       <div
         role="button"
         tabIndex={0}
-        aria-label="Выбрать файл .xlsx"
+        aria-label="Choose an .xlsx file"
         onClick={() => input.current?.click()}
         onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), input.current?.click())}
         onDragOver={(e) => (e.preventDefault(), setDrag(true))}
@@ -75,25 +85,34 @@ export function ReportUpload({ mode, reportId }: { mode: "create" | "replace"; r
           className="hidden"
           onChange={(e) => pick(e.target.files?.[0])}
         />
-        <p className="text-sm font-medium text-ink">{file ? file.name : "Перетащите .xlsx сюда или нажмите, чтобы выбрать"}</p>
+        <p className="text-sm font-medium text-ink">{file ? file.name : "Drop an .xlsx here or click to choose"}</p>
         <p className="mt-1 text-xs text-ink-faint">
-          {file ? `${(file.size / 1024).toFixed(0)} КБ` : `Feedback или Registration Form Analysis · до ${MAX_MB} МБ`}
+          {file ? `${(file.size / 1024).toFixed(0)} KB` : `Feedback or Registration Form Analysis · up to ${MAX_MB} MB`}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="label" htmlFor="rep-type">Тип отчёта</label>
+          <label className="label" htmlFor="rep-type">Report type</label>
           <select id="rep-type" className="input" value={type} onChange={(e) => setType(e.target.value)}>
-            <option value="auto">Определить автоматически</option>
+            <option value="auto">Detect automatically</option>
             <option value="feedback">Feedback Form Analysis</option>
             <option value="registration">Registration Form Analysis</option>
           </select>
         </div>
+        {mode === "create" && projects.length > 0 && (
+          <div className="sm:col-span-2">
+            <label className="label" htmlFor="rep-proj">Project</label>
+            <select id="rep-proj" className="input" value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+              <option value="">No project (can be set later)</option>
+              {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          </div>
+        )}
         {mode === "create" && (
           <div>
-            <label className="label" htmlFor="rep-event">Название события</label>
-            <input id="rep-event" className="input" placeholder="Возьмём из файла" value={eventName} maxLength={120} onChange={(e) => setEventName(e.target.value)} />
+            <label className="label" htmlFor="rep-event">Event name</label>
+            <input id="rep-event" className="input" placeholder="Taken from the file" value={eventName} maxLength={120} onChange={(e) => setEventName(e.target.value)} />
           </div>
         )}
       </div>
@@ -102,9 +121,9 @@ export function ReportUpload({ mode, reportId }: { mode: "create" | "replace"; r
 
       <div className="flex flex-wrap items-center gap-3">
         <button type="submit" className="btn-primary" disabled={busy || !file}>
-          {busy ? "Разбираю файл…" : mode === "create" ? "Загрузить и посмотреть" : "Заменить данные"}
+          {busy ? "Reading the file…" : mode === "create" ? "Upload and preview" : "Replace data"}
         </button>
-        <p className="text-xs text-ink-faint">Файл разбирается на сервере и не сохраняется: в базу попадают только листы с аналитикой.</p>
+        <p className="text-xs text-ink-faint">The file is read on the server and not stored: only the analytics sheets are saved.</p>
       </div>
     </form>
   );

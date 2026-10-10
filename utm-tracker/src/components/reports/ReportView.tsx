@@ -12,6 +12,7 @@ import type {
   TableView,
 } from "@/lib/reports/types";
 import { cn } from "@/lib/utils";
+import { CONFIGS } from "@/lib/reports/configs";
 import { formatValue, readableTitle } from "./format";
 import { BarsChart, DoughnutChart, LineSeriesChart, describeChart } from "./ReportCharts";
 import { ConcentrationMeter, DataTable, RankedBars, SegmentSwitcher } from "./ReportTables";
@@ -72,6 +73,8 @@ export function ReportView({ doc, initialTab }: { doc: ReportDocument; initialTa
   };
 
   const visible = printAll ? doc.sheets : doc.sheets.filter((s) => s.key === tab);
+  // Tab names come from the current config (stored documents may carry older labels).
+  const tabLabel = (s: SheetDoc) => CONFIGS[doc.type]?.sheets.find((c) => c.key === s.key)?.label ?? s.label;
 
   return (
     <div className="report">
@@ -87,19 +90,19 @@ export function ReportView({ doc, initialTab }: { doc: ReportDocument; initialTa
         {doc.subtitle && <p className="mt-1.5 text-sm text-ink-muted">{doc.subtitle}</p>}
         <div className="mt-4 flex flex-wrap gap-2 print:hidden">
           <button type="button" className="btn-ghost py-2 text-xs" onClick={copyLink}>
-            {copied ? "Ссылка скопирована" : "Копировать ссылку"}
+            {copied ? "Link copied" : "Copy link"}
           </button>
           <button type="button" className="btn-ghost py-2 text-xs" onClick={() => window.print()}>
-            Печать вкладки
+            Print tab
           </button>
           <button type="button" className="btn-ghost py-2 text-xs" onClick={() => setPrintAll(true)}>
-            Печать / PDF всего отчёта
+            Print / PDF whole report
           </button>
         </div>
       </header>
 
       <nav className="-mx-4 mb-6 overflow-x-auto px-4 print:hidden sm:mx-0 sm:px-0">
-        <div role="tablist" aria-label="Разделы отчёта" className="inline-flex min-w-max gap-1 rounded-full border border-line bg-bg-raised p-1">
+        <div role="tablist" aria-label="Report sections" className="inline-flex min-w-max gap-1 rounded-full border border-line bg-bg-raised p-1">
           {doc.sheets.map((s, i) => (
             <button
               key={s.key}
@@ -115,7 +118,7 @@ export function ReportView({ doc, initialTab }: { doc: ReportDocument; initialTa
                 tab === s.key ? "bg-bg-hover font-medium text-ink" : "text-ink-muted hover:text-ink",
               )}
             >
-              {s.label}
+              {tabLabel(s)}
             </button>
           ))}
         </div>
@@ -123,7 +126,7 @@ export function ReportView({ doc, initialTab }: { doc: ReportDocument; initialTa
 
       {visible.map((s) => (
         <div key={s.key} id={`panel-${s.key}`} role="tabpanel" aria-labelledby={`tab-${s.key}`} className="mb-10">
-          {printAll && <h2 className="mb-4 font-display text-xl font-bold">{s.label}</h2>}
+          {printAll && <h2 className="mb-4 font-display text-xl font-bold">{tabLabel(s)}</h2>}
           <SheetPanel sheet={s} doc={doc} />
         </div>
       ))}
@@ -150,7 +153,7 @@ function SheetPanel({ sheet, doc }: { sheet: SheetDoc; doc: ReportDocument }) {
       }
       i--;
       blocks.push(
-        <Card key={s.id} title="Оценки по сегментам" subtitle="Цвет сравнивает сегменты внутри каждой колонки">
+        <Card key={s.id} title="Scores by segment" subtitle="Colour compares segments within each column">
           <SegmentSwitcher tables={group} />
         </Card>,
       );
@@ -158,11 +161,11 @@ function SheetPanel({ sheet, doc }: { sheet: SheetDoc; doc: ReportDocument }) {
     }
     blocks.push(<SectionCard key={s.id} s={s} hero={sheet.key === "overview" && i === 0} />);
     if (sheet.key === "overview" && s.kind === "kpiGroup" && sections[i + 1]?.kind !== "kpiGroup") {
-      const caveats = doc.methodology.find((m) => /CAVEAT|ОГОВОР/i.test(m.title));
+      const caveats = doc.methodology.find((m) => /CAVEAT/i.test(m.title));
       if (caveats) blocks.push(<Caveats key="caveats" s={caveats} />);
     }
   }
-  if (blocks.length === 0) return <p className="text-sm text-ink-faint">В этом разделе файла не нашлось данных.</p>;
+  if (blocks.length === 0) return <p className="text-sm text-ink-faint">No data was found in this part of the file.</p>;
   return <div className="space-y-6">{blocks}</div>;
 }
 
@@ -207,7 +210,7 @@ function KpiGrid({ s, hero }: { s: KpiSection; hero?: boolean }) {
           </p>
           {c.subtext && (
             <p className={cn("mt-1 text-xs", c.tone === "warn" ? "text-accent" : "text-ink-muted")}>
-              {c.tone === "warn" && <span aria-label="внимание">⚠ </span>}
+              {c.tone === "warn" && <span aria-label="warning">⚠ </span>}
               {c.subtext}
             </p>
           )}
@@ -220,10 +223,10 @@ function KpiGrid({ s, hero }: { s: KpiSection; hero?: boolean }) {
 /* ─── Callouts & definitions ────────────────────────────────────── */
 
 const CALLOUT = {
-  info: { icon: "▸", cls: "border-clicks/30 bg-clicks/5", iconCls: "text-clicks", sr: "вывод" },
-  good: { icon: "✓", cls: "border-leads/30 bg-leads/5", iconCls: "text-leads", sr: "сильная сторона" },
-  warn: { icon: "⚠", cls: "border-accent/40 bg-accent/5", iconCls: "text-accent", sr: "слабое место" },
-  critical: { icon: "!", cls: "border-danger/40 bg-danger/5", iconCls: "text-danger", sr: "критично" },
+  info: { icon: "▸", cls: "border-clicks/30 bg-clicks/5", iconCls: "text-clicks", sr: "insight" },
+  good: { icon: "✓", cls: "border-leads/30 bg-leads/5", iconCls: "text-leads", sr: "strength" },
+  warn: { icon: "⚠", cls: "border-accent/40 bg-accent/5", iconCls: "text-accent", sr: "weak spot" },
+  critical: { icon: "!", cls: "border-danger/40 bg-danger/5", iconCls: "text-danger", sr: "critical" },
 } as const;
 
 function Callouts({ s }: { s: CalloutSection }) {
@@ -262,7 +265,7 @@ function Definitions({ s }: { s: DefinitionsSection }) {
 function Caveats({ s }: { s: DefinitionsSection }) {
   return (
     <section className="card border-accent/30 p-5 sm:p-6" aria-labelledby="h-caveats">
-      <h2 id="h-caveats" className="font-display text-lg font-semibold">Как читать эти цифры</h2>
+      <h2 id="h-caveats" className="font-display text-lg font-semibold">How to read these numbers</h2>
       <ul className="mt-3 space-y-2 text-sm">
         {s.items.map((d, i) => (
           <li key={i} className="flex gap-3">
@@ -317,7 +320,7 @@ function TableBlock({ t }: { t: TableSection }) {
       ))}
       {charts.length > 0 && tableOnly && primary?.type === "table" ? (
         <details className="group">
-          <summary className="cursor-pointer select-none text-xs text-ink-faint hover:text-ink-muted print:hidden">Показать таблицу</summary>
+          <summary className="cursor-pointer select-none text-xs text-ink-faint hover:text-ink-muted print:hidden">Show table</summary>
           <div className="mt-3">{main}</div>
         </details>
       ) : (
@@ -325,7 +328,7 @@ function TableBlock({ t }: { t: TableSection }) {
       )}
       {secondaryTable && (
         <details>
-          <summary className="cursor-pointer select-none text-xs text-ink-faint hover:text-ink-muted print:hidden">Показать таблицу</summary>
+          <summary className="cursor-pointer select-none text-xs text-ink-faint hover:text-ink-muted print:hidden">Show table</summary>
           <div className="mt-3"><DataTable t={t} /></div>
         </details>
       )}

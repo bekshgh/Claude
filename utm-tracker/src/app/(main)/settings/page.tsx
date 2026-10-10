@@ -2,6 +2,8 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { Pill } from "@/components/ui/Pill";
 import { prisma } from "@/lib/db";
+import { getProjectSettings } from "@/lib/projects/settings";
+import { ThresholdsForm } from "@/components/projects/ThresholdsForm";
 
 export const dynamic = "force-dynamic";
 
@@ -50,6 +52,7 @@ function EnvRow({
 }
 
 export default async function SettingsPage() {
+  const thresholds = await getProjectSettings(prisma);
   const [links, clicks, leads, campaigns, webhookLogs] = await Promise.all([
     prisma.trackingLink.count(),
     prisma.clickEvent.count(),
@@ -135,6 +138,13 @@ export default async function SettingsPage() {
             </table>
           </div>
         </div>
+      </section>
+
+      {/* Project thresholds */}
+      <section className="card mb-8 p-6">
+        <h2 className="font-display text-lg font-semibold">Project thresholds</h2>
+        <p className="mb-5 mt-1 text-sm text-ink-muted">Used by the filters and quick views on the Projects page.</p>
+        <ThresholdsForm initial={thresholds} />
       </section>
 
       {/* Data overview */}

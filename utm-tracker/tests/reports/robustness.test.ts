@@ -115,7 +115,7 @@ describe("privacy", () => {
   });
 
   it("masks contacts inside free text", () => {
-    expect(maskText("write to ivan.petrov@mail.kz or +7 701 123 45 67")).toBe("write to [email скрыт] or [телефон скрыт]");
+    expect(maskText("write to ivan.petrov@mail.kz or +7 701 123 45 67")).toBe("write to [email hidden] or [phone hidden]");
     expect(maskText("dates 2026-08-21 and 603 registrants stay")).toBe("dates 2026-08-21 and 603 registrants stay");
   });
 });

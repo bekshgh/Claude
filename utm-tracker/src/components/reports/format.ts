@@ -2,10 +2,14 @@ import type { CellValue, Column, ValueFormat } from "@/lib/reports/types";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+/** Reports parsed before the UI went English stored "Респондент N"; show them in English. */
+export const legacyText = (s: string) => s.replace(/^Респондент(\s+\d+)?$/, (_, n: string | undefined) => `Respondent${n ?? ""}`);
+
 /** Format a value the way the workbook displayed it (decimals, %, sign, unit). */
 export function formatValue(v: CellValue, f: ValueFormat): string {
   if (v === null || v === undefined) return "—";
   if (typeof v === "string") {
+    v = legacyText(v);
     if (f.kind === "date" && /^\d{4}-\d{2}-\d{2}/.test(v)) return formatDate(v);
     return v;
   }

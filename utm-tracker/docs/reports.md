@@ -1,120 +1,125 @@
-# Отчёты (Reports)
+# Reports
 
-Админ загружает Excel-анализ события — **Feedback Form Analysis** или
-**Registration Form Analysis** — и сайт показывает его как интерактивный отчёт:
-KPI-карточки, графики, таблицы, выводы и методология.
+An admin uploads an event's Excel analysis — **Feedback Form Analysis** or
+**Registration Form Analysis** — and the site turns it into an interactive
+report: KPI cards, charts, tables, insights and methodology.
 
 ```
-.xlsx → тип по листам → листы аналитики → ReportDocument (JSON) → черновик → публикация → /report/<slug>
+.xlsx → type from sheet names → analytics sheets → ReportDocument (JSON) → draft → publish → /report/<slug>
 ```
 
-## Как загрузить новый файл
+## Uploading a new file
 
-1. **Reports → Новый отчёт.** Перетащите `.xlsx` (до 4 МБ). Тип определяется по
-   названиям листов; если не определился — выберите вручную.
-2. Откроется черновик: справа видно, что нашлось в файле (вкладки, таблицы,
-   карточки), какие листы не импортировались и предупреждения парсера. Ниже —
-   предпросмотр отчёта ровно в том виде, в каком его увидят по ссылке.
-3. **Опубликовать** и выбрать видимость:
-   - *Приватный* — только вошедшие админы;
-   - *По ссылке* (по умолчанию) — кто знает ссылку, страница `noindex`;
-   - *Публичный* — может попасть в поиск.
-   Черновики всегда видны только админам; для остальных такая страница — 404.
-4. Новая версия того же события: **Заменить файл** на странице отчёта — ссылка и
-   статус сохраняются.
+1. **Reports → New report.** Drop an `.xlsx` (up to 4 MB). The type is detected
+   from the sheet names; if it can't be, pick it manually. Optionally choose the
+   project the report belongs to (see [project-filters.md](project-filters.md)).
+2. The draft page opens. On the right: what was found in the file (tabs, tables,
+   cards), which sheets were not imported and any parser warnings. Below: a
+   preview of the report exactly as it will look via its link.
+3. **Publish** and pick a visibility:
+   - *Private* — signed-in admins only;
+   - *Link* (default) — anyone with the link, the page is `noindex`;
+   - *Public* — may appear in search engines.
+   Drafts are admin-only whatever the visibility; for everyone else such a page is a 404.
+4. A newer version of the same event: **Replace file** on the report page — the
+   link and status stay.
 
-## Что попадает в базу (и что нет)
+## What is stored (and what is not)
 
-- Исходный файл **не сохраняется** — он разбирается в памяти.
-- Читаются **только листы аналитики** из конфига типа (`01…06` и `Notes`).
-  Листы с данными (`Cleaned Data`, `Raw Data`, `Reg Lookup`, `Theme Coding`,
-  `Channel Map`, `Charts`) не открываются вовсе — берётся только их размер для превью.
-- Имена в таблицах вида *Outlier respondents* заменяются на «Респондент N»
-  ещё при разборе — их нет нигде, в том числе у админов.
-- Колонки, где значения похожи на email / телефон / `@ник`, удаляются; email и
-  телефоны внутри текста маскируются.
+- The uploaded file is **never stored** — it is read in memory.
+- **Only the analytics sheets** listed in the type config (`01…06` and `Notes`)
+  are read. Data sheets (`Cleaned Data`, `Raw Data`, `Reg Lookup`, `Theme Coding`,
+  `Channel Map`, `Charts`) are not opened at all — only their size is taken for
+  the preview.
+- People's names in tables like *Outlier respondents* become "Respondent N" at
+  parse time — they are not stored anywhere, admins included.
+- Columns whose values look like emails / phones / `@handles` are dropped;
+  emails and phone numbers inside text are masked.
 
-## Предупреждения парсера
+## Parser warnings
 
-| Сообщение | Что значит | Что делать |
+| Message | Meaning | What to do |
 |---|---|---|
-| *Sheet not found in the file* | Нет листа, который ждёт конфиг (например, переименовали) | Проверьте название листа; блок просто не покажется |
-| *Expected section not found* | На листе нет ожидаемого заголовка секции | Если секцию переименовали — обновите `expect` в конфиге |
-| *Section content was not recognised* | Под заголовком есть данные, но непохожие на карточки/таблицу/выводы | Посмотрите вёрстку блока; см. «Как добавить новый блок» |
-| *N formula cell(s) had no saved value* | В ячейках формулы без сохранённого результата | Откройте файл в Excel/LibreOffice, пересчитайте, сохраните |
+| *Sheet not found in the file* | A sheet the config expects is missing (e.g. renamed) | Check the sheet name; that tab simply won't show |
+| *Expected section not found* | A sheet lacks an expected section heading | If the section was renamed, update `expect` in the config |
+| *Section content was not recognised* | There is content under a heading that doesn't look like cards / a table / insights | Check the block's layout; see "Adding a new block" |
+| *N formula cell(s) had no saved value* | Formulas without a saved result | Open the file in Excel / LibreOffice, let it recalculate, save |
 
-Отчёт с предупреждениями можно публиковать: не найденные блоки не показываются.
+A report with warnings can still be published: blocks that weren't found are not shown.
 
-Файл отклоняется целиком (понятной ошибкой, не 500), если он пустой, не `.xlsx`,
-с макросами (`.xlsm`), больше 4 МБ, подозрительно разжимается (zip-bomb), у
-большинства формул нет сохранённых значений, или тип не распознан.
+A file is rejected as a whole (with a readable error, never a 500) when it is
+empty, not `.xlsx`, macro-enabled (`.xlsm`), larger than 4 MB, unpacks
+suspiciously (zip bomb), most formulas have no saved values, or the type cannot
+be recognised.
 
-## Как устроен парсер
+## How the parser works
 
 `src/lib/reports/`:
 
-- `xlsx.ts` — читатель `.xlsx` на `jszip` + `saxes`: закэшированные значения
-  формул, форматы чисел, объединённые ячейки; графики не читаются.
-- `extract.ts` — разбор листа **по якорям, а не по адресам ячеек**:
-  - заголовок секции — ячейка с отступом и КАПСОМ (`  SCORE SUMMARY  —  …`);
-    текст после `—` / `(` становится подзаголовком;
-  - объединённый диапазон заголовка задаёт колонки секции (так разделяются
-    блоки, стоящие рядом в одной строке);
-  - пустые строки делят секцию на блоки: тройки «ЛЕЙБЛ / значение / пояснение» →
-    KPI-карточки, строки `▶ текст` → выводы, пары «термин — определение» →
-    методология, остальное — таблица (строка заголовков + строки данных).
-- `values.ts` — смысл значения по формату ячейки (`0.2985` + `0.0%` → 29.9%),
-  `–` → `null`, декоративные `███` / `●●●○` выбрасываются,
-  `22 (73%) ███` → колонки «количество» и «доля».
-- `configs.ts` — **всё, что специфично для типа**: какие листы → какие вкладки,
-  какие секции ожидаются, как рисовать каждую таблицу (`views`).
-- `privacy.ts` — замена имён, удаление контактов, маскирование текста.
+- `xlsx.ts` — an `.xlsx` reader on `jszip` + `saxes`: cached formula values,
+  number formats, merged cells; charts are never read.
+- `extract.ts` — sheet parsing **anchored on headings, never on cell addresses**:
+  - a section heading is an indented ALL-CAPS cell (`  SCORE SUMMARY  —  …`);
+    text after `—` / `(` becomes the subtitle;
+  - the heading's merged range defines the section's columns (this separates
+    blocks sitting side by side on one row);
+  - blank rows split a section into blocks: "LABEL / value / caption" triples →
+    KPI cards, `▶ text` rows → insights, "term — definition" pairs →
+    methodology, anything else → a table (header row + data rows).
+- `values.ts` — meaning comes from the cell format (`0.2985` + `0.0%` → 29.9%),
+  `–` → `null`, decorative `███` / `●●●○` are dropped, `22 (73%) ███` → a count
+  column and a share column.
+- `configs.ts` — **everything type-specific**: which sheets become which tabs,
+  which sections are expected, how each table is drawn (`views`), tab names.
+- `privacy.ts` — name replacement, contact columns, text masking.
 
-Страница (`src/components/reports/`) рисует только `ReportDocument` и не знает
-про Excel.
+The page (`src/components/reports/`) renders only the `ReportDocument` and knows
+nothing about Excel.
 
-## Как добавить новый блок
+## Adding a new block
 
-Обычно достаточно правки в `configs.ts`:
+Usually a change in `configs.ts` is enough:
 
-1. Если новая секция уже распознаётся как таблица (видно в
-   `npm run parse:report -- файл.xlsx --summary`), добавьте правило в `views`:
+1. If the new section is already recognised as a table (check with
+   `npm run parse:report -- file.xlsx --summary`), add a rule to `views`:
    ```ts
    { sheet: "audience", title: /NEW SECTION/, views: (t) => [{ type: "bars", label: 0, values: [col(t, /Regs/)] }] },
    ```
-   Типы видов: `table`, `heat` (sequential / diverging), `ranked` (бары +
-   цитаты), `segments` (переключатель), `bars`, `line`, `doughnut`,
-   `concentration`. Колонки ищите по подписи через `col()`, не по номеру.
-2. Чтобы отсутствие блока давало предупреждение — добавьте его заголовок в
-   `expect` нужного листа.
-3. Новый лист — новая запись в `sheets` (ключ вкладки, подпись, `match` по
-   названию листа без номера).
-4. Если секция не распознаётся как таблица/карточки, это место для правки
-   `extract.ts` — добавьте тест на её вёрстку.
+   View types: `table`, `heat` (sequential / diverging), `ranked` (bars + quotes),
+   `segments` (switcher), `bars`, `line`, `doughnut`, `concentration`. Find
+   columns by their label with `col()`, never by index.
+2. To get a warning when the block is missing, add its heading to the sheet's `expect`.
+3. A new sheet is a new entry in `sheets` (tab key, label, `match` on the sheet
+   name without its number).
+4. If a section is recognised neither as a table nor as cards, change
+   `extract.ts` — and add a test for that layout.
 
-## Проверка и тесты
+## Checks and tests
 
 ```bash
-npm test                                   # vitest: парсер, приватность, рендер
-npm run parse:report -- путь/к/файлу.xlsx --summary   # что нашёл парсер
-npm run parse:report -- путь/к/файлу.xlsx             # полный JSON
-npx vitest run -u                          # обновить golden-снапшоты после намеренной правки парсера
+npm test                                         # vitest: parser, privacy, rendering
+npm run parse:report -- path/to/file.xlsx --summary   # what the parser found
+npm run parse:report -- path/to/file.xlsx             # full JSON
+npx vitest run -u                                # update golden snapshots after an intended parser change
 ```
 
-Фикстуры в `fixtures/reports/` — **очищенные** копии реальных файлов (только
-листы аналитики, без общих строк и свойств документа, с вымышленными именами
-в outliers). Репозиторий публичный: настоящие файлы с данными людей в него не
-коммитятся (`/*.xlsx` в `.gitignore`). Новая фикстура:
+The fixtures in `fixtures/reports/` are **sanitised** copies of the real files
+(analytics sheets only, no shared strings or document properties, fake names in
+the outliers). The repository is public: real files with people's data are never
+committed (`/*.xlsx` in `.gitignore`). A new fixture:
 
 ```bash
 npm run sanitize:fixture -- ../Real_File.xlsx fixtures/reports/Real_File.xlsx
 ```
 
-## Ограничения
+## Limitations
 
-- Нативные графики Excel не переносятся — они перестраиваются по таблицам
-  (реестр видов в `configs.ts`). Лист `06 · Charts` в Feedback не импортируется:
-  его данные дублируют таблицы других листов.
-- Метрики не пересчитываются: всё, что на странице, взято из файла.
-- Нет истории версий: замена файла перезаписывает данные отчёта.
-- Сравнение событий, редактирование отчёта в браузере и экспорт в Excel — вне MVP.
+- Native Excel charts are not copied — they are rebuilt from the tables (the
+  view registry in `configs.ts`). The Feedback `06 · Charts` sheet is not
+  imported: its data duplicates tables on other sheets.
+- Metrics are never recalculated: everything on the page comes from the file.
+- No version history: replacing the file overwrites the report data.
+- Reports parsed before the UI was translated may still carry old tab names
+  and "Респондент N" in their JSON; the page shows them in English, and
+  re-uploading the file refreshes the stored data.
+- Comparing events, editing a report in the browser and Excel export are out of scope.

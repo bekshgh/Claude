@@ -55,7 +55,7 @@ function label(t: TableSection, row: TableSection["rows"][number], col: number) 
 
 export function describeChart(t: TableSection, v: TableView): string {
   const what = v.type === "bars" || v.type === "line" ? v.values.map((i) => t.columns[i]?.label).join(", ") : "";
-  return `${v.type === "line" ? "Линейный график" : v.type === "doughnut" ? "Кольцевая диаграмма" : "Столбчатая диаграмма"}: ${what || t.columns[(v as DoughnutView).value]?.label} — ${chartRows(t).length} значений. Точные значения — в таблице.`;
+  return `${v.type === "line" ? "Line chart" : v.type === "doughnut" ? "Doughnut chart" : "Bar chart"}: ${what || t.columns[(v as DoughnutView).value]?.label} — ${chartRows(t).length} values. Exact values are in the table.`;
 }
 
 export function BarsChart({ t, v }: { t: TableSection; v: BarsView }) {
