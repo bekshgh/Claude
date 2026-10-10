@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CHANNEL_GROUPS, CONCENTRATION, ZONES, labelOf } from "@/lib/projects/dictionaries";
 import type { ProjectRow } from "@/lib/projects/rows";
 import { cn } from "@/lib/utils";
+import { MAX_COMPARE } from "@/lib/projects/filters/state";
 import { STATUS_LABEL, fmtDate, fmtMetric, fmtNumber } from "./format";
 
 /** A metric value, or a muted "no data" — missing data never looks like a number. */
@@ -73,7 +74,7 @@ export function ProjectList({
   picked: string[];
   onPick: (slug: string) => void;
 }) {
-  const full = picked.length >= 4;
+  const full = picked.length >= MAX_COMPARE;
   if (view === "table") {
     return (
       <div className="card overflow-x-auto">
@@ -155,7 +156,7 @@ export function ProjectList({
   );
 }
 
-/* ─── Compare 2–4 projects ──────────────────────────────────────── */
+/* ─── Compare up to MAX_COMPARE projects ──────────────────────────────────────── */
 
 type Better = "high" | "low" | null;
 const COMPARE_ROWS: { label: string; get: (r: ProjectRow) => number | string | null; fmt?: (r: ProjectRow) => string; better: Better }[] = [

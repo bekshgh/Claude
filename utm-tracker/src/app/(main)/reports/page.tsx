@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Pill } from "@/components/ui/Pill";
-import { ReportUpload } from "@/components/reports/ReportUpload";
+import { BulkReportUpload } from "@/components/reports/BulkReportUpload";
 import { prisma } from "@/lib/db";
 import { formatDateTime } from "@/lib/utils";
 
@@ -15,8 +15,9 @@ export default async function ReportsPage() {
       orderBy: { createdAt: "desc" },
       select: { id: true, title: true, eventName: true, type: true, status: true, visibility: true, createdAt: true, project: { select: { name: true } } },
     }),
-    prisma.project.findMany({ orderBy: { startDate: "desc" }, select: { id: true, name: true } }),
+    prisma.project.findMany({ orderBy: { startDate: "desc" }, select: { id: true, slug: true, name: true } }),
   ]);
+  const types = await prisma.projectType.findMany({ orderBy: [{ sortOrder: "asc" }, { name: "asc" }] });
 
   return (
     <>
@@ -27,8 +28,9 @@ export default async function ReportsPage() {
       />
 
       <section className="card mb-6 p-6">
-        <h2 className="mb-4 font-display text-lg font-semibold">New report</h2>
-        <ReportUpload mode="create" projects={projects} />
+        <h2 className="mb-1 font-display text-lg font-semibold">Upload reports</h2>
+        <p className="mb-4 text-sm text-ink-muted">One file or many at once. Each event becomes a project, ready to compare in Projects.</p>
+        <BulkReportUpload projects={projects} types={types.map((t) => ({ value: t.key, label: t.name }))} />
       </section>
 
       <section className="card overflow-hidden">

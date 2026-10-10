@@ -15,6 +15,7 @@ import {
   type Option,
 } from "@/lib/projects/filters/registry";
 import {
+  MAX_COMPARE,
   activeKeys,
   emptyState,
   toQuery,
@@ -66,7 +67,8 @@ export function ProjectsExplorer({
   const [state, setState] = useState(initial);
   const [pending, startTransition] = useTransition();
   const [panel, setPanel] = useState(false);
-  const [showCompare, setShowCompare] = useState(false);
+  // A shared link that already picks 2+ projects (e.g. after a bulk upload) opens the comparison.
+  const [showCompare, setShowCompare] = useState(initial.cmp.length >= 2);
   const [search, setSearch] = useState((initial.values.q as string) ?? "");
   const timer = useRef<ReturnType<typeof setTimeout>>();
   // On phones the panel is a bottom sheet. The page wrapper keeps a transform from
@@ -164,7 +166,7 @@ export function ProjectsExplorer({
 
   const go = (query: string) => startTransition(() => router.push(`${pathname}${query ? `?${query}` : ""}`, { scroll: false }));
   const pick = (slug: string) =>
-    push({ ...state, cmp: state.cmp.includes(slug) ? state.cmp.filter((s) => s !== slug) : [...state.cmp, slug].slice(0, 4) });
+    push({ ...state, cmp: state.cmp.includes(slug) ? state.cmp.filter((s) => s !== slug) : [...state.cmp, slug].slice(0, MAX_COMPARE) });
 
   return (
     <div>
@@ -356,7 +358,7 @@ export function ProjectsExplorer({
       {/* ─── compare bar & panel ───────────────────────────── */}
       {state.cmp.length > 0 && (
         <div className="sticky top-2 z-20 mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-accent/40 bg-bg-card/95 px-4 py-3 text-sm shadow-card backdrop-blur">
-          <span>Selected to compare: <strong>{state.cmp.length}</strong> of 4</span>
+          <span>Selected to compare: <strong>{state.cmp.length}</strong> of {MAX_COMPARE}</span>
           <button type="button" className="btn-primary py-1.5 text-xs" disabled={state.cmp.length < 2} onClick={() => setShowCompare(true)}>
             Compare
           </button>
