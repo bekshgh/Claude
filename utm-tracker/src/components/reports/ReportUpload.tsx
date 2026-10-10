@@ -1,0 +1,111 @@
+"use client";
+
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+const MAX_MB = 4;
+
+/**
+ * Drop-zone upload. "create" makes a new draft and opens it; "replace" swaps
+ * the data of an existing report (same link) and refreshes the page.
+ */
+export function ReportUpload({ mode, reportId }: { mode: "create" | "replace"; reportId?: string }) {
+  const router = useRouter();
+  const input = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [type, setType] = useState("auto");
+  const [eventName, setEventName] = useState("");
+  const [drag, setDrag] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const pick = (f: File | undefined) => {
+    setError(null);
+    if (!f) return;
+    if (!/\.xlsx$/i.test(f.name)) return setError(/\.xlsm$/i.test(f.name) ? "Файлы с макросами (.xlsm) не принимаются — сохраните как .xlsx." : "Нужен файл .xlsx.");
+    if (f.size > MAX_MB * 1024 * 1024) return setError(`Файл больше ${MAX_MB} МБ.`);
+    setFile(f);
+  };
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!file) return setError("Выберите файл.");
+    setBusy(true);
+    setError(null);
+    const fd = new FormData();
+    fd.set("file", file);
+    fd.set("type", type);
+    if (eventName.trim()) fd.set("eventName", eventName.trim());
+    const res = await fetch(mode === "create" ? "/api/reports" : `/api/reports/${reportId}/file`, { method: "POST", body: fd }).catch(() => null);
+    const body = res ? await res.json().catch(() => ({})) : {};
+    setBusy(false);
+    if (!res || !res.ok) return setError(body.error ?? "Не удалось загрузить файл. Попробуйте ещё раз.");
+    if (mode === "create") router.push(`/reports/${body.id}`);
+    else {
+      setFile(null);
+      router.refresh();
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-4">
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="Выбрать файл .xlsx"
+        onClick={() => input.current?.click()}
+        onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), input.current?.click())}
+        onDragOver={(e) => (e.preventDefault(), setDrag(true))}
+        onDragLeave={() => setDrag(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDrag(false);
+          pick(e.dataTransfer.files[0]);
+        }}
+        className={cn(
+          "flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-10 text-center transition",
+          drag ? "border-accent bg-accent/5" : "border-line hover:border-ink-faint",
+        )}
+      >
+        <input
+          ref={input}
+          type="file"
+          accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          className="hidden"
+          onChange={(e) => pick(e.target.files?.[0])}
+        />
+        <p className="text-sm font-medium text-ink">{file ? file.name : "Перетащите .xlsx сюда или нажмите, чтобы выбрать"}</p>
+        <p className="mt-1 text-xs text-ink-faint">
+          {file ? `${(file.size / 1024).toFixed(0)} КБ` : `Feedback или Registration Form Analysis · до ${MAX_MB} МБ`}
+        </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label className="label" htmlFor="rep-type">Тип отчёта</label>
+          <select id="rep-type" className="input" value={type} onChange={(e) => setType(e.target.value)}>
+            <option value="auto">Определить автоматически</option>
+            <option value="feedback">Feedback Form Analysis</option>
+            <option value="registration">Registration Form Analysis</option>
+          </select>
+        </div>
+        {mode === "create" && (
+          <div>
+            <label className="label" htmlFor="rep-event">Название события</label>
+            <input id="rep-event" className="input" placeholder="Возьмём из файла" value={eventName} maxLength={120} onChange={(e) => setEventName(e.target.value)} />
+          </div>
+        )}
+      </div>
+
+      {error && <p role="alert" className="rounded-xl border border-danger/40 bg-danger/5 px-4 py-3 text-sm text-danger">{error}</p>}
+
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="submit" className="btn-primary" disabled={busy || !file}>
+          {busy ? "Разбираю файл…" : mode === "create" ? "Загрузить и посмотреть" : "Заменить данные"}
+        </button>
+        <p className="text-xs text-ink-faint">Файл разбирается на сервере и не сохраняется: в базу попадают только листы с аналитикой.</p>
+      </div>
+    </form>
+  );
+}
