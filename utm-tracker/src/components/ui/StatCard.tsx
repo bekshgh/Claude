@@ -9,10 +9,10 @@ export function StatCard({
   label: string;
   value: string;
   sub?: string;
-  accent?: "clicks" | "submits" | "leads" | "accent";
+  accent?: "clicks" | "leads" | "accent";
 }) {
   const dot =
-    accent === "clicks" ? "bg-clicks" : accent === "submits" ? "bg-submits" : accent === "leads" ? "bg-leads" : accent === "accent" ? "bg-accent" : "bg-ink-faint";
+    accent === "clicks" ? "bg-clicks" : accent === "leads" ? "bg-leads" : accent === "accent" ? "bg-accent" : "bg-ink-faint";
   return (
     <div className="card p-5 transition hover:border-line/80">
       <div className="flex items-center gap-2 text-sm text-ink-muted">

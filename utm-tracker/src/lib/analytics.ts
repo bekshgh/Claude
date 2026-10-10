@@ -14,10 +14,9 @@ export async function getOverview(range: RangeKey) {
   const clickWhere = since ? { timestamp: { gte: since } } : {};
   const leadWhere = since ? { submittedAt: { gte: since } } : {};
 
-  const [totalClicks, uniqueClicks, totalSubmits, totalLeads, activeCampaigns] = await Promise.all([
+  const [totalClicks, uniqueClicks, totalLeads, activeCampaigns] = await Promise.all([
     prisma.clickEvent.count({ where: clickWhere }),
     prisma.clickEvent.count({ where: { ...clickWhere, isUnique: true } }),
-    prisma.formSubmit.count({ where: leadWhere }),
     prisma.lead.count({ where: leadWhere }),
     prisma.campaign.count({ where: { status: "active" } }),
   ]);
@@ -25,25 +24,19 @@ export async function getOverview(range: RangeKey) {
   return {
     totalClicks,
     uniqueClicks,
-    totalSubmits,
     totalLeads,
     activeCampaigns,
-    submitRate: conversionRate(totalSubmits, totalClicks),
     conversionRate: conversionRate(totalLeads, totalClicks),
   };
 }
 
-/** Daily clicks, submits & leads series for the line chart. */
+/** Daily clicks & leads series for the line chart. */
 export async function getTimeSeries(range: RangeKey) {
   const since = rangeToDate(range) ?? new Date(Date.now() - 30 * 86_400_000);
-  const [clicks, submits, leads] = await Promise.all([
+  const [clicks, leads] = await Promise.all([
     prisma.clickEvent.findMany({
       where: { timestamp: { gte: since } },
       select: { timestamp: true },
-    }),
-    prisma.formSubmit.findMany({
-      where: { submittedAt: { gte: since } },
-      select: { submittedAt: true },
     }),
     prisma.lead.findMany({
       where: { submittedAt: { gte: since } },
@@ -51,32 +44,24 @@ export async function getTimeSeries(range: RangeKey) {
     }),
   ]);
 
-  type Day = { date: string; clicks: number; submits: number; leads: number };
-  const map = new Map<string, Day>();
-  const empty = (k: string): Day => ({ date: k, clicks: 0, submits: 0, leads: 0 });
+  const map = new Map<string, { date: string; clicks: number; leads: number }>();
   const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
   // seed every day in range so the chart has no gaps
   const start = new Date(since);
   for (let t = start.getTime(); t <= Date.now(); t += 86_400_000) {
     const k = dayKey(new Date(t));
-    map.set(k, empty(k));
+    map.set(k, { date: k, clicks: 0, leads: 0 });
   }
   for (const c of clicks) {
     const k = dayKey(c.timestamp);
-    const row = map.get(k) ?? empty(k);
+    const row = map.get(k) ?? { date: k, clicks: 0, leads: 0 };
     row.clicks++;
-    map.set(k, row);
-  }
-  for (const s of submits) {
-    const k = dayKey(s.submittedAt);
-    const row = map.get(k) ?? empty(k);
-    row.submits++;
     map.set(k, row);
   }
   for (const l of leads) {
     const k = dayKey(l.submittedAt);
-    const row = map.get(k) ?? empty(k);
+    const row = map.get(k) ?? { date: k, clicks: 0, leads: 0 };
     row.leads++;
     map.set(k, row);
   }
@@ -86,7 +71,6 @@ export async function getTimeSeries(range: RangeKey) {
 interface Breakdown {
   key: string;
   clicks: number;
-  submits: number;
   leads: number;
   cr: number;
 }
@@ -102,25 +86,23 @@ async function breakdownBy(field: "utmSource" | "utmCampaign" | "utmContent", ra
       _count: {
         select: {
           clicks: since ? { where: { timestamp: { gte: since } } } : true,
-          submits: since ? { where: { submittedAt: { gte: since } } } : true,
           leads: since ? { where: { submittedAt: { gte: since } } } : true,
         },
       },
     },
   });
 
-  const agg = new Map<string, { clicks: number; submits: number; leads: number }>();
+  const agg = new Map<string, { clicks: number; leads: number }>();
   for (const l of links) {
     const key = (l[field] || "(none)") as string;
-    const row = agg.get(key) ?? { clicks: 0, submits: 0, leads: 0 };
+    const row = agg.get(key) ?? { clicks: 0, leads: 0 };
     row.clicks += l._count.clicks;
-    row.submits += l._count.submits;
     row.leads += l._count.leads;
     agg.set(key, row);
   }
 
   return Array.from(agg.entries())
-    .map(([key, v]): Breakdown => ({ key, clicks: v.clicks, submits: v.submits, leads: v.leads, cr: conversionRate(v.leads, v.clicks) }))
+    .map(([key, v]): Breakdown => ({ key, clicks: v.clicks, leads: v.leads, cr: conversionRate(v.leads, v.clicks) }))
     .sort((a, b) => b.clicks - a.clicks || b.leads - a.leads);
 }
 
@@ -153,7 +135,6 @@ export async function getLinkStats(range: RangeKey) {
       _count: {
         select: {
           clicks: since ? { where: { timestamp: { gte: since } } } : true,
-          submits: since ? { where: { submittedAt: { gte: since } } } : true,
           leads: since ? { where: { submittedAt: { gte: since } } } : true,
         },
       },
@@ -162,7 +143,6 @@ export async function getLinkStats(range: RangeKey) {
   return links.map((l) => ({
     ...l,
     clicks: l._count.clicks,
-    submits: l._count.submits,
     leads: l._count.leads,
     cr: conversionRate(l._count.leads, l._count.clicks),
   }));

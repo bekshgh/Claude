@@ -83,7 +83,6 @@ model TrackingLink {
   campaign Campaign?    @relation(fields: [campaignId], references: [id])
   clicks   ClickEvent[]
   leads    Lead[]
-  submits  FormSubmit[]
 
   @@index([userId])
   @@index([campaignId])
@@ -110,7 +109,6 @@ model ClickEvent {
 
   trackingLink TrackingLink @relation(fields: [trackingLinkId], references: [id], onDelete: Cascade)
   leads        Lead[]
-  formSubmit   FormSubmit?
 
   @@index([trackingLinkId])
   @@index([clickId])
@@ -150,28 +148,6 @@ model Lead {
   @@index([trackingLinkId])
   @@index([clickEventId])
   @@index([clickId])
-  @@index([submittedAt])
-}
-
-// A press of the form's submit button ("Отправить заявку"), reported by the
-// on-page snippet. Counted once per click (the visitor may press the button
-// several times, e.g. after a validation error — those go into `attempts`).
-// Sits between ClickEvent and Lead in the funnel.
-model FormSubmit {
-  id             String   @id @default(cuid())
-  trackingLinkId String
-  clickEventId   String   @unique
-  clickId        String
-  formName       String?
-  pageUrl        String?
-  attempts       Int      @default(1)
-  submittedAt    DateTime @default(now()) // first press
-  lastAt         DateTime @default(now()) // latest press
-
-  trackingLink TrackingLink @relation(fields: [trackingLinkId], references: [id], onDelete: Cascade)
-  clickEvent   ClickEvent   @relation(fields: [clickEventId], references: [id], onDelete: Cascade)
-
-  @@index([trackingLinkId])
   @@index([submittedAt])
 }
 

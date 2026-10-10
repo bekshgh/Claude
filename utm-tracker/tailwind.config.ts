@@ -22,7 +22,6 @@ const config: Config = {
           soft: "#3a2e1a",
         },
         clicks: "#5b9bff", // cool blue — clicks
-        submits: "#a78bfa", // violet — submit button presses
         leads: "#3ecf8e", // green — leads / conversions
         danger: "#f87171",
       },
