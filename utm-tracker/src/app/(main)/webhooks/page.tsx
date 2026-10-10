@@ -94,6 +94,8 @@ function buildSnippet(base: string): string {
   window.addEventListener("load", attach);
   setTimeout(attach, 1500);
   setTimeout(attach, 3000);
+  // Current Tilda forms (no jQuery) fire this native event on the form after a successful send.
+  document.addEventListener("tildaform:aftersuccess", function (e) { window.tlConversion(e.target); }, true);
 
   // 3. Report a press of the submit button, even if the form then fails validation.
   var lastSubmit = 0;
