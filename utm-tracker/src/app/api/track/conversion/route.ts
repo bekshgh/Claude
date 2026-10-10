@@ -34,7 +34,10 @@ async function handle(req: NextRequest) {
   // Spam guard: the click_id must match a real recorded click.
   const click = await prisma.clickEvent.findUnique({
     where: { clickId },
-    select: { id: true },
+    select: {
+      id: true,
+      trackingLink: { select: { utmSource: true, utmMedium: true, utmCampaign: true, utmContent: true, utmTerm: true } },
+    },
   });
   if (!click) return ok({ ignored: "unknown_click_id" });
 
@@ -45,11 +48,12 @@ async function handle(req: NextRequest) {
     formName: str(body.formname) || str(body.formName),
     pageUrl: str(body.pageUrl) || str(body.page_url) || str(body.url),
     clickId,
-    utmSource: str(body.utm_source),
-    utmMedium: str(body.utm_medium),
-    utmCampaign: str(body.utm_campaign),
-    utmContent: str(body.utm_content),
-    utmTerm: str(body.utm_term),
+    // UTM from the page, else from the link the visitor came through.
+    utmSource: str(body.utm_source) || str(click.trackingLink.utmSource),
+    utmMedium: str(body.utm_medium) || str(click.trackingLink.utmMedium),
+    utmCampaign: str(body.utm_campaign) || str(click.trackingLink.utmCampaign),
+    utmContent: str(body.utm_content) || str(click.trackingLink.utmContent),
+    utmTerm: str(body.utm_term) || str(click.trackingLink.utmTerm),
     submittedAt: new Date(),
   };
 
