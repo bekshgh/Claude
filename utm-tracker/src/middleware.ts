@@ -20,6 +20,8 @@ export async function middleware(req: NextRequest) {
   if (
     PUBLIC.some((p) => pathname.startsWith(p)) ||
     pathname.startsWith("/r/") ||
+    // Report pages check status/visibility themselves (drafts & private → admins only).
+    pathname.startsWith("/report/") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon")
   ) {

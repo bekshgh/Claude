@@ -76,3 +76,42 @@ body {
     font-feature-settings: "tnum";
   }
 }
+
+/* Report pages print on white paper: invert the dark palette, drop shadows. */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+    background-image: none !important;
+    color: #111 !important;
+  }
+  .report .card,
+  .report [class*="bg-bg-"] {
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+  .report [class*="border-line"],
+  .report .card {
+    border-color: #d4d4d8 !important;
+  }
+  .report .text-ink,
+  .report h1,
+  .report h2 {
+    color: #111 !important;
+  }
+  .report .text-ink-muted {
+    color: #3f3f46 !important;
+  }
+  .report .text-ink-faint {
+    color: #71717a !important;
+  }
+  .report details > :not(summary) {
+    display: block;
+  }
+  .report .break-inside-avoid {
+    break-inside: avoid;
+  }
+}

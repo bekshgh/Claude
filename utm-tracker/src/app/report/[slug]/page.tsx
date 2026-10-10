@@ -1,0 +1,60 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/db";
+import { canView, isAdmin } from "@/lib/reports/store";
+import type { ReportDocument } from "@/lib/reports/types";
+import { ReportView } from "@/components/reports/ReportView";
+
+export const dynamic = "force-dynamic";
+
+async function load(slug: string) {
+  const report = await prisma.report.findUnique({ where: { slug } });
+  const admin = await isAdmin();
+  // Private / draft reports look exactly like missing ones to visitors.
+  if (!report || !canView(report, admin)) return null;
+  return { report, admin };
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const found = await load(params.slug);
+  if (!found) return { title: "Report not found", robots: { index: false, follow: false } };
+  const { report } = found;
+  const indexable = report.status === "published" && report.visibility === "public";
+  return {
+    title: report.title,
+    robots: indexable ? undefined : { index: false, follow: false },
+  };
+}
+
+export default async function ReportPage({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: { tab?: string };
+}) {
+  const found = await load(params.slug);
+  if (!found) notFound();
+  const { report, admin } = found;
+  const doc = report.data as unknown as ReportDocument;
+
+  return (
+    <main className="mx-auto w-full max-w-[1180px] px-4 py-6 sm:px-8 sm:py-10">
+      <div className="mb-6 flex items-center justify-between gap-3 print:hidden">
+        <span className="font-display text-sm font-semibold tracking-tight text-ink-muted">EwA · Reports</span>
+        {admin && (
+          <Link href={`/reports/${report.id}`} className="btn-ghost py-1.5 text-xs">
+            ← Управление отчётом
+          </Link>
+        )}
+      </div>
+      {admin && (report.status !== "published" || report.visibility === "private") && (
+        <p className="mb-6 rounded-xl border border-accent/40 bg-accent/5 px-4 py-3 text-sm text-accent print:hidden">
+          {report.status !== "published" ? "Черновик: отчёт видите только вы." : "Приватный отчёт: виден только вошедшим админам."}
+        </p>
+      )}
+      <ReportView doc={doc} initialTab={searchParams.tab} />
+    </main>
+  );
+}

@@ -163,3 +163,37 @@ model WebhookLog {
   @@index([createdAt])
   @@index([status])
 }
+
+// ─── Reports: parsed Excel analyses (Feedback / Registration) ───────────
+// Only the normalised, sanitised JSON is stored — never the uploaded file.
+
+enum ReportStatus {
+  draft
+  published
+}
+
+enum ReportVisibility {
+  private // signed-in admins only
+  link // anyone with the link (noindex)
+  public // anyone; may be indexed
+}
+
+model Report {
+  id             String           @id @default(cuid())
+  slug           String           @unique
+  type           String // feedback | registration
+  title          String
+  eventName      String?
+  status         ReportStatus     @default(draft)
+  visibility     ReportVisibility @default(link)
+  createdBy      String?
+  sourceFileName String?
+  parserVersion  String
+  data           Json // ReportDocument
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  publishedAt    DateTime?
+
+  @@index([status])
+  @@index([createdAt])
+}

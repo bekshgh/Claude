@@ -40,6 +40,8 @@ is never blocked by a database error.
 | Webhook | `/webhooks` | Endpoint URL, Tilda JS snippet, payload, tester, event log |
 | Guideline | `/guide` | 20-step beginner guide (in Russian) |
 | Settings | `/settings` | Config, environment status, data overview |
+| Reports | `/reports` | Upload a Feedback / Registration Excel analysis, preview, publish |
+| Report page | `/report/{slug}` | The published interactive report (see [docs/reports.md](docs/reports.md)) |
 
 ---
 
@@ -104,8 +106,11 @@ npm run dev              # http://localhost:3000
 2. Add a PostgreSQL database (Vercel Postgres / Neon / Supabase).
 3. In **Project → Settings → Environment Variables**, add all the variables above.
    Set `NEXT_PUBLIC_BASE_URL` to your real Vercel domain.
-4. Vercel runs `npm run vercel-build` (`prisma generate && prisma migrate deploy && next build`),
-   so database migrations are applied automatically on every deploy.
+4. Vercel runs `npm run vercel-build` (`prisma generate`, migrations, `next build`).
+   Migrations are applied automatically on **production** deploys only
+   (`scripts/migrate-production.mjs`): preview deployments share the production
+   database, so a pushed branch must not change it before it is merged. A preview
+   of a branch that adds a migration will therefore not see the new tables.
 
 ---
 
