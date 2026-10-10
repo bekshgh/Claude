@@ -5,7 +5,7 @@ The `/projects` page helps an organizer answer five questions:
 | Question | Answered by |
 |---|---|
 | **Find** the project I remember | search (case-insensitive, Cyrillic ⇄ Latin), type, period and seasons, status |
-| **Compare like with like** | type, format, scale, audience, "Similar projects", comparing 2–4 projects |
+| **Compare like with like** | type, format, scale, audience, "Similar projects", comparing up to 6 projects side by side |
 | **What works** | scores, NPS proxy, strongest area, most praised, channels; the "Best" view |
 | **Where it hurts** | weakest area, most criticised, low response rate; the "Needs attention" view |
 | **What's missing** | the "Data" filter, the "No feedback" view |

@@ -24,6 +24,9 @@ export interface FilterState {
 
 export const DEFAULT_SORT = { key: "date", dir: -1 as const };
 
+/** How many projects can be compared side by side. */
+export const MAX_COMPARE = 6;
+
 export const emptyState = (): FilterState => ({ values: {}, sort: { ...DEFAULT_SORT }, nulls: false, view: "cards", cmp: [] });
 
 const num = z.coerce.number().finite();
@@ -105,7 +108,7 @@ export function parseState(input: Input, admin = true): FilterState {
   state.nulls = get(input, "nulls") === "1";
   state.view = get(input, "view") === "table" ? "table" : "cards";
   const cmp = get(input, "cmp");
-  if (cmp) state.cmp = [...new Set(cmp.split(","))].filter((s) => slugItem.safeParse(s).success).slice(0, 4);
+  if (cmp) state.cmp = [...new Set(cmp.split(","))].filter((s) => slugItem.safeParse(s).success).slice(0, MAX_COMPARE);
   return state;
 }
 

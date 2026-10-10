@@ -8,20 +8,29 @@ report: KPI cards, charts, tables, insights and methodology.
 .xlsx → type from sheet names → analytics sheets → ReportDocument (JSON) → draft → publish → /report/<slug>
 ```
 
-## Uploading a new file
+## Uploading files
 
-1. **Reports → New report.** Drop an `.xlsx` (up to 4 MB). The type is detected
-   from the sheet names; if it can't be, pick it manually. Optionally choose the
-   project the report belongs to (see [project-filters.md](project-filters.md)).
-2. The draft page opens. On the right: what was found in the file (tabs, tables,
-   cards), which sheets were not imported and any parser warnings. Below: a
+1. **Reports → Upload reports.** Drop one or many `.xlsx` files (up to 4 MB
+   each). Every file is read first and nothing is saved yet: its type, event
+   name and date come from the file.
+2. Files of the same event are grouped into one project — e.g. "ÖZGE Forum S'26"
+   (feedback) and "Özge S'26" (registration) both become `ozge s26`
+   (`eventKey()` in `src/lib/projects/grouping.ts` ignores accents, punctuation
+   and words like *Forum / Form / Analysis*). Each group is suggested to go into
+   an existing project with the same name, or into a new one whose name, type
+   and date (first feedback day, or the last registration day) can be edited.
+   A file can be moved to another group or to a project of its own.
+3. **Save** creates the projects and the reports (as drafts, or published with
+   "Publish right away"). The result links to **Compare these projects** in
+   Projects; with a single file, to its report page.
+4. A report's page shows what was found in the file (tabs, tables, cards), which sheets were not imported and any parser warnings. Below: a
    preview of the report exactly as it will look via its link.
-3. **Publish** and pick a visibility:
+5. **Publish** and pick a visibility:
    - *Private* — signed-in admins only;
    - *Link* (default) — anyone with the link, the page is `noindex`;
    - *Public* — may appear in search engines.
    Drafts are admin-only whatever the visibility; for everyone else such a page is a 404.
-4. A newer version of the same event: **Replace file** on the report page — the
+6. A newer version of the same event: **Replace file** on the report page — the
    link and status stay.
 
 ## What is stored (and what is not)
