@@ -293,8 +293,8 @@ function relativeDisabled(f: FilterDef, o: Option, ctx: FilterCtx, state: Filter
   const st = ctx.relative[f.key];
   const types = (state.values.type as string[] | undefined) ?? [];
   const enoughType = types.length ? types.some((t) => st.byType.has(t)) : st.byType.size > 0;
-  if (o.value === "above_type_median" && !enoughType) return { disabled: "недостаточно проектов своего типа для сравнения" };
-  if (o.value !== "above_type_median" && st.all.length < ctx.settings.relativeMinProjects) return { disabled: "недостаточно проектов для сравнения" };
+  if (o.value === "above_type_median" && !enoughType) return { disabled: "not enough projects of this type to compare" };
+  if (o.value !== "above_type_median" && st.all.length < ctx.settings.relativeMinProjects) return { disabled: "not enough projects to compare" };
   return {};
 }
 

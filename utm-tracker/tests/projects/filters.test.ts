@@ -11,7 +11,7 @@ const NOW = new Date("2026-10-10T00:00:00Z");
 function row(id: string, o: Partial<ProjectRow> = {}): ProjectRow {
   const startDate = o.startDate ?? "2026-05-10";
   const base: ProjectRow = {
-    id, slug: id, name: id, typeKey: "forum", typeName: "Форум", format: "offline", status: "done",
+    id, slug: id, name: id, typeKey: "forum", typeName: "Forum", format: "offline", status: "done",
     startDate, endDate: startDate, city: "Astana", venue: null, ownerTeam: "AIESEC NU", tags: [], demo: true,
     reportsUpdatedAt: "2026-06-01T00:00:00Z", season: seasonOf(new Date(startDate)), hasMetrics: true,
     registrants: null, submissions: null, campaignDays: null, channelCount: null, responses: null, responseRate: null,
@@ -40,10 +40,10 @@ const ROWS: ProjectRow[] = [
   row("f2", { name: "Impact Forum", city: "Almaty", ...full(120, 20, 8.6, { weakestZoneScore10: 8.1 }) }),
   row("f3", { name: "Career Forum", ...full(900, 60, 9.6, { weakestZone: "food" }) }),
   row("f4", { name: "Youth Forum", startDate: "2025-11-20", ...full(80, 8, 9.9) }), // small sample
-  row("c1", { name: "Business Case Cup", typeKey: "case_championship", typeName: "Кейс-чемпионат", tags: ["Business"], ...full(300, 45, 9.0) }),
-  row("c2", { name: "Finance Case", typeKey: "case_championship", typeName: "Кейс-чемпионат", startDate: "2026-08-30",
+  row("c1", { name: "Business Case Cup", typeKey: "case_championship", typeName: "Case championship", tags: ["Business"], ...full(300, 45, 9.0) }),
+  row("c2", { name: "Finance Case", typeKey: "case_championship", typeName: "Case championship", startDate: "2026-08-30",
     registrants: 210, hasRegistrationReport: true, concentrationLevel: "low", reportVisibilities: ["private"] }), // no feedback yet
-  row("h1", { name: "AI Hackathon", typeKey: "hackathon", typeName: "Хакатон", status: "planned", startDate: "2026-11-15", hasMetrics: false }),
+  row("h1", { name: "AI Hackathon", typeKey: "hackathon", typeName: "Hackathon", status: "planned", startDate: "2026-11-15", hasMetrics: false }),
 ];
 
 const opts = { settings: DEFAULT_SETTINGS, now: NOW, admin: true };
@@ -55,7 +55,7 @@ describe("registry → query, one test per filter kind", () => {
     expect(ids("q=ozge")).toEqual(["ozge"]);
     expect(ids("q=озге")).toEqual(["ozge"]); // transliterated
     expect(ids("q=ÖZGE%20форум")).toEqual(["ozge"]);
-    expect(ids("q=форум")).toEqual(["f1", "f2", "f3", "f4", "ozge"]); // type name
+    expect(ids("q=форум")).toEqual(["f1", "f2", "f3", "f4", "ozge"]); // Cyrillic query, Latin type name
     expect(ids("q=business")).toEqual(["c1"]); // tag
     expect(ids("q=almaty")).toEqual(["f2"]);
   });
@@ -153,7 +153,7 @@ describe("relative filters", () => {
   });
   it("are disabled when the type has fewer than 4 comparable projects", () => {
     const res = q("type=case_championship");
-    expect(res.facets.relscore.find((o) => o.value === "above_type_median")?.disabled).toMatch(/недостаточно/);
+    expect(res.facets.relscore.find((o) => o.value === "above_type_median")?.disabled).toMatch(/not enough/);
     expect(q("type=forum").facets.relscore.find((o) => o.value === "above_type_median")?.disabled).toBeUndefined();
   });
 });

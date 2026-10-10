@@ -13,7 +13,7 @@ describe.each([
     for (const sheet of doc.sheets) {
       const html = renderToString(<ReportView doc={doc} initialTab={sheet.key} />);
       expect(html).toContain(`aria-selected="true"`);
-      expect(html).toContain(sheet.label);
+      expect(html).toContain(escapeHtml(sheet.label));
       for (const s of sheet.sections) {
         if (s.kind === "table" && s.views[0]?.type === "segments") continue; // shown via the switcher
         expect(html, `${sheet.key}: ${s.title}`).toContain(escapeHtml(readableTitle(s.title)));
@@ -29,12 +29,12 @@ describe("report page details", () => {
     const overview = renderToString(<ReportView doc={doc} />);
     expect(overview).toContain("+87"); // Organization NPS
     expect(overview).toContain("9.5"); // avg organization
-    expect(overview).toContain("Как читать эти цифры");
+    expect(overview).toContain("How to read these numbers");
     const themes = renderToString(<ReportView doc={doc} initialTab="themes" />);
-    expect(themes).toContain("Пример ответа");
+    expect(themes).toContain("Example answer");
     expect(themes).toContain("Керемет кофе-брейк және спикерлер");
     const segments = renderToString(<ReportView doc={doc} initialTab="segments" />);
-    expect(segments).toContain("малая выборка");
+    expect(segments).toContain("small sample");
   });
 
   it("escapes text from the file", async () => {

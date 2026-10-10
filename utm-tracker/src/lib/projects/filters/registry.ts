@@ -76,11 +76,11 @@ const distinct = (field: keyof ProjectRow) => (rows: ProjectRow[]): Option[] =>
 export const COMPLETED = new Set(["done", "archived"]);
 
 export const RELATIVE_OPTIONS: Option[] = [
-  { value: "above_type_median", label: "Лучше медианы своего типа" },
-  { value: "top25", label: "Топ-25% среди завершённых" },
-  { value: "bottom25", label: "Нижние 25% среди завершённых" },
-  { value: "above_avg", label: "Выше среднего по портфелю" },
-  { value: "below_avg", label: "Ниже среднего по портфелю" },
+  { value: "above_type_median", label: "Above the median of its type" },
+  { value: "top25", label: "Top 25% of completed" },
+  { value: "bottom25", label: "Bottom 25% of completed" },
+  { value: "above_avg", label: "Above the portfolio average" },
+  { value: "below_avg", label: "Below the portfolio average" },
 ];
 
 /** Enough responses to trust the scores: n ≥ min AND response rate ≥ min. */
@@ -93,24 +93,24 @@ const daysSince = (iso: string | null, now: Date) => (iso ? (now.getTime() - new
 
 export const FILTERS: FilterDef[] = [
   /* ─── A. main ─────────────────────────────────────────────── */
-  { key: "q", label: "Поиск", group: "main", kind: "search", appliesTo: "all", nullPolicy: "include", defaultVisible: true,
-    help: "По названию, типу, тегам, городу и команде. Регистр и ё/е не важны." },
-  { key: "type", label: "Тип проекта", group: "main", kind: "multiselect", field: "typeKey", appliesTo: "all", nullPolicy: "exclude", defaultVisible: true },
-  { key: "date", label: "Период", group: "main", kind: "dateRange", field: "startDate", appliesTo: "all", nullPolicy: "exclude", defaultVisible: true,
-    help: "По дате проведения." },
-  { key: "season", label: "Сезон", group: "main", kind: "multiselect", field: "season", appliesTo: "all", nullPolicy: "exclude", defaultVisible: true,
+  { key: "q", label: "Search", group: "main", kind: "search", appliesTo: "all", nullPolicy: "include", defaultVisible: true,
+    help: "By name, type, tags, city and team. Case-insensitive; Cyrillic and Latin both work." },
+  { key: "type", label: "Project type", group: "main", kind: "multiselect", field: "typeKey", appliesTo: "all", nullPolicy: "exclude", defaultVisible: true },
+  { key: "date", label: "Period", group: "main", kind: "dateRange", field: "startDate", appliesTo: "all", nullPolicy: "exclude", defaultVisible: true,
+    help: "By the event date." },
+  { key: "season", label: "Season", group: "main", kind: "multiselect", field: "season", appliesTo: "all", nullPolicy: "exclude", defaultVisible: true,
     options: (rows) => [...new Set(rows.map((r) => r.season).filter((s): s is string => Boolean(s)))]
       .sort((a, b) => seasonOrder(b) - seasonOrder(a))
       .map((s) => ({ value: s, label: seasonLabel(s) })) },
-  { key: "status", label: "Статус", group: "main", kind: "multiselect", field: "status", appliesTo: "all", nullPolicy: "exclude", defaultVisible: true,
+  { key: "status", label: "Status", group: "main", kind: "multiselect", field: "status", appliesTo: "all", nullPolicy: "exclude", defaultVisible: true,
     options: [
-      { value: "planned", label: "Планируется" },
-      { value: "registration", label: "Идёт регистрация" },
-      { value: "done", label: "Проведён" },
-      { value: "archived", label: "В архиве" },
+      { value: "planned", label: "Planned" },
+      { value: "registration", label: "Registration open" },
+      { value: "done", label: "Done" },
+      { value: "archived", label: "Archived" },
     ] },
-  { key: "data", label: "Данные", group: "main", kind: "multiselect", appliesTo: "all", nullPolicy: "include", defaultVisible: true,
-    help: "Какие отчёты загружены по проекту.",
+  { key: "data", label: "Data", group: "main", kind: "multiselect", appliesTo: "all", nullPolicy: "include", defaultVisible: true,
+    help: "Which reports are uploaded for the project.",
     get: (r) => {
       const v: string[] = [];
       if (r.hasRegistrationReport) v.push("reg");
@@ -120,85 +120,85 @@ export const FILTERS: FilterDef[] = [
       return v;
     },
     options: [
-      { value: "reg", label: "Есть отчёт по регистрации" },
-      { value: "fb", label: "Есть отчёт по фидбэку" },
-      { value: "both", label: "Есть оба" },
-      { value: "none", label: "Нет отчётов" },
+      { value: "reg", label: "Has registration report" },
+      { value: "fb", label: "Has feedback report" },
+      { value: "both", label: "Has both" },
+      { value: "none", label: "No reports" },
     ] },
 
   /* ─── B. context ──────────────────────────────────────────── */
-  { key: "format", label: "Формат", group: "context", kind: "multiselect", field: "format", appliesTo: "all", nullPolicy: "exclude",
-    options: [{ value: "offline", label: "Офлайн" }, { value: "online", label: "Онлайн" }, { value: "hybrid", label: "Гибрид" }] },
-  { key: "city", label: "Город", group: "context", kind: "multiselect", field: "city", appliesTo: "all", nullPolicy: "exclude", options: distinct("city") },
-  { key: "venue", label: "Площадка", group: "context", kind: "multiselect", field: "venue", appliesTo: "all", nullPolicy: "exclude", options: distinct("venue") },
-  { key: "team", label: "Команда", group: "context", kind: "multiselect", field: "ownerTeam", appliesTo: "all", nullPolicy: "exclude", options: distinct("ownerTeam") },
-  { key: "tags", label: "Теги", group: "context", kind: "tags", field: "tags", appliesTo: "all", nullPolicy: "exclude",
+  { key: "format", label: "Format", group: "context", kind: "multiselect", field: "format", appliesTo: "all", nullPolicy: "exclude",
+    options: [{ value: "offline", label: "Offline" }, { value: "online", label: "Online" }, { value: "hybrid", label: "Hybrid" }] },
+  { key: "city", label: "City", group: "context", kind: "multiselect", field: "city", appliesTo: "all", nullPolicy: "exclude", options: distinct("city") },
+  { key: "venue", label: "Venue", group: "context", kind: "multiselect", field: "venue", appliesTo: "all", nullPolicy: "exclude", options: distinct("venue") },
+  { key: "team", label: "Team", group: "context", kind: "multiselect", field: "ownerTeam", appliesTo: "all", nullPolicy: "exclude", options: distinct("ownerTeam") },
+  { key: "tags", label: "Tags", group: "context", kind: "tags", field: "tags", appliesTo: "all", nullPolicy: "exclude",
     options: (rows) => [...new Set(rows.flatMap((r) => r.tags))].sort((a, b) => a.localeCompare(b, "ru")).map((t) => ({ value: t, label: t })) },
-  { key: "stage", label: "Преобладающий курс", group: "context", kind: "multiselect", field: "audienceStage", appliesTo: "all", nullPolicy: "exclude",
-    options: dict(STAGES), help: "Самая большая группа участников по курсу, из отчёта по регистрации." },
-  { key: "age", label: "Возрастная группа", group: "context", kind: "multiselect", field: "ageBand", appliesTo: "all", nullPolicy: "exclude",
-    options: distinct("ageBand"), help: "Самая частая возрастная группа регистрантов." },
+  { key: "stage", label: "Main study stage", group: "context", kind: "multiselect", field: "audienceStage", appliesTo: "all", nullPolicy: "exclude",
+    options: dict(STAGES), help: "The largest group of registrants by study stage, from the registration report." },
+  { key: "age", label: "Age group", group: "context", kind: "multiselect", field: "ageBand", appliesTo: "all", nullPolicy: "exclude",
+    options: distinct("ageBand"), help: "The most common age band of registrants." },
 
   /* ─── C. scale ────────────────────────────────────────────── */
-  { key: "regs", label: "Регистрации", group: "scale", kind: "range", field: "registrants", appliesTo: "all", nullPolicy: "exclude", unit: "people",
-    help: "Уникальные регистранты после удаления дубликатов.",
+  { key: "regs", label: "Registrations", group: "scale", kind: "range", field: "registrants", appliesTo: "all", nullPolicy: "exclude", unit: "people",
+    help: "Unique registrants after removing duplicates.",
     buckets: [{ label: "<100", max: 99 }, { label: "100–300", min: 100, max: 300 }, { label: "300–600", min: 300, max: 600 }, { label: "600+", min: 600 }] },
-  { key: "resp", label: "Отклики на фидбэк", group: "scale", kind: "range", field: "responses", appliesTo: "all", nullPolicy: "exclude", unit: "people" },
-  { key: "rr", label: "Доля откликнувшихся", group: "scale", kind: "range", field: "responseRate", appliesTo: "all", nullPolicy: "exclude", unit: "%", scale: 100, decimals: 1,
-    help: "Ответы на фидбэк ÷ уникальные регистранты." },
-  { key: "days", label: "Длительность кампании", group: "scale", kind: "range", field: "campaignDays", appliesTo: "all", nullPolicy: "exclude", unit: "days" },
-  { key: "channels", label: "Число каналов", group: "scale", kind: "range", field: "channelCount", appliesTo: "all", nullPolicy: "exclude" },
+  { key: "resp", label: "Feedback responses", group: "scale", kind: "range", field: "responses", appliesTo: "all", nullPolicy: "exclude", unit: "people" },
+  { key: "rr", label: "Response rate", group: "scale", kind: "range", field: "responseRate", appliesTo: "all", nullPolicy: "exclude", unit: "%", scale: 100, decimals: 1,
+    help: "Feedback responses ÷ unique registrants." },
+  { key: "days", label: "Campaign length", group: "scale", kind: "range", field: "campaignDays", appliesTo: "all", nullPolicy: "exclude", unit: "days" },
+  { key: "channels", label: "Channels", group: "scale", kind: "range", field: "channelCount", appliesTo: "all", nullPolicy: "exclude" },
 
   /* ─── D. results ──────────────────────────────────────────── */
-  { key: "score10", label: "Оценка организации", group: "results", kind: "range", field: "orgScore10", appliesTo: "all", nullPolicy: "exclude", unit: "/10", decimals: 1 },
-  { key: "nps", label: "NPS-прокси", group: "results", kind: "range", field: "nps", appliesTo: "all", nullPolicy: "exclude",
-    help: "NPS здесь прокси: % оценок 9–10 минус % оценок ≤6 по вопросу об организации." },
-  { key: "comp10", label: "Композитный балл", group: "results", kind: "range", field: "composite10", appliesTo: "all", nullPolicy: "exclude", unit: "/10", decimals: 1,
-    help: "Среднее всех оценок, приведённых к /10." },
-  { key: "weak", label: "Самая слабая зона", group: "results", kind: "multiselect", field: "weakestZone", appliesTo: "all", nullPolicy: "exclude", options: dict(ZONES),
-    help: "Оцениваемая зона с минимальным баллом в проекте." },
-  { key: "strong", label: "Самая сильная зона", group: "results", kind: "multiselect", field: "strongestZone", appliesTo: "all", nullPolicy: "exclude", options: dict(ZONES) },
-  { key: "praise", label: "Чаще всего хвалили", group: "results", kind: "multiselect", field: "topPraiseTheme", appliesTo: "all", nullPolicy: "exclude", options: dict(THEMES) },
-  { key: "pain", label: "Чаще всего критиковали", group: "results", kind: "multiselect", field: "topPainTheme", appliesTo: "all", nullPolicy: "exclude", options: dict(THEMES) },
-  { key: "enough", label: "Только с достаточным числом откликов", group: "results", kind: "boolean", appliesTo: "all", nullPolicy: "exclude",
+  { key: "score10", label: "Organization score", group: "results", kind: "range", field: "orgScore10", appliesTo: "all", nullPolicy: "exclude", unit: "/10", decimals: 1 },
+  { key: "nps", label: "NPS proxy", group: "results", kind: "range", field: "nps", appliesTo: "all", nullPolicy: "exclude",
+    help: "An NPS-style proxy: % of 9–10 minus % of ≤6 on the organization question." },
+  { key: "comp10", label: "Composite score", group: "results", kind: "range", field: "composite10", appliesTo: "all", nullPolicy: "exclude", unit: "/10", decimals: 1,
+    help: "Average of all ratings, normalised to /10." },
+  { key: "weak", label: "Weakest area", group: "results", kind: "multiselect", field: "weakestZone", appliesTo: "all", nullPolicy: "exclude", options: dict(ZONES),
+    help: "The rated area with the lowest score in the project." },
+  { key: "strong", label: "Strongest area", group: "results", kind: "multiselect", field: "strongestZone", appliesTo: "all", nullPolicy: "exclude", options: dict(ZONES) },
+  { key: "praise", label: "Most praised", group: "results", kind: "multiselect", field: "topPraiseTheme", appliesTo: "all", nullPolicy: "exclude", options: dict(THEMES) },
+  { key: "pain", label: "Most criticised", group: "results", kind: "multiselect", field: "topPainTheme", appliesTo: "all", nullPolicy: "exclude", options: dict(THEMES) },
+  { key: "enough", label: "Only with enough responses", group: "results", kind: "boolean", appliesTo: "all", nullPolicy: "exclude",
     get: (r, ctx) => enoughSample(r, ctx.settings),
-    help: "Порог задаётся в настройках (по умолчанию n ≥ 30 и не меньше 5% регистрантов)." },
+    help: "Thresholds are set in Settings (default: n ≥ 30 and at least 5% of registrants)." },
 
   /* ─── E. acquisition & audience ───────────────────────────── */
-  { key: "channel", label: "Главный канал", group: "acquisition", kind: "multiselect", field: "topChannelGroup", appliesTo: "all", nullPolicy: "exclude", options: dict(CHANNEL_GROUPS) },
-  { key: "conc", label: "Зависимость от одного канала", group: "acquisition", kind: "multiselect", field: "concentrationLevel", appliesTo: "all", nullPolicy: "exclude",
-    options: dict(CONCENTRATION), help: "Индекс концентрации HHI по группам каналов: <0.15 низкая, 0.15–0.25 умеренная, >0.25 высокая." },
-  { key: "campaign", label: "Тип кампании", group: "acquisition", kind: "multiselect", appliesTo: "all", nullPolicy: "exclude",
+  { key: "channel", label: "Top channel", group: "acquisition", kind: "multiselect", field: "topChannelGroup", appliesTo: "all", nullPolicy: "exclude", options: dict(CHANNEL_GROUPS) },
+  { key: "conc", label: "Single-channel dependence", group: "acquisition", kind: "multiselect", field: "concentrationLevel", appliesTo: "all", nullPolicy: "exclude",
+    options: dict(CONCENTRATION), help: "HHI concentration across channel groups: <0.15 low, 0.15–0.25 moderate, >0.25 high." },
+  { key: "campaign", label: "Campaign shape", group: "acquisition", kind: "multiselect", appliesTo: "all", nullPolicy: "exclude",
     get: (r) => (r.isBursty === null ? null : r.isBursty ? "burst" : "even"),
-    options: [{ value: "burst", label: "Пиковая" }, { value: "even", label: "Ровная" }],
-    help: "Пиковая — больше 20% регистраций пришло за один день (порог в настройках)." },
-  { key: "uni", label: "Доля главного вуза", group: "acquisition", kind: "range", field: "topUniversityShare", appliesTo: "all", nullPolicy: "exclude", unit: "%", scale: 100,
-    help: "Доля самого частого вуза среди регистрантов; название вуза — из отчёта." },
-  { key: "newbies", label: "Доля новых в AIESEC", group: "acquisition", kind: "range", field: "newToOrgShare", appliesTo: ["forum", "case_championship"], nullPolicy: "exclude", unit: "%", scale: 100 },
-  { key: "intern", label: "Интерес к стажировкам", group: "acquisition", kind: "range", field: "internshipShare", appliesTo: ["forum", "case_championship"], nullPolicy: "exclude", unit: "%", scale: 100 },
-  { key: "avgage", label: "Средний возраст", group: "acquisition", kind: "range", field: "avgAge", appliesTo: "all", nullPolicy: "exclude", unit: "years", decimals: 1 },
-  { key: "dup", label: "Доля дубликатов", group: "acquisition", kind: "range", field: "duplicateRate", appliesTo: "all", nullPolicy: "exclude", unit: "%", scale: 100, decimals: 1,
-    help: "Повторные отправки формы ÷ все отправки. Показатель качества данных." },
+    options: [{ value: "burst", label: "Bursty" }, { value: "even", label: "Even" }],
+    help: "Bursty: more than 20% of registrations came on a single day (threshold in Settings)." },
+  { key: "uni", label: "Top university share", group: "acquisition", kind: "range", field: "topUniversityShare", appliesTo: "all", nullPolicy: "exclude", unit: "%", scale: 100,
+    help: "Share of the most common university among registrants; the name comes from the report." },
+  { key: "newbies", label: "New to AIESEC", group: "acquisition", kind: "range", field: "newToOrgShare", appliesTo: ["forum", "case_championship"], nullPolicy: "exclude", unit: "%", scale: 100 },
+  { key: "intern", label: "Want an internship", group: "acquisition", kind: "range", field: "internshipShare", appliesTo: ["forum", "case_championship"], nullPolicy: "exclude", unit: "%", scale: 100 },
+  { key: "avgage", label: "Average age", group: "acquisition", kind: "range", field: "avgAge", appliesTo: "all", nullPolicy: "exclude", unit: "years", decimals: 1 },
+  { key: "dup", label: "Duplicate rate", group: "acquisition", kind: "range", field: "duplicateRate", appliesTo: "all", nullPolicy: "exclude", unit: "%", scale: 100, decimals: 1,
+    help: "Repeat form submissions ÷ all submissions. A data-quality signal." },
 
   /* ─── F. relative ─────────────────────────────────────────── */
-  { key: "relscore", label: "Оценка относительно других", group: "relative", kind: "relative", relativeOf: "orgScore10", appliesTo: "all", nullPolicy: "exclude",
-    options: RELATIVE_OPTIONS, help: "Сравнение только среди завершённых проектов; малые выборки не участвуют." },
-  { key: "relnps", label: "NPS относительно других", group: "relative", kind: "relative", relativeOf: "nps", appliesTo: "all", nullPolicy: "exclude", options: RELATIVE_OPTIONS },
-  { key: "relrr", label: "Отклик относительно других", group: "relative", kind: "relative", relativeOf: "responseRate", appliesTo: "all", nullPolicy: "exclude", options: RELATIVE_OPTIONS },
+  { key: "relscore", label: "Score vs others", group: "relative", kind: "relative", relativeOf: "orgScore10", appliesTo: "all", nullPolicy: "exclude",
+    options: RELATIVE_OPTIONS, help: "Compared among completed projects only; small samples are left out." },
+  { key: "relnps", label: "NPS vs others", group: "relative", kind: "relative", relativeOf: "nps", appliesTo: "all", nullPolicy: "exclude", options: RELATIVE_OPTIONS },
+  { key: "relrr", label: "Response rate vs others", group: "relative", kind: "relative", relativeOf: "responseRate", appliesTo: "all", nullPolicy: "exclude", options: RELATIVE_OPTIONS },
 
   /* ─── G. admin ────────────────────────────────────────────── */
-  { key: "vis", label: "Видимость отчёта", group: "admin", kind: "multiselect", field: "reportVisibilities", appliesTo: "all", nullPolicy: "exclude", visibility: "admin",
-    options: [{ value: "private", label: "Приватный" }, { value: "link", label: "По ссылке" }, { value: "public", label: "Публичный" }] },
-  { key: "warn", label: "Есть предупреждения парсера", group: "admin", kind: "boolean", field: "hasWarnings", appliesTo: "all", nullPolicy: "exclude", visibility: "admin" },
-  { key: "stale", label: "Отчёт не обновлялся, дней", group: "admin", kind: "range", appliesTo: "all", nullPolicy: "exclude", visibility: "admin", unit: "days",
+  { key: "vis", label: "Report visibility", group: "admin", kind: "multiselect", field: "reportVisibilities", appliesTo: "all", nullPolicy: "exclude", visibility: "admin",
+    options: [{ value: "private", label: "Private" }, { value: "link", label: "Link" }, { value: "public", label: "Public" }] },
+  { key: "warn", label: "Has parser warnings", group: "admin", kind: "boolean", field: "hasWarnings", appliesTo: "all", nullPolicy: "exclude", visibility: "admin" },
+  { key: "stale", label: "Days since report update", group: "admin", kind: "range", appliesTo: "all", nullPolicy: "exclude", visibility: "admin", unit: "days",
     get: (r, ctx) => {
       const d = daysSince(r.reportsUpdatedAt, ctx.now);
       return d === null ? null : Math.floor(d);
     } },
 
   /* ─── quick views (shown as buttons, not in the panel) ────── */
-  { key: "attention", label: "Требуют внимания", group: "presets", kind: "boolean", appliesTo: "all", nullPolicy: "exclude",
-    help: "Проведён, и оценка ниже медианы своего типа, или слабая зона ниже порога, или низкий отклик.",
+  { key: "attention", label: "Needs attention", group: "presets", kind: "boolean", appliesTo: "all", nullPolicy: "exclude",
+    help: "Done, and the score is below its type's median, or the weakest area is below the threshold, or the response rate is low.",
     get: (r, ctx) => {
       if (!COMPLETED.has(r.status)) return false;
       const s = ctx.settings;
@@ -208,8 +208,8 @@ export const FILTERS: FilterDef[] = [
       const lowResponse = r.responseRate !== null && r.responseRate < s.attentionResponseRate;
       return belowMedian || weakZone || lowResponse;
     } },
-  { key: "best", label: "Лучшие", group: "presets", kind: "boolean", appliesTo: "all", nullPolicy: "exclude",
-    help: "Топ-25% по оценке или NPS среди завершённых проектов с достаточной выборкой.",
+  { key: "best", label: "Best", group: "presets", kind: "boolean", appliesTo: "all", nullPolicy: "exclude",
+    help: "Top 25% by score or NPS among completed projects with enough responses.",
     get: (r, ctx) => {
       if (!COMPLETED.has(r.status) || !enoughSample(r, ctx.settings)) return false;
       const inTop = (key: "relscore" | "relnps", v: number | null) => {
@@ -218,8 +218,8 @@ export const FILTERS: FilterDef[] = [
       };
       return inTop("relscore", r.orgScore10) || inTop("relnps", r.nps);
     } },
-  { key: "nofb", label: "Нет фидбэка", group: "presets", kind: "boolean", appliesTo: "all", nullPolicy: "exclude",
-    help: "Проведён больше недели назад, отчёт по регистрации есть, по фидбэку — нет.",
+  { key: "nofb", label: "No feedback", group: "presets", kind: "boolean", appliesTo: "all", nullPolicy: "exclude",
+    help: "Held over a week ago, has a registration report but no feedback report.",
     get: (r, ctx) => {
       const held = daysSince(r.endDate ?? r.startDate, ctx.now);
       return COMPLETED.has(r.status) && held !== null && held > ctx.settings.noFeedbackDays && r.hasRegistrationReport && !r.hasFeedbackReport;
@@ -229,32 +229,32 @@ export const FILTERS: FilterDef[] = [
 export const FILTER_BY_KEY = new Map(FILTERS.map((f) => [f.key, f]));
 
 export const GROUP_LABEL: Record<FilterGroup, string> = {
-  main: "Основные",
-  context: "Контекст проекта",
-  scale: "Масштаб",
-  results: "Результаты (фидбэк)",
-  acquisition: "Привлечение и аудитория",
-  relative: "Относительно других",
-  admin: "Служебные",
-  presets: "Быстрые виды",
+  main: "Main",
+  context: "Project context",
+  scale: "Scale",
+  results: "Results (feedback)",
+  acquisition: "Acquisition & audience",
+  relative: "Relative to others",
+  admin: "Admin",
+  presets: "Quick views",
 };
 
 /** Quick views: one click = a ready query string. */
 export const PRESETS: { key: string; label: string; query: string }[] = [
-  { key: "all", label: "Все", query: "" },
-  { key: "attention", label: "Требуют внимания", query: "attention=1" },
-  { key: "best", label: "Лучшие", query: "best=1" },
-  { key: "nofb", label: "Нет фидбэка", query: "nofb=1" },
-  { key: "onechannel", label: "Зависят от одного канала", query: "conc=high" },
+  { key: "all", label: "All", query: "" },
+  { key: "attention", label: "Needs attention", query: "attention=1" },
+  { key: "best", label: "Best", query: "best=1" },
+  { key: "nofb", label: "No feedback", query: "nofb=1" },
+  { key: "onechannel", label: "Depend on one channel", query: "conc=high" },
 ];
 
 export const SORTS: { key: string; label: string; field?: keyof ProjectRow; score?: boolean }[] = [
-  { key: "date", label: "Дата проведения", field: "startDate" },
-  { key: "score", label: "Оценка", field: "orgScore10", score: true },
+  { key: "date", label: "Event date", field: "startDate" },
+  { key: "score", label: "Score", field: "orgScore10", score: true },
   { key: "nps", label: "NPS", field: "nps", score: true },
-  { key: "regs", label: "Регистрации", field: "registrants" },
-  { key: "rr", label: "Отклик", field: "responseRate" },
-  { key: "name", label: "Название", field: "name" },
+  { key: "regs", label: "Registrations", field: "registrants" },
+  { key: "rr", label: "Response rate", field: "responseRate" },
+  { key: "name", label: "Name", field: "name" },
 ];
 
 export function median(sorted: number[]): number {

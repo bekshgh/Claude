@@ -7,14 +7,14 @@ import type { ProjectSettings } from "@/lib/projects/settings";
 type Field = { key: keyof ProjectSettings; label: string; help: string; percent?: boolean; step?: number };
 
 const FIELDS: Field[] = [
-  { key: "minResponses", label: "Достаточно откликов, n ≥", help: "Фильтр «Только с достаточным числом откликов» и вид «Лучшие»." },
-  { key: "minResponseRate", label: "…и доля откликнувшихся ≥", help: "Вместе с порогом n.", percent: true, step: 0.1 },
-  { key: "smallSampleN", label: "Малая выборка, если n <", help: "Бейдж «малая выборка»; такие оценки не ранжируются вместе с остальными." },
-  { key: "burstyPeakShare", label: "Пиковая кампания: за один день >", help: "Доля регистраций за самый сильный день.", percent: true },
-  { key: "attentionZone10", label: "«Требуют внимания»: слабая зона <", help: "Балл из 10.", step: 0.1 },
-  { key: "attentionResponseRate", label: "«Требуют внимания»: отклик <", help: "Доля откликнувшихся.", percent: true, step: 0.1 },
-  { key: "noFeedbackDays", label: "«Нет фидбэка»: проведён больше, дней", help: "Сколько ждать фидбэк после проекта." },
-  { key: "relativeMinProjects", label: "Относительные фильтры: минимум проектов типа", help: "Меньше — фильтр отключается." },
+  { key: "minResponses", label: "Enough responses: n ≥", help: "The “Only with enough responses” filter and the “Best” view." },
+  { key: "minResponseRate", label: "…and response rate ≥", help: "Together with the n threshold.", percent: true, step: 0.1 },
+  { key: "smallSampleN", label: "Small sample when n <", help: "“Small sample” badge; such scores are not ranked with the rest." },
+  { key: "burstyPeakShare", label: "Bursty campaign: one day >", help: "Share of registrations on the strongest day.", percent: true },
+  { key: "attentionZone10", label: "“Needs attention”: weakest area <", help: "Score out of 10.", step: 0.1 },
+  { key: "attentionResponseRate", label: "“Needs attention”: response rate <", help: "Share of registrants who answered.", percent: true, step: 0.1 },
+  { key: "noFeedbackDays", label: "“No feedback”: held more than, days", help: "How long to wait for feedback after the event." },
+  { key: "relativeMinProjects", label: "Relative filters: min projects of a type", help: "Below this the filter is disabled." },
 ];
 
 /** Thresholds behind presets and badges, editable without a deploy. */
@@ -47,9 +47,9 @@ export function ThresholdsForm({ initial }: { initial: ProjectSettings }) {
         ))}
       </div>
       <div className="flex items-center gap-3">
-        <button type="submit" className="btn-primary" disabled={state === "busy"}>{state === "busy" ? "Сохраняю…" : "Сохранить пороги"}</button>
-        {state === "saved" && <span className="text-sm text-leads">Сохранено ✓</span>}
-        {state === "error" && <span role="alert" className="text-sm text-danger">Проверьте значения</span>}
+        <button type="submit" className="btn-primary" disabled={state === "busy"}>{state === "busy" ? "Saving…" : "Save thresholds"}</button>
+        {state === "saved" && <span className="text-sm text-leads">Saved ✓</span>}
+        {state === "error" && <span role="alert" className="text-sm text-danger">Check the values</span>}
       </div>
     </form>
   );

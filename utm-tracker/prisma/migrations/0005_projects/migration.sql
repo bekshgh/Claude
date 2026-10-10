@@ -165,7 +165,7 @@ ALTER TABLE "ThemeMapping" ADD CONSTRAINT "ThemeMapping_reportId_fkey" FOREIGN K
 
 -- Starter project types (more can be added by an admin).
 INSERT INTO "ProjectType" ("id", "key", "name", "sortOrder") VALUES
-  ('ptype_forum', 'forum', 'Форум', 10),
-  ('ptype_case', 'case_championship', 'Кейс-чемпионат', 20),
-  ('ptype_hackathon', 'hackathon', 'Хакатон', 30)
+  ('ptype_forum', 'forum', 'Forum', 10),
+  ('ptype_case', 'case_championship', 'Case championship', 20),
+  ('ptype_hackathon', 'hackathon', 'Hackathon', 30)
 ON CONFLICT ("key") DO NOTHING;

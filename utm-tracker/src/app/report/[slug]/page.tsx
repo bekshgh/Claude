@@ -45,13 +45,13 @@ export default async function ReportPage({
         <span className="font-display text-sm font-semibold tracking-tight text-ink-muted">EwA · Reports</span>
         {admin && (
           <Link href={`/reports/${report.id}`} className="btn-ghost py-1.5 text-xs">
-            ← Управление отчётом
+            ← Manage report
           </Link>
         )}
       </div>
       {admin && (report.status !== "published" || report.visibility === "private") && (
         <p className="mb-6 rounded-xl border border-accent/40 bg-accent/5 px-4 py-3 text-sm text-accent print:hidden">
-          {report.status !== "published" ? "Черновик: отчёт видите только вы." : "Приватный отчёт: виден только вошедшим админам."}
+          {report.status !== "published" ? "Draft: only you can see this report." : "Private report: visible to signed-in admins only."}
         </p>
       )}
       <ReportView doc={doc} initialTab={searchParams.tab} />

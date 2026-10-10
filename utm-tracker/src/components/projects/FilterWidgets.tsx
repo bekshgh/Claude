@@ -13,7 +13,7 @@ export function Hint({ text }: { text?: string }) {
   if (!text) return null;
   return (
     <span className="group relative ml-1 inline-flex align-middle">
-      <button type="button" aria-label={`Что это: ${text}`} className="grid h-4 w-4 place-items-center rounded-full border border-line text-[10px] text-ink-faint hover:text-ink">
+      <button type="button" aria-label={`What is this: ${text}`} className="grid h-4 w-4 place-items-center rounded-full border border-line text-[10px] text-ink-faint hover:text-ink">
         ?
       </button>
       <span role="tooltip" className="pointer-events-none absolute left-1/2 top-5 z-30 hidden w-64 -translate-x-1/2 rounded-lg border border-line bg-bg-raised p-2 text-xs font-normal normal-case tracking-normal text-ink-muted shadow-card group-focus-within:block group-hover:block">
@@ -87,7 +87,7 @@ export function MultiSelect({
         <Hint text={def.help} />
       </legend>
       {(searchable || options.length > 10) && (
-        <input className="input mb-2 py-1.5 text-xs" placeholder="Найти…" value={q} onChange={(e) => setQ(e.target.value)} aria-label={`Поиск: ${def.label}`} />
+        <input className="input mb-2 py-1.5 text-xs" placeholder="Find…" value={q} onChange={(e) => setQ(e.target.value)} aria-label={`Search: ${def.label}`} />
       )}
       <ul className="space-y-0.5">
         {shown.map((o) => {
@@ -98,13 +98,13 @@ export function MultiSelect({
               <label className={cn("flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm hover:bg-bg-hover", muted && "text-ink-faint", o.disabled && !checked && "cursor-not-allowed")} title={o.disabled}>
                 <input type="checkbox" className="h-4 w-4 accent-[#f6b352]" checked={checked} disabled={Boolean(o.disabled) && !checked} onChange={() => toggle(o.value)} />
                 <span className="flex-1">{o.label}</span>
-                <span className="num text-xs text-ink-faint" aria-label={`${o.count} проектов`}>{o.count}</span>
+                <span className="num text-xs text-ink-faint" aria-label={`${o.count} projects`}>{o.count}</span>
               </label>
               {o.disabled && <p className="ml-8 text-[11px] text-ink-faint">{o.disabled}</p>}
             </li>
           );
         })}
-        {shown.length === 0 && <li className="px-2 py-1.5 text-xs text-ink-faint">Нет вариантов</li>}
+        {shown.length === 0 && <li className="px-2 py-1.5 text-xs text-ink-faint">No options</li>}
       </ul>
     </fieldset>
   );
@@ -128,7 +128,7 @@ export function RangeControl({
     return (
       <fieldset>
         <legend className="mb-1 text-xs font-medium uppercase tracking-wide text-ink-faint">{def.label}</legend>
-        <p className="text-xs text-ink-faint">Нет проектов с этим показателем.</p>
+        <p className="text-xs text-ink-faint">No projects have this metric.</p>
       </fieldset>
     );
   }
@@ -161,17 +161,17 @@ export function RangeControl({
         })}
       </div>
       <p className="sr-only">
-        {histogram.withValue} проектов с показателем, от {text(histogram.min)} до {text(histogram.max)}.
+        {histogram.withValue} projects with this metric, from {text(histogram.min)} to {text(histogram.max)}.
       </p>
       <div className="mt-2 space-y-1">
         <label className="flex items-center gap-2 text-xs text-ink-muted" htmlFor={`${id}-min`}>
-          <span className="w-6">от</span>
+          <span className="w-8">from</span>
           <input id={`${id}-min`} type="range" className="flex-1 accent-[#f6b352]" min={lo} max={hi} step={step} value={min}
             aria-valuetext={text(min)} onChange={(e) => set(Math.min(Number(e.target.value), max), max)} />
           <span className="num w-16 text-right text-ink">{text(min)}</span>
         </label>
         <label className="flex items-center gap-2 text-xs text-ink-muted" htmlFor={`${id}-max`}>
-          <span className="w-6">до</span>
+          <span className="w-8">to</span>
           <input id={`${id}-max`} type="range" className="flex-1 accent-[#f6b352]" min={lo} max={hi} step={step} value={max}
             aria-valuetext={text(max)} onChange={(e) => set(min, Math.max(Number(e.target.value), min))} />
           <span className="num w-16 text-right text-ink">{text(max)}</span>
@@ -208,7 +208,7 @@ export function BooleanSwitch({ def, on, count, onChange }: { def: FilterDef; on
         className={cn("relative h-6 w-11 shrink-0 rounded-full transition", on ? "bg-accent" : "bg-bg-hover")}>
         <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all", on ? "left-[22px]" : "left-0.5")} />
       </button>
-      {count !== undefined && <span className="sr-only">{count} проектов</span>}
+      {count !== undefined && <span className="sr-only">{count} projects</span>}
     </div>
   );
 }
@@ -232,7 +232,7 @@ export function PeriodControl({
   return (
     <div className="space-y-4">
       <fieldset>
-        <legend className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-faint">По дате проведения</legend>
+        <legend className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-faint">By event date</legend>
         <div className="flex flex-wrap gap-1.5">
           {Object.entries(DATE_PRESET).map(([k, label]) => {
             const on = value?.preset === k;
@@ -246,12 +246,12 @@ export function PeriodControl({
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2">
           <label className="text-xs text-ink-muted" htmlFor={`${id}-from`}>
-            С
+            From
             <input id={`${id}-from`} type="date" className="input mt-1 py-1.5 text-xs" value={value?.from ?? ""}
               onChange={(e) => onChange(e.target.value || value?.to ? { from: e.target.value || undefined, to: value?.to } : null)} />
           </label>
           <label className="text-xs text-ink-muted" htmlFor={`${id}-to`}>
-            По
+            To
             <input id={`${id}-to`} type="date" className="input mt-1 py-1.5 text-xs" value={value?.to ?? ""}
               onChange={(e) => onChange(e.target.value || value?.from ? { from: value?.from, to: e.target.value || undefined } : null)} />
           </label>
@@ -259,7 +259,7 @@ export function PeriodControl({
       </fieldset>
       {seasons.length > 0 && (
         <fieldset>
-          <legend className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-faint">Сезоны</legend>
+          <legend className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-faint">Seasons</legend>
           <div className="flex flex-wrap gap-1.5">
             {seasons.map((s) => {
               const on = selectedSeasons.includes(s.value);

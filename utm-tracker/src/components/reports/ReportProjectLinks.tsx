@@ -28,17 +28,17 @@ export function ReportProjectSelect({
   }
   return (
     <div className="max-w-md">
-      <label className="label" htmlFor="rep-project">Проект</label>
+      <label className="label" htmlFor="rep-project">Project</label>
       <select id="rep-project" className="input" value={projectId ?? ""} disabled={busy} onChange={(e) => change(e.target.value)}>
-        <option value="">Не привязан</option>
+        <option value="">No project</option>
         {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
       </select>
-      <p className="hint">Показатели проекта для фильтров берутся из привязанных отчётов и пересчитываются сразу.</p>
+      <p className="hint">The project's filter metrics come from its reports and are recomputed right away.</p>
     </div>
   );
 }
 
-const KIND_LABEL: Record<string, string> = { praise: "Что хвалили", pain: "Что критиковали", request: "Что просят" };
+const KIND_LABEL: Record<string, string> = { praise: "Praised", pain: "Criticised", request: "Requested" };
 
 /** Auto-suggested theme mapping; the admin confirms or corrects it. */
 export function ThemeMappingEditor({
@@ -71,8 +71,8 @@ export function ThemeMappingEditor({
   return (
     <div>
       <p className="mb-4 text-sm text-ink-muted">
-        Чтобы сравнивать проекты, темы открытых ответов сводятся к общему словарю. Сопоставление предложено автоматически
-        {unconfirmed ? <> — <strong className="text-accent">{unconfirmed} не подтверждено</strong></> : " и подтверждено"}. Темы без сопоставления в фильтрах не участвуют.
+        To compare projects, open-answer themes are mapped to a shared dictionary. The mapping was suggested automatically
+        {unconfirmed ? <> — <strong className="text-accent">{unconfirmed} not confirmed yet</strong></> : " and confirmed"}. Unmapped themes are ignored by the filters.
       </p>
       {(["praise", "pain", "request"] as const).map((kind) => {
         const list = mappings.filter((m) => m.kind === kind);
@@ -85,10 +85,10 @@ export function ThemeMappingEditor({
                 <li key={m.id} className="grid items-center gap-2 py-2 sm:grid-cols-[1fr_260px]">
                   <label htmlFor={`tm-${m.id}`} className="text-sm text-ink">
                     {m.rawLabel}
-                    {!m.confirmed && <span className="ml-2 text-[11px] text-accent">предложено</span>}
+                    {!m.confirmed && <span className="ml-2 text-[11px] text-accent">suggested</span>}
                   </label>
                   <select id={`tm-${m.id}`} className="input py-1.5 text-sm" value={values[m.id]} onChange={(e) => (setSaved(false), setValues({ ...values, [m.id]: e.target.value }))}>
-                    <option value="">— не сопоставлять —</option>
+                    <option value="">— not mapped —</option>
                     {THEMES.map((t) => <option key={t.key} value={t.key}>{t.label}</option>)}
                   </select>
                 </li>
@@ -98,7 +98,7 @@ export function ThemeMappingEditor({
         );
       })}
       <button type="button" className="btn-primary" disabled={busy} onClick={save}>
-        {busy ? "Сохраняю…" : saved ? "Сохранено ✓" : "Подтвердить сопоставление"}
+        {busy ? "Saving…" : saved ? "Saved ✓" : "Confirm mapping"}
       </button>
     </div>
   );

@@ -35,10 +35,10 @@ export default async function ReportAdminPage({
     0,
   );
   const stats: [string, number][] = [
-    ["вкладок", doc.sheets.length],
-    ["таблиц", count("table")],
-    ["KPI-карточек", cards],
-    ["блоков выводов", count("callouts")],
+    ["tabs", doc.sheets.length],
+    ["tables", count("table")],
+    ["KPI cards", cards],
+    ["insight blocks", count("callouts")],
   ];
 
   return (
@@ -46,17 +46,17 @@ export default async function ReportAdminPage({
       <PageHeader
         breadcrumb="Reports"
         title={report.title}
-        subtitle={`${report.sourceFileName ?? "файл"} · обновлён ${formatDateTime(report.updatedAt)}${
-          report.publishedAt ? ` · опубликован ${formatDateTime(report.publishedAt)}` : ""
+        subtitle={`${report.sourceFileName ?? "file"} · updated ${formatDateTime(report.updatedAt)}${
+          report.publishedAt ? ` · published ${formatDateTime(report.publishedAt)}` : ""
         }`}
-        action={<Link href="/reports" className="btn-ghost">← Все отчёты</Link>}
+        action={<Link href="/reports" className="btn-ghost">← All reports</Link>}
       />
 
       <div className="mb-6 grid gap-6 lg:grid-cols-[1.2fr_1fr]">
         <section className="card p-6">
           <div className="mb-4 flex items-center gap-2">
-            <h2 className="font-display text-lg font-semibold">Публикация</h2>
-            <Pill label={report.status === "published" ? "опубликован" : "черновик"} tone={report.status === "published" ? "success" : "paused"} />
+            <h2 className="font-display text-lg font-semibold">Publishing</h2>
+            <Pill label={report.status === "published" ? "published" : "draft"} tone={report.status === "published" ? "success" : "paused"} />
           </div>
           <ReportAdminActions id={report.id} slug={report.slug} status={report.status} visibility={report.visibility} />
           <div className="mt-4 border-t border-line pt-4">
@@ -65,7 +65,7 @@ export default async function ReportAdminPage({
         </section>
 
         <section className="card p-6">
-          <h2 className="mb-4 font-display text-lg font-semibold">Что нашлось в файле</h2>
+          <h2 className="mb-4 font-display text-lg font-semibold">What was found in the file</h2>
           <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
             {stats.map(([label, value]) => (
               <div key={label} className="flex flex-col-reverse rounded-xl border border-line bg-bg-raised/60 p-3">
@@ -76,14 +76,14 @@ export default async function ReportAdminPage({
           </dl>
           {doc.skippedSheets.length > 0 && (
             <p className="mt-4 text-xs text-ink-faint">
-              Не импортируются (сырые и личные данные): {doc.skippedSheets.map((s) => `${s.name} — ${s.rows} строк`).join(" · ")}
+              Not imported (raw and personal data): {doc.skippedSheets.map((s) => `${s.name} — ${s.rows} rows`).join(" · ")}
             </p>
           )}
           {doc.warnings.length === 0 ? (
-            <p className="mt-4 text-sm text-leads">✓ Все ожидаемые блоки распознаны.</p>
+            <p className="mt-4 text-sm text-leads">✓ All expected blocks were recognised.</p>
           ) : (
             <div className="mt-4 rounded-xl border border-accent/40 bg-accent/5 p-3 text-sm">
-              <p className="font-medium text-accent">⚠ Предупреждения парсера ({doc.warnings.length})</p>
+              <p className="font-medium text-accent">⚠ Parser warnings ({doc.warnings.length})</p>
               <ul className="mt-2 space-y-1 text-ink-muted">
                 {doc.warnings.map((w, i) => (
                   <li key={i}>
@@ -91,7 +91,7 @@ export default async function ReportAdminPage({
                   </li>
                 ))}
               </ul>
-              <p className="mt-2 text-xs text-ink-faint">Отчёт можно опубликовать: не найденные блоки просто не показываются.</p>
+              <p className="mt-2 text-xs text-ink-faint">The report can still be published: blocks that were not found are simply not shown.</p>
             </div>
           )}
         </section>
@@ -99,7 +99,7 @@ export default async function ReportAdminPage({
 
       {report.themeMappings.length > 0 && (
         <details className="card mb-6 p-6" open={report.themeMappings.some((m) => !m.confirmed)}>
-          <summary className="cursor-pointer font-display text-lg font-semibold">Темы открытых ответов → общий словарь</summary>
+          <summary className="cursor-pointer font-display text-lg font-semibold">Open-answer themes → shared dictionary</summary>
           <div className="mt-4">
             <ThemeMappingEditor
               reportId={report.id}
@@ -110,13 +110,13 @@ export default async function ReportAdminPage({
       )}
 
       <details className="card mb-6 p-6">
-        <summary className="cursor-pointer font-display text-lg font-semibold">Заменить файл (новая версия того же события)</summary>
-        <p className="mb-4 mt-2 text-sm text-ink-muted">Ссылка и статус сохранятся, данные отчёта заменятся новым файлом того же типа.</p>
+        <summary className="cursor-pointer font-display text-lg font-semibold">Replace file (a newer version of the same event)</summary>
+        <p className="mb-4 mt-2 text-sm text-ink-muted">The link and status stay; the report data is replaced by a new file of the same type.</p>
         <ReportUpload mode="replace" reportId={report.id} />
       </details>
 
       <section className="rounded-2xl border border-dashed border-line p-4 sm:p-6">
-        <p className="mb-4 text-xs font-medium uppercase tracking-wider text-ink-faint">Предпросмотр — так отчёт увидят по ссылке</p>
+        <p className="mb-4 text-xs font-medium uppercase tracking-wider text-ink-faint">Preview — this is how the report looks via its link</p>
         <ReportView doc={doc} initialTab={searchParams.tab} />
       </section>
     </>

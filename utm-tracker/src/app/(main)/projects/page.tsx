@@ -17,9 +17,9 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Rec
     <>
       <PageHeader
         breadcrumb="Projects"
-        title="Проекты"
-        subtitle="Найти проект, сравнить сопоставимые, увидеть, что работает и где проблемы."
-        action={<Link href="/projects/new" className="btn-primary">+ Новый проект</Link>}
+        title="Projects"
+        subtitle="Find a project, compare like with like, see what works and where it hurts."
+        action={<Link href="/projects/new" className="btn-primary">+ New project</Link>}
       />
       <ProjectsExplorer state={state} result={result} types={types} views={views} compareRows={compareRows} />
     </>

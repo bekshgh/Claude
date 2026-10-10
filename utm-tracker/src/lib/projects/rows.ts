@@ -29,7 +29,7 @@ export interface ProjectRow extends Nullable<MetricFields> {
 }
 
 const SEASONS = ["winter", "spring", "summer", "autumn"] as const;
-const SEASON_RU: Record<string, string> = { winter: "Зима", spring: "Весна", summer: "Лето", autumn: "Осень" };
+const SEASON_NAME: Record<string, string> = { winter: "Winter", spring: "Spring", summer: "Summer", autumn: "Autumn" };
 
 /** Season of a date. December belongs to the winter of the next year. */
 export function seasonOf(d: Date): string {
@@ -41,7 +41,7 @@ export function seasonOf(d: Date): string {
 
 export function seasonLabel(key: string): string {
   const [y, s] = key.split("-");
-  return `${SEASON_RU[s] ?? s} ${y}`;
+  return `${SEASON_NAME[s] ?? s} ${y}`;
 }
 
 /** Sort key for seasons: 2026-autumn > 2026-summer. */

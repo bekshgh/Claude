@@ -142,8 +142,8 @@ export default async function SettingsPage() {
 
       {/* Project thresholds */}
       <section className="card mb-8 p-6">
-        <h2 className="font-display text-lg font-semibold">Пороги для проектов</h2>
-        <p className="mb-5 mt-1 text-sm text-ink-muted">Используются в фильтрах и быстрых видах на странице Projects.</p>
+        <h2 className="font-display text-lg font-semibold">Project thresholds</h2>
+        <p className="mb-5 mt-1 text-sm text-ink-muted">Used by the filters and quick views on the Projects page.</p>
         <ThresholdsForm initial={thresholds} />
       </section>
 

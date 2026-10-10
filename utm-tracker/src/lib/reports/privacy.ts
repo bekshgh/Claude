@@ -3,7 +3,7 @@ import type { ReportDocument, Section } from "./types";
 /**
  * Personal data never leaves the parser:
  *  - raw-data sheets are not read at all (see configs: only listed sheets are parsed);
- *  - in analytics tables, a person's name column becomes "Респондент N";
+ *  - in analytics tables, a person's name column becomes "Respondent N";
  *  - columns whose values are contacts (emails, phones, @handles) are dropped —
  *    judged by the values, since "Email" / "Telegram" are also channel names;
  *  - emails and phone numbers inside any text are masked.
@@ -28,11 +28,11 @@ function looksLikeContacts(values: unknown[]): boolean {
 
 export function maskText(s: string): string {
   return s
-    .replace(EMAIL, "[email скрыт]")
+    .replace(EMAIL, "[email hidden]")
     .replace(PHONE, (m) => {
       const digits = m.replace(/\D/g, "");
       if (digits.length < 10 || digits.length > 12 || /^\d{4}-\d{2}-\d{2}/.test(m)) return m;
-      return "[телефон скрыт]";
+      return "[phone hidden]";
     });
 }
 
@@ -46,13 +46,13 @@ function sanitizeSection(s: Section): Section {
   });
   const keep = (i: number) => !drop.has(i);
   const rows = s.rows.map((r, ri) =>
-    r.map((v, ci) => (nameCols.includes(ci) && v !== null ? `Респондент ${ri + 1}` : v)).filter((_, ci) => keep(ci)),
+    r.map((v, ci) => (nameCols.includes(ci) && v !== null ? `Respondent ${ri + 1}` : v)).filter((_, ci) => keep(ci)),
   );
   // Column indexes in view hints shift when columns are dropped.
   const remap = (i: number) => i - [...drop].filter((d) => d < i).length;
   return {
     ...s,
-    columns: s.columns.map((c, i) => (nameCols.includes(i) ? { ...c, label: "Респондент" } : c)).filter((_, i) => keep(i)),
+    columns: s.columns.map((c, i) => (nameCols.includes(i) ? { ...c, label: "Respondent" } : c)).filter((_, i) => keep(i)),
     rows,
     views: drop.size ? s.views.map((v) => remapView(v, remap)) : s.views,
   };

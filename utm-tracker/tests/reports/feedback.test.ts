@@ -67,7 +67,7 @@ describe("Feedback Form Analysis", () => {
   it("reads outliers without names", () => {
     const t = section(doc, "patterns", /OUTLIER/, "table");
     expect(t.rows).toHaveLength(6);
-    expect(t.rows.map((r) => r[0])).toEqual([1, 2, 3, 4, 5, 6].map((i) => `Респондент ${i}`));
+    expect(t.rows.map((r) => r[0])).toEqual([1, 2, 3, 4, 5, 6].map((i) => `Respondent ${i}`));
     expect(JSON.stringify(doc)).not.toMatch(/Test Person/);
   });
 

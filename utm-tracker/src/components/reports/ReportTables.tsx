@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import type { CellValue, TableSection, TableView } from "@/lib/reports/types";
 import { cn } from "@/lib/utils";
-import { csvValue, formatValue, isNumericCol, readableTitle } from "./format";
+import { csvValue, formatValue, isNumericCol, legacyText, readableTitle } from "./format";
 
 const SMALL_N = 10;
 
@@ -36,8 +36,8 @@ function badgeClass(v: string): string | undefined {
 
 export function SmallSampleBadge() {
   return (
-    <span className="ml-1.5 inline-flex rounded-full bg-ink-faint/15 px-1.5 py-0.5 text-[10px] font-medium text-ink-muted" title={`Меньше ${SMALL_N} человек — только для ориентира`}>
-      малая выборка
+    <span className="ml-1.5 inline-flex rounded-full bg-ink-faint/15 px-1.5 py-0.5 text-[10px] font-medium text-ink-muted" title={`Fewer than ${SMALL_N} people — directional only`}>
+      small sample
     </span>
   );
 }
@@ -119,14 +119,14 @@ export function DataTable({
         <div className="mb-3 flex flex-wrap items-center gap-2 print:hidden">
           <input
             className="input max-w-xs py-2"
-            placeholder="Поиск…"
+            placeholder="Search…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            aria-label={`Поиск в таблице ${readableTitle(t.title)}`}
+            aria-label={`Search in ${readableTitle(t.title)}`}
           />
           {searchable && (
             <button type="button" className="btn-ghost py-2 text-xs" onClick={() => downloadCsv(t)}>
-              Скачать CSV
+              Download CSV
             </button>
           )}
         </div>
@@ -143,7 +143,7 @@ export function DataTable({
                   className={cn("whitespace-nowrap px-3 py-2.5 text-xs font-medium text-ink-muted", isNumericCol(c) || c.format.kind === "date" ? "text-right" : "text-left", ci === 0 && "sticky left-0 z-[3] bg-bg-raised")}
                 >
                   <button type="button" onClick={() => toggleSort(ci)} className="inline-flex items-center gap-1 hover:text-ink">
-                    {c.label}
+                    {legacyText(c.label)}
                     <span aria-hidden className="text-[10px] text-ink-faint">{sort?.col === ci ? (sort.dir === 1 ? "▲" : "▼") : ""}</span>
                   </button>
                 </th>
@@ -155,7 +155,7 @@ export function DataTable({
             {t.totalRow !== undefined && !q && renderRow(t.totalRow, true)}
             {body.length === 0 && (
               <tr>
-                <td colSpan={t.columns.length} className="px-3 py-6 text-center text-ink-faint">Ничего не найдено</td>
+                <td colSpan={t.columns.length} className="px-3 py-6 text-center text-ink-faint">Nothing found</td>
               </tr>
             )}
           </tbody>
@@ -171,18 +171,18 @@ function HeatLegend({ mode }: { mode: HeatMode["mode"] }) {
     <p className="mt-2 flex flex-wrap items-center gap-3 text-xs text-ink-faint">
       {mode === "diverging" && (
         <>
-          <span className="flex items-center gap-1"><span className="h-2.5 w-4 rounded-sm" style={{ background: "rgba(91,155,255,0.45)" }} /> ▲ выше среднего</span>
-          <span className="flex items-center gap-1"><span className="h-2.5 w-4 rounded-sm" style={{ background: "rgba(249,115,22,0.45)" }} /> ▼ ниже среднего</span>
+          <span className="flex items-center gap-1"><span className="h-2.5 w-4 rounded-sm" style={{ background: "rgba(91,155,255,0.45)" }} /> ▲ above average</span>
+          <span className="flex items-center gap-1"><span className="h-2.5 w-4 rounded-sm" style={{ background: "rgba(249,115,22,0.45)" }} /> ▼ below average</span>
         </>
       )}
       {mode === "minmax" && (
         <>
-          <span className="flex items-center gap-1"><span className="h-2.5 w-4 rounded-sm" style={{ background: "rgba(62,207,142,0.35)" }} /> лучший в колонке</span>
-          <span className="flex items-center gap-1"><span className="h-2.5 w-4 rounded-sm" style={{ background: "rgba(246,179,82,0.35)" }} /> худший в колонке</span>
+          <span className="flex items-center gap-1"><span className="h-2.5 w-4 rounded-sm" style={{ background: "rgba(62,207,142,0.35)" }} /> best in column</span>
+          <span className="flex items-center gap-1"><span className="h-2.5 w-4 rounded-sm" style={{ background: "rgba(246,179,82,0.35)" }} /> worst in column</span>
         </>
       )}
       {mode === "sequential" && (
-        <span className="flex items-center gap-1"><span className="h-2.5 w-10 rounded-sm" style={{ background: "linear-gradient(90deg, rgba(91,155,255,0.06), rgba(91,155,255,0.6))" }} /> насыщенность = величина</span>
+        <span className="flex items-center gap-1"><span className="h-2.5 w-10 rounded-sm" style={{ background: "linear-gradient(90deg, rgba(91,155,255,0.06), rgba(91,155,255,0.6))" }} /> darker = larger</span>
       )}
     </p>
   );
@@ -209,12 +209,12 @@ function heatScales(t: TableSection, h: HeatMode) {
         if (v === 0) return undefined;
         const k = Math.min(Math.abs(v) / s.absMax, 1);
         const rgb = v > 0 ? "91,155,255" : "249,115,22";
-        return { css: { background: `rgba(${rgb},${0.08 + 0.42 * k})` }, mark: v > 0 ? " (выше)" : " (ниже)" };
+        return { css: { background: `rgba(${rgb},${0.08 + 0.42 * k})` }, mark: v > 0 ? " (above)" : " (below)" };
       }
       if (h.mode === "minmax") {
         if (small || s.max === s.min) return undefined;
-        if (v === s.max) return { css: { background: "rgba(62,207,142,0.25)" }, mark: " (максимум)" };
-        if (v === s.min) return { css: { background: "rgba(246,179,82,0.25)" }, mark: " (минимум)" };
+        if (v === s.max) return { css: { background: "rgba(62,207,142,0.25)" }, mark: " (highest)" };
+        if (v === s.min) return { css: { background: "rgba(246,179,82,0.25)" }, mark: " (lowest)" };
         return undefined;
       }
       const k = s.max === s.min ? 0 : (v - Math.min(0, s.min)) / (s.max - Math.min(0, s.min));
@@ -268,7 +268,7 @@ export function RankedBars({ t, v }: { t: TableSection; v: Extract<TableView, { 
             </div>
             {typeof quote === "string" && quote && (
               <details className="ml-9 mt-1.5 group">
-                <summary className="cursor-pointer select-none text-xs text-ink-faint hover:text-ink-muted">Пример ответа</summary>
+                <summary className="cursor-pointer select-none text-xs text-ink-faint hover:text-ink-muted">Example answer</summary>
                 <blockquote className="mt-1.5 border-l-2 border-line pl-3 text-sm italic text-ink-muted">{quote}</blockquote>
               </details>
             )}
@@ -287,7 +287,7 @@ export function SegmentSwitcher({ tables }: { tables: TableSection[] }) {
   const heatView = t.views.find((v) => v.type === "heat") as Extract<TableView, { type: "heat" }> | undefined;
   return (
     <div>
-      <div role="tablist" aria-label="Сегмент" className="mb-4 flex flex-wrap gap-1.5 print:hidden">
+      <div role="tablist" aria-label="Segment" className="mb-4 flex flex-wrap gap-1.5 print:hidden">
         {tables.map((s, j) => (
           <button
             key={s.id}
@@ -334,7 +334,7 @@ export function ConcentrationMeter({ t, v }: { t: TableSection; v: Extract<Table
         );
       })}
       <li className="flex justify-between text-[11px] text-ink-faint" aria-hidden>
-        <span>0 · низкая</span><span>0.15</span><span>0.25 · высокая</span><span>0.5+</span>
+        <span>0 · low</span><span>0.15</span><span>0.25 · high</span><span>0.5+</span>
       </li>
     </ul>
   );

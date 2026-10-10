@@ -1,146 +1,145 @@
-# Фильтры проектов (Projects)
+# Project filters (Projects)
 
-Страница `/projects` помогает ответить на пять вопросов организатора:
+The `/projects` page helps an organizer answer five questions:
 
-| Вопрос | Чем отвечаем |
+| Question | Answered by |
 |---|---|
-| **Найти** проект, который помню | поиск (регистр, `ё/е`, кириллица ⇄ латиница), тип, период и сезоны, статус |
-| **Сравнить сопоставимое** | тип, формат, масштаб, аудитория, «Похожие на этот», режим сравнения 2–4 проектов |
-| **Что работает** | оценки, NPS-прокси, сильная зона, что хвалили, каналы; вид «Лучшие» |
-| **Где проблемы** | слабая зона, что критиковали, низкий отклик; вид «Требуют внимания» |
-| **Чего не хватает** | фильтр «Данные», вид «Нет фидбэка» |
+| **Find** the project I remember | search (case-insensitive, Cyrillic ⇄ Latin), type, period and seasons, status |
+| **Compare like with like** | type, format, scale, audience, "Similar projects", comparing 2–4 projects |
+| **What works** | scores, NPS proxy, strongest area, most praised, channels; the "Best" view |
+| **Where it hurts** | weakest area, most criticised, low response rate; the "Needs attention" view |
+| **What's missing** | the "Data" filter, the "No feedback" view |
 
-Сайт закрыт логином, все пользователи — админы.
+The site is behind a login; every user is an admin.
 
-## Откуда берутся данные
+## Where the numbers come from
 
 ```
-Report (ReportDocument JSON) ──► computeMetrics() ──► ProjectMetrics (1 строка на проект) ──► фильтры
-        ▲ projectId                     ▲ ThemeMapping (темы → общий словарь)
+Report (ReportDocument JSON) ──► computeMetrics() ──► ProjectMetrics (1 row per project) ──► filters
+        ▲ projectId                     ▲ ThemeMapping (themes → shared dictionary)
 ```
 
-- **Проект** (`Project`) — событие: тип из справочника `ProjectType`, формат, статус,
-  даты, город, площадка, команда, теги. Отчёты привязываются к проекту при
-  загрузке или на странице отчёта.
-- **`ProjectMetrics`** — денормализованные показатели из привязанных отчётов
-  (последний отчёт каждого типа). Пересчитываются в той же транзакции, что и
-  любое изменение отчёта: загрузка, замена файла, перепривязка, удаление,
-  правка сопоставления тем. Фильтры никогда не читают JSON отчётов.
-- **Нет данных — это `null`, не `0`.** Числовой фильтр не пропускает проект без
-  значения; над списком видно «Скрыто N без данных · Показать».
-- **Шкалы** приводятся к /10 при расчёте (1–5 × 2), не при показе.
-- **Темы открытых ответов** сводятся к общему словарю (`THEMES`). При загрузке
-  фидбэка сопоставление предлагается автоматически по ключевым словам
-  (RU/KK/EN); админ подтверждает или правит его на странице отчёта. Темы без
-  сопоставления в фильтрах не участвуют.
-- **Response rate** = ответы на фидбэк ÷ уникальные регистранты. Нужны оба
-  отчёта одного проекта (без отчёта по регистрации берётся подпись
-  «… of N registrants» из файла фидбэка).
+- A **project** (`Project`) is an event: a type from the `ProjectType`
+  dictionary, format, status, dates, city, venue, owner team, tags. Reports are
+  attached to a project on upload or on the report page.
+- **`ProjectMetrics`** holds denormalised numbers from the attached reports (the
+  latest report of each type). They are recomputed in the same transaction as
+  any report change: upload, file replacement, moving to another project,
+  deletion, editing the theme mapping. Filters never read report JSON.
+- **No data is `null`, never `0`.** A numeric filter does not match a project
+  without a value; the list shows "N hidden with no data for this filter · Show".
+- **Scales** are normalised to /10 when computed (1–5 × 2), not when displayed.
+- **Open-answer themes** are mapped to a shared dictionary (`THEMES`). When a
+  feedback report is uploaded, a mapping is suggested by keywords (RU / KK / EN);
+  an admin confirms or corrects it on the report page. Unmapped themes are
+  ignored by the filters.
+- **Response rate** = feedback responses ÷ unique registrants. It needs both
+  reports of the same project (without a registration report, the "… of N
+  registrants" caption in the feedback file is used).
 
-## Устройство кода
+## Code map
 
 ```
 src/lib/projects/
-  dictionaries.ts     зоны, темы, группы каналов, курсы, концентрация (+ сопоставление по словам)
-  metrics.ts          ReportDocument → ComputedMetrics (чистая функция, METRICS_VERSION)
-  recompute.ts        пересчёт ProjectMetrics, ThemeMapping при загрузке
-  settings.ts         пороги (AppSetting «projects.thresholds», значения по умолчанию)
-  rows.ts             Project + ProjectMetrics → ProjectRow (один запрос, без N+1)
-  query.ts            точка входа для страницы и GET /api/projects
-  filters/registry.ts ЕДИНСТВЕННЫЙ список фильтров, быстрых видов и сортировок
-  filters/state.ts    URL ⇄ состояние (zod; мусор отбрасывается)
-  filters/engine.ts   сопоставление, счётчики, гистограммы, относительные фильтры, сортировка
-src/components/projects/  панель, виджеты, список, сравнение, формы
+  dictionaries.ts     areas, themes, channel groups, study stages, concentration (+ keyword matching)
+  metrics.ts          ReportDocument → ComputedMetrics (pure function, METRICS_VERSION)
+  recompute.ts        ProjectMetrics recompute, ThemeMapping on upload
+  settings.ts         thresholds (AppSetting "projects.thresholds", defaults)
+  rows.ts             Project + ProjectMetrics → ProjectRow (one query, no N+1)
+  query.ts            entry point for the page and GET /api/projects
+  filters/registry.ts THE single list of filters, quick views and sorts
+  filters/state.ts    URL ⇄ state (zod; junk is dropped)
+  filters/engine.ts   matching, facet counts, histograms, relative filters, sorting
+src/components/projects/  panel, widgets, list, compare, forms
 ```
 
-Всё, что видно в интерфейсе — группы, виджеты, чипы, URL, счётчики,
-гистограммы — выводится из `registry.ts`. Логика «внутри фильтра ИЛИ, между
-фильтрами И». Счётчик у значения = сколько проектов останется, если его выбрать,
-с учётом остальных фильтров (кроме самого этого).
+Everything in the UI — groups, widgets, chips, URL, counts, histograms — is
+derived from `registry.ts`. Logic: values inside one filter are OR-ed, filters
+are AND-ed. The count next to a value is how many projects remain if you pick
+it, given all the other filters (but not this one).
 
 ### URL
 
-Короткие стабильные ключи, без JSON:
+Short, stable keys, no JSON:
 
 ```
 /projects?type=forum,hackathon&season=2026-autumn&score10=9..10&enough=1&sort=-score&view=table&cmp=a,b
 ```
 
-`a..b` — диапазон (любой край можно опустить), `date=season|12m|lastyear|2026-01-01..2026-06-30`,
-`nulls=1` — показать проекты без данных. Значения диапазонов — в единицах
-показа (проценты как 5, а не 0.05).
+`a..b` is a range (either end may be omitted), `date=season|12m|lastyear|2026-01-01..2026-06-30`,
+`nulls=1` shows projects without data. Range values are in display units
+(percentages as 5, not 0.05).
 
-## Как добавить новый фильтр
+## Adding a filter
 
-1. Если показателя ещё нет — добавьте колонку в `ProjectMetrics`
-   (`schema.prisma` + миграция), посчитайте её в `metrics.ts` и поднимите
+1. If the metric doesn't exist yet, add a `ProjectMetrics` column
+   (`schema.prisma` + migration), compute it in `metrics.ts` and bump
    `METRICS_VERSION`.
-2. Добавьте запись в `FILTERS` (`filters/registry.ts`):
+2. Add an entry to `FILTERS` (`filters/registry.ts`):
    ```ts
-   { key: "speakers10", label: "Оценка спикеров", group: "results", kind: "range",
+   { key: "speakers10", label: "Speaker score", group: "results", kind: "range",
      field: "speakerScore10", appliesTo: ["forum"], nullPolicy: "exclude", unit: "/10", decimals: 1,
-     help: "Средняя оценка спикерских сессий, /10." },
+     help: "Average rating of the speaker sessions, /10." },
    ```
-   - `key` — он же параметр URL; не меняйте после релиза (сохранённые виды).
+   - `key` is also the URL parameter; don't change it after release (saved views use it).
    - `kind`: `search | multiselect | tags | range | boolean | dateRange | relative`.
-   - `field` — колонка строки, либо `get(row, ctx)` для производных значений.
-   - `appliesTo` — `"all"` или ключи типов проектов: такой фильтр показывается
-     первым при выборе одного из этих типов и подписан типами в остальных случаях.
-   - `options` — для списков: массив или функция от данных (город, команда…).
-   - `scale` — множитель для показа (доли хранятся 0..1, показываются в %).
-   - `visibility: "admin"` — служебный фильтр.
-3. Пересчитайте метрики: `npm run projects:recompute` (или `-- --outdated`).
-4. Тесты: добавьте случай в `tests/projects/filters.test.ts`. Тест счётчиков
-   автоматически проверит, что счётчик каждого значения нового фильтра совпадает
-   с результатом.
+   - `field` is a row column, or use `get(row, ctx)` for derived values.
+   - `appliesTo` is `"all"` or project type keys: such a filter is shown first
+     when one of those types is selected, and labelled with its types otherwise.
+   - `options` for lists: an array, or a function of the data (city, team…).
+   - `scale` is a display multiplier (shares are stored 0..1 and shown in %).
+   - `visibility: "admin"` marks an admin-only filter.
+3. Recompute the metrics: `npm run projects:recompute` (or `-- --outdated`).
+4. Tests: add a case to `tests/projects/filters.test.ts`. The facet-count test
+   automatically checks that each value's count matches the real result.
 
-Фильтр, у которого нет данных ни в одном проекте, в панели не показывается.
+A filter with no data in any project is hidden from the panel.
 
-## Как добавить быстрый вид
+## Adding a quick view
 
-Простой вид — строка запроса в `PRESETS`. Если нужна логика «ИЛИ» между
-разными показателями (как у «Требуют внимания»), добавьте в `FILTERS` фильтр
-`group: "presets", kind: "boolean"` с функцией `get` и сошлитесь на него из `PRESETS`.
+A simple view is a query string in `PRESETS`. If it needs an OR across
+different metrics (like "Needs attention"), add a `group: "presets",
+kind: "boolean"` filter with a `get` function to `FILTERS` and reference it from `PRESETS`.
 
-## Как добавить тип проекта
+## Adding a project type
 
-В форме проекта — кнопка «+ тип» (или `POST /api/project-types`). Тип хранится
-в справочнике с латинским ключом (`workshop`), который используется в URL и
-в `appliesTo`. Стартовые типы (Форум, Кейс-чемпионат, Хакатон) создаёт миграция.
+Use "+ type" in the project form (or `POST /api/project-types`). A type is
+stored in the dictionary with a Latin key (`workshop`), used in URLs and in
+`appliesTo`. The starter types (Forum, Case championship, Hackathon) come from
+the migration.
 
-## Пороги
+## Thresholds
 
-Settings → «Пороги для проектов» (хранятся в `AppSetting`, по умолчанию — в
-`settings.ts`):
+Settings → "Project thresholds" (stored in `AppSetting`, defaults in `settings.ts`):
 
-| Порог | По умолчанию |
+| Threshold | Default |
 |---|---|
-| Достаточно откликов | n ≥ 30 **и** доля ≥ 5% |
-| Малая выборка | n < 10 |
-| Пиковая кампания | > 20% регистраций за один день |
-| «Требуют внимания» | проведён, и оценка ниже медианы своего типа, или слабая зона < 8.5/10, или отклик < 5% |
-| «Нет фидбэка» | проведён > 7 дней назад, есть регистрация, нет фидбэка |
-| Относительные фильтры | ≥ 4 сравнимых проектов своего типа |
+| Enough responses | n ≥ 30 **and** response rate ≥ 5% |
+| Small sample | n < 10 |
+| Bursty campaign | > 20% of registrations on one day |
+| "Needs attention" | done, and the score is below its type's median, or the weakest area < 8.5/10, or response rate < 5% |
+| "No feedback" | held > 7 days ago, has a registration report, no feedback report |
+| Relative filters | ≥ 4 comparable projects of the same type |
 
-## Честность сравнений
+## Honest comparisons
 
-- Оценки проектов с n < порога малой выборки получают бейдж и при сортировке
-  по оценке идут после остальных; в относительных фильтрах не участвуют.
-- Относительные фильтры считаются только по завершённым проектам; «лучше
-  медианы своего типа» отключается, если проектов типа меньше порога.
-- Счётчики, гистограммы и виды считаются только по проектам, видимым
-  пользователю (`visibleRows` в `engine.ts`).
+- Scores from projects with n below the small-sample threshold get a badge, go
+  after the rest when sorting by score, and are left out of relative filters.
+- Relative filters only use completed projects; "above the median of its type"
+  is disabled when the type has fewer projects than the threshold.
+- Counts, histograms and views only count projects the viewer can see
+  (`visibleRows` in `engine.ts`).
 
-## Демо-данные и тесты
+## Demo data and tests
 
 ```bash
-npm run db:seed:demo                 # ~20 демо-проектов + реальный ÖZGE Forum S'26
-npm run db:seed:demo -- --count 1000 # нагрузочный набор
-npm run db:seed:demo -- --reset      # удалить демо-проекты
-npm test                             # всё, кроме тестов с базой
-TEST_DATABASE_URL=postgresql://… npm test   # + пересчёт метрик на реальной Postgres
+npm run db:seed:demo                 # ~20 demo projects + the real ÖZGE Forum S'26
+npm run db:seed:demo -- --count 1000 # load-test set
+npm run db:seed:demo -- --reset      # remove demo projects
+npm test                             # everything except database tests
+TEST_DATABASE_URL=postgresql://… npm test   # + metric recompute against a real Postgres
 ```
 
-Сид отказывается работать при `NODE_ENV=production` или `VERCEL_ENV=production`.
-Демо-проекты помечены `demo = true`, их метрики выдуманы и массовым пересчётом
-не трогаются.
+The seed refuses to run when `NODE_ENV=production` or `VERCEL_ENV=production`.
+Demo projects are flagged `demo = true`; their metrics are made up and the bulk
+recompute leaves them alone.

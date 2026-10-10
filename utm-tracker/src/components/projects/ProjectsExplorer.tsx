@@ -46,7 +46,7 @@ function plural(n: number, one: string, few: string, many: string) {
   if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
   return many;
 }
-const projectsWord = (n: number) => plural(n, "проект", "проекта", "проектов");
+const projectsWord = (n: number) => (n === 1 ? "project" : "projects");
 
 export function ProjectsExplorer({
   state: initial,
@@ -171,12 +171,12 @@ export function ProjectsExplorer({
       {/* ─── search + main filters ─────────────────────────── */}
       <div className="flex flex-wrap items-center gap-2">
         <label className="relative min-w-[220px] flex-1">
-          <span className="sr-only">Поиск проектов</span>
+          <span className="sr-only">Search projects</span>
           <span aria-hidden className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-faint">⌕</span>
           <input
             type="search"
             className="input rounded-full pl-9"
-            placeholder="Поиск проектов…"
+            placeholder="Search projects…"
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -184,10 +184,10 @@ export function ProjectsExplorer({
             }}
           />
         </label>
-        <Popover label="Тип" badge={selectedTypes.length || undefined}>
+        <Popover label="Type" badge={selectedTypes.length || undefined}>
           {widget(FILTER_BY_KEY.get("type")!)}
         </Popover>
-        <Popover label="Период" badge={(state.values.date ? 1 : 0) + ((state.values.season as string[] | undefined)?.length ?? 0) || undefined} wide>
+        <Popover label="Period" badge={(state.values.date ? 1 : 0) + ((state.values.season as string[] | undefined)?.length ?? 0) || undefined} wide>
           <PeriodControl
             value={state.values.date as DateRange | undefined}
             onChange={(v) => set("date", v, v && !v.preset ? 400 : 0)}
@@ -196,10 +196,10 @@ export function ProjectsExplorer({
             onSeasons={(v) => set("season", v)}
           />
         </Popover>
-        <Popover label="Статус" badge={(state.values.status as string[] | undefined)?.length || undefined}>
+        <Popover label="Status" badge={(state.values.status as string[] | undefined)?.length || undefined}>
           {widget(FILTER_BY_KEY.get("status")!)}
         </Popover>
-        <Popover label="Данные" badge={(state.values.data as string[] | undefined)?.length || undefined}>
+        <Popover label="Data" badge={(state.values.data as string[] | undefined)?.length || undefined}>
           {widget(FILTER_BY_KEY.get("data")!)}
         </Popover>
         <button
@@ -209,13 +209,13 @@ export function ProjectsExplorer({
           onClick={() => setPanel((v) => !v)}
           className={cn("inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition", panelActive ? "border-accent/50 bg-accent/10 text-ink" : "border-line bg-bg-raised text-ink-muted hover:text-ink")}
         >
-          Ещё фильтры{panelActive ? ` (${panelActive})` : ""}
+          More filters{panelActive ? ` (${panelActive})` : ""}
         </button>
       </div>
 
       {/* ─── quick views ───────────────────────────────────── */}
-      <nav aria-label="Быстрые виды" className="mt-4 flex flex-wrap items-center gap-1.5 text-sm">
-        <span className="mr-1 text-xs text-ink-faint">Быстрые виды:</span>
+      <nav aria-label="Quick views" className="mt-4 flex flex-wrap items-center gap-1.5 text-sm">
+        <span className="mr-1 text-xs text-ink-faint">Quick views:</span>
         {PRESETS.map((p) => {
           const on = p.query === currentQuery;
           const def = FILTER_BY_KEY.get(p.key);
@@ -229,19 +229,19 @@ export function ProjectsExplorer({
         {views.map((v) => (
           <span key={v.id} className={cn("inline-flex items-center rounded-full text-xs", v.query === toQuery({ ...state, cmp: [] }) ? "bg-accent text-black" : "bg-bg-raised text-ink-muted")}>
             <button type="button" className="py-1.5 pl-3 pr-1.5 hover:text-ink" onClick={() => go(v.query)}>★ {v.name}</button>
-            <button type="button" className="py-1.5 pr-2.5 opacity-60 hover:opacity-100" aria-label={`Удалить вид «${v.name}»`} onClick={() => deleteView(v.id)}>✕</button>
+            <button type="button" className="py-1.5 pr-2.5 opacity-60 hover:opacity-100" aria-label={`Delete view “${v.name}”`} onClick={() => deleteView(v.id)}>✕</button>
           </span>
         ))}
         {saving ? (
           <form onSubmit={saveView} className="inline-flex items-center gap-1">
-            <input autoFocus className="input w-44 rounded-full py-1 text-xs" placeholder="Название вида" value={viewName} maxLength={60}
-              onChange={(e) => setViewName(e.target.value)} onKeyDown={(e) => e.key === "Escape" && setSaving(false)} aria-label="Название вида" />
-            <button type="submit" className="rounded-full bg-accent px-3 py-1.5 text-xs text-black">Сохранить</button>
+            <input autoFocus className="input w-44 rounded-full py-1 text-xs" placeholder="View name" value={viewName} maxLength={60}
+              onChange={(e) => setViewName(e.target.value)} onKeyDown={(e) => e.key === "Escape" && setSaving(false)} aria-label="View name" />
+            <button type="submit" className="rounded-full bg-accent px-3 py-1.5 text-xs text-black">Save</button>
           </form>
         ) : (
           active.length > 0 && (
             <button type="button" className="rounded-full border border-dashed border-line px-3 py-1.5 text-xs text-ink-faint hover:text-ink" onClick={() => setSaving(true)}>
-              + Сохранить вид
+              + Save view
             </button>
           )
         )}
@@ -249,13 +249,13 @@ export function ProjectsExplorer({
 
       {/* ─── active chips ──────────────────────────────────── */}
       {active.length > 0 && (
-        <div className="mt-3 flex flex-wrap items-center gap-1.5" aria-label="Активные фильтры">
+        <div className="mt-3 flex flex-wrap items-center gap-1.5" aria-label="Active filters">
           {active.map((k) => {
             const f = FILTER_BY_KEY.get(k)!;
             return (
               <span key={k} className="inline-flex items-center gap-1 rounded-full border border-line bg-bg-raised py-1 pl-3 pr-1 text-xs text-ink">
                 {chipText(f, state.values[k], labelFor(k))}
-                <button type="button" className="grid h-5 w-5 place-items-center rounded-full text-ink-faint hover:bg-bg-hover hover:text-ink" aria-label={`Убрать фильтр: ${f.label}`}
+                <button type="button" className="grid h-5 w-5 place-items-center rounded-full text-ink-faint hover:bg-bg-hover hover:text-ink" aria-label={`Remove filter: ${f.label}`}
                   onClick={() => (k === "q" ? (setSearch(""), set("q", null)) : set(k, null))}>
                   ✕
                 </button>
@@ -263,7 +263,7 @@ export function ProjectsExplorer({
             );
           })}
           <button type="button" className="ml-1 text-xs text-ink-faint underline-offset-2 hover:text-ink hover:underline" onClick={() => (setSearch(""), go(""))}>
-            Сбросить всё
+            Reset all
           </button>
         </div>
       )}
@@ -274,13 +274,13 @@ export function ProjectsExplorer({
           <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" aria-hidden onClick={() => setPanel(false)} />
           <section
             id="more-filters"
-            aria-label="Ещё фильтры"
+            aria-label="More filters"
             className="fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-2xl border border-line bg-bg-card p-4 shadow-card lg:static lg:z-auto lg:mt-4 lg:max-h-none lg:rounded-2xl lg:p-5"
           >
             <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-line lg:hidden" aria-hidden />
             {typeSpecificFirst.length > 0 && (
               <div className="mb-4">
-                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-accent">Для типа «{typeName(selectedTypes[0])}»</p>
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-accent">For type “{typeName(selectedTypes[0])}”</p>
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{groupBlocks(typeSpecificFirst)}</div>
               </div>
             )}
@@ -288,7 +288,7 @@ export function ProjectsExplorer({
             {otherTypes.length > 0 && (
               <div className="mt-4">
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-faint">
-                  {selectedTypes.length === 1 ? "Для других типов" : "Только для некоторых типов"}
+                  {selectedTypes.length === 1 ? "For other types" : "Only for some types"}
                 </p>
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {otherTypes.map((f) => (
@@ -302,7 +302,7 @@ export function ProjectsExplorer({
             )}
             <div className="sticky bottom-0 -mx-4 mt-4 border-t border-line bg-bg-card px-4 pb-1 pt-3 lg:hidden">
               <button type="button" className="btn-primary w-full" onClick={() => setPanel(false)}>
-                Показать {result.matched} {projectsWord(result.matched)}
+                Show {result.matched} {projectsWord(result.matched)}
               </button>
             </div>
           </section>
@@ -312,12 +312,12 @@ export function ProjectsExplorer({
       {/* ─── summary, sort, view ───────────────────────────── */}
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
         <p className="text-sm text-ink-muted" aria-live="polite" aria-atomic="true">
-          Найдено <strong className="text-ink">{result.matched}</strong> из {result.total}
+          Found <strong className="text-ink">{result.matched}</strong> of {result.total}
           {result.hiddenNoData > 0 && (
             <>
-              {" · "}Скрыто {result.hiddenNoData} без данных для этого фильтра{" "}
+              {" · "}{result.hiddenNoData} hidden with no data for this filter{" "}
               <button type="button" className="text-accent underline-offset-2 hover:underline" onClick={() => push({ ...state, nulls: true })}>
-                Показать
+                Show
               </button>
             </>
           )}
@@ -325,28 +325,28 @@ export function ProjectsExplorer({
             <>
               {" · "}
               <button type="button" className="text-accent underline-offset-2 hover:underline" onClick={() => push({ ...state, nulls: false })}>
-                Скрыть проекты без данных
+                Hide projects without data
               </button>
             </>
           )}
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <label className="flex items-center gap-2 text-xs text-ink-faint">
-            Сортировка
+            Sort
             <select className="input w-auto py-1.5 text-xs" value={`${state.sort.dir === -1 ? "-" : ""}${state.sort.key}`}
               onChange={(e) => push({ ...state, sort: { key: e.target.value.replace(/^-/, ""), dir: e.target.value.startsWith("-") ? -1 : 1 } })}>
               {SORTS.flatMap((s) =>
                 s.key === "name"
-                  ? [<option key="name" value="name">{s.label} (А–Я)</option>]
+                  ? [<option key="name" value="name">{s.label} (A–Z)</option>]
                   : [<option key={`-${s.key}`} value={`-${s.key}`}>{s.label} ↓</option>, <option key={s.key} value={s.key}>{s.label} ↑</option>],
               )}
             </select>
           </label>
-          <div role="group" aria-label="Вид списка" className="inline-flex rounded-full border border-line bg-bg-raised p-0.5">
+          <div role="group" aria-label="List view" className="inline-flex rounded-full border border-line bg-bg-raised p-0.5">
             {(["cards", "table"] as const).map((v) => (
               <button key={v} type="button" aria-pressed={state.view === v} onClick={() => push({ ...state, view: v })}
                 className={cn("rounded-full px-3 py-1 text-xs", state.view === v ? "bg-bg-hover text-ink" : "text-ink-muted")}>
-                {v === "cards" ? "▦ карточки" : "☰ таблица"}
+                {v === "cards" ? "▦ cards" : "☰ table"}
               </button>
             ))}
           </div>
@@ -356,12 +356,12 @@ export function ProjectsExplorer({
       {/* ─── compare bar & panel ───────────────────────────── */}
       {state.cmp.length > 0 && (
         <div className="sticky top-2 z-20 mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-accent/40 bg-bg-card/95 px-4 py-3 text-sm shadow-card backdrop-blur">
-          <span>Выбрано для сравнения: <strong>{state.cmp.length}</strong> из 4</span>
+          <span>Selected to compare: <strong>{state.cmp.length}</strong> of 4</span>
           <button type="button" className="btn-primary py-1.5 text-xs" disabled={state.cmp.length < 2} onClick={() => setShowCompare(true)}>
-            Сравнить
+            Compare
           </button>
-          <button type="button" className="text-xs text-ink-faint hover:text-ink" onClick={() => (setShowCompare(false), push({ ...state, cmp: [] }))}>Очистить</button>
-          {state.cmp.length < 2 && <span className="text-xs text-ink-faint">Отметьте ещё хотя бы один проект</span>}
+          <button type="button" className="text-xs text-ink-faint hover:text-ink" onClick={() => (setShowCompare(false), push({ ...state, cmp: [] }))}>Clear</button>
+          {state.cmp.length < 2 && <span className="text-xs text-ink-faint">Pick at least one more project</span>}
         </div>
       )}
       {showCompare && compareRows.length >= 2 && (
@@ -374,17 +374,17 @@ export function ProjectsExplorer({
       <div className={cn("mt-5 transition-opacity", pending && "opacity-60")} aria-busy={pending}>
         {result.matched === 0 ? (
           <div className="card px-6 py-12 text-center">
-            <h2 className="font-display text-lg font-semibold">Ничего не найдено</h2>
+            <h2 className="font-display text-lg font-semibold">Nothing found</h2>
             <p className="mt-2 text-sm text-ink-muted">
               {result.hiddenNoData > 0
-                ? `${result.hiddenNoData} ${projectsWord(result.hiddenNoData)} скрыто, потому что у них нет данных для выбранных фильтров.`
-                : "Ни один проект не подходит под все фильтры сразу."}
+                ? `${result.hiddenNoData} ${projectsWord(result.hiddenNoData)} hidden because they have no data for the selected filters.`
+                : "No project matches all the filters at once."}
             </p>
             {result.emptyHints.length > 0 && (
               <div className="mt-4 flex flex-wrap justify-center gap-2">
                 {result.emptyHints.slice(0, 4).map((h) => (
                   <button key={h.key} type="button" className="btn-ghost py-1.5 text-xs" onClick={() => (h.key === "q" && setSearch(""), set(h.key, null))}>
-                    Убрать «{h.label}» (+{h.gain})
+                    Remove “{h.label}” (+{h.gain})
                   </button>
                 ))}
               </div>
