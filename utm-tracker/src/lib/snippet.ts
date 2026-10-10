@@ -49,6 +49,9 @@ export function buildSnippetJs(base: string): string {
     if (navigator.sendBeacon) { navigator.sendBeacon(url, new Blob([json], { type: "text/plain" })); }
     else { fetch(url, { method: "POST", body: json, keepalive: true, mode: "no-cors", headers: { "Content-Type": "text/plain" } }); }
   }
+  // Tilda passes the form either as a jQuery object or as the element itself.
+  // (Don't test $form[0]: on a <form> element that is its first field.)
+  function unwrap($form) { return ($form && $form.jquery) ? $form[0] : $form; }
   function formName(form) {
     return (form && form.getAttribute && (form.getAttribute("name") || form.getAttribute("data-formactiontype"))) || "";
   }
@@ -77,7 +80,7 @@ export function buildSnippetJs(base: string): string {
       // the button click and the form's submit event fire together — send once
       if (!clickId || now - last < 1500) return;
       last = now;
-      var form = ($form && $form[0]) ? $form[0] : $form;
+      var form = unwrap($form);
       var data = { click_id: clickId, pageUrl: location.href, formname: formName(form) };
       FIELDS.forEach(function (n) { if (n !== "click_id") data[n] = val(n); });
       contacts(form, data);
@@ -87,7 +90,7 @@ export function buildSnippetJs(base: string): string {
   // Chain our callback after any existing success-callback the form already has.
   window.tlConversionChain = function ($form) {
     try {
-      var form = ($form && $form[0]) ? $form[0] : $form;
+      var form = unwrap($form);
       var prev = form && form.getAttribute("data-tl-prev");
       if (prev) { var fn = prev.indexOf("window.") === 0 ? window[prev.slice(7)] : window[prev]; if (typeof fn === "function") fn($form); }
     } catch (e) {}
