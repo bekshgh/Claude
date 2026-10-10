@@ -40,6 +40,8 @@ is never blocked by a database error.
 | Webhook | `/webhooks` | Endpoint URL, Tilda JS snippet, payload, tester, event log |
 | Guideline | `/guide` | 20-step beginner guide (in Russian) |
 | Settings | `/settings` | Config, environment status, data overview |
+| Reports | `/reports` | Upload a Feedback / Registration Excel analysis, preview, publish |
+| Report page | `/report/{slug}` | The published interactive report (see [docs/reports.md](docs/reports.md)) |
 
 ---
 
