@@ -12,13 +12,11 @@ import { formatDateTime } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-export default async function ReportAdminPage({
-  params,
-  searchParams,
-}: {
-  params: { id: string };
-  searchParams: { tab?: string };
+export default async function ReportAdminPage(props: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
+  const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
   const [report, projects] = await Promise.all([
     prisma.report.findUnique({
       where: { id: params.id },

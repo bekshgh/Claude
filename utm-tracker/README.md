@@ -4,7 +4,7 @@ Production-ready link tracker that creates UTM-tagged short links, counts clicks
 **server-side**, forwards a `click_id` to your form (Tilda / Tally), and attributes
 the resulting lead back to the exact click via a secure webhook.
 
-**Stack:** Next.js 14 (App Router) · TypeScript · Tailwind CSS · PostgreSQL · Prisma · Zod · Recharts · Vercel-ready.
+**Stack:** Next.js 15 (App Router) · React 19 · TypeScript · Tailwind CSS · PostgreSQL · Prisma · Zod · Recharts · Vercel-ready.
 
 ---
 

@@ -6,7 +6,8 @@ import { projectPatchSchema, toDate } from "@/lib/projects/validation";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   if (!(await isAdmin())) return unauthorized();
   const parsed = projectPatchSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
@@ -42,7 +43,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 }
 
 /** Deleting a project keeps its reports; they are only detached from it. */
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   if (!(await isAdmin())) return unauthorized();
   await prisma.project.delete({ where: { id: params.id } }).catch(() => null);
   return NextResponse.json({ ok: true });

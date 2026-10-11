@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const body = await req.json().catch(() => null);
   if (!body?.status) return NextResponse.json({ error: "status required" }, { status: 400 });
   const campaign = await prisma.campaign.update({ where: { id: params.id }, data: { status: body.status } });
   return NextResponse.json(campaign);
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const campaign = await prisma.campaign.findUnique({ where: { id: params.id } });
   if (!campaign) return NextResponse.json({ error: "Not found" }, { status: 404 });
 

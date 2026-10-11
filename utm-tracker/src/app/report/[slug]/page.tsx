@@ -16,7 +16,8 @@ async function load(slug: string) {
   return { report, admin };
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const found = await load(params.slug);
   if (!found) return { title: "Report not found", robots: { index: false, follow: false } };
   const { report } = found;
@@ -27,13 +28,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function ReportPage({
-  params,
-  searchParams,
-}: {
-  params: { slug: string };
-  searchParams: { tab?: string };
+export default async function ReportPage(props: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
+  const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
   const found = await load(params.slug);
   if (!found) notFound();
   const { report, admin } = found;

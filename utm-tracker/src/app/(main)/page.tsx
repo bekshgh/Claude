@@ -21,11 +21,10 @@ function pickRange(v?: string): RangeKey {
   return v === "7d" || v === "90d" || v === "all" ? v : "30d";
 }
 
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: { range?: string };
+export default async function DashboardPage(props: {
+  searchParams: Promise<{ range?: string }>;
 }) {
+  const searchParams = await props.searchParams;
   const range = pickRange(searchParams.range);
 
   const [overview, series, bySource, byCampaign, byContent, recentClicks, recentLeads] = await Promise.all([

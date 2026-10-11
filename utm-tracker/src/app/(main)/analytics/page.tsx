@@ -9,7 +9,8 @@ function pickRange(v?: string): RangeKey {
   return v === "7d" || v === "90d" || v === "all" ? v : "30d";
 }
 
-export default async function AnalyticsPage({ searchParams }: { searchParams: { range?: string } }) {
+export default async function AnalyticsPage(props: { searchParams: Promise<{ range?: string }> }) {
+  const searchParams = await props.searchParams;
   const range = pickRange(searchParams.range);
   const [bySource, byCampaign, byContent, links] = await Promise.all([
     getBySource(range), getByCampaign(range), getByContent(range), getLinkStats(range),

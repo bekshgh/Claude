@@ -13,7 +13,8 @@ export const runtime = "nodejs";
  * 3. Generate a clickId and forward it + UTM to the destination (Tilda).
  * 4. 302 redirect the visitor instantly.
  */
-export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const slug = params.slug;
 
   const link = await prisma.trackingLink.findUnique({ where: { slug } });
@@ -31,9 +32,9 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
     req.headers.get("x-real-ip") ||
     null;
   const ipHash = hashIp(ipRaw);
-  const country =
-    req.headers.get("x-vercel-ip-country") || req.geo?.country || null;
-  const city = req.headers.get("x-vercel-ip-city") || req.geo?.city || null;
+  // Vercel's geo headers (Next 15 dropped req.geo; it read the same headers).
+  const country = req.headers.get("x-vercel-ip-country") || null;
+  const city = req.headers.get("x-vercel-ip-city") || null;
 
   const parsed = new UAParser(ua).getResult();
   const device = parsed.device.type || "desktop";
