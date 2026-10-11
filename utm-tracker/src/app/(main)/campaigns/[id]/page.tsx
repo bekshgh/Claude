@@ -8,7 +8,8 @@ import { formatNumber, formatPercent, conversionRate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-export default async function CampaignDetailPage({ params }: { params: { id: string } }) {
+export default async function CampaignDetailPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const campaign = await prisma.campaign.findUnique({ where: { id: params.id } });
   if (!campaign) notFound();
 

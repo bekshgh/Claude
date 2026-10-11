@@ -9,7 +9,7 @@ import type { ReportDocument, ReportType } from "./types";
 import { MAX_FILE_BYTES, ReportFileError } from "./xlsx";
 
 export async function isAdmin(): Promise<boolean> {
-  return verifySessionToken(cookies().get(SESSION_COOKIE)?.value);
+  return verifySessionToken((await cookies()).get(SESSION_COOKIE)?.value);
 }
 
 /** Who may open a report page. Drafts and private reports are admin-only. */

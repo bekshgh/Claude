@@ -9,7 +9,8 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 /** Replace a report's data with a newer file of the same event (slug and link stay). */
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   if (!(await isAdmin())) return unauthorized();
   const existing = await prisma.report.findUnique({ where: { id: params.id }, select: { type: true, projectId: true } });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });

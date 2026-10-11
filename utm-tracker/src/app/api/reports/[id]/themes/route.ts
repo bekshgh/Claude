@@ -15,7 +15,8 @@ const schema = z.object({
 });
 
 /** Confirm / correct the open-answer theme → canonical theme mapping; the project's metrics follow. */
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   if (!(await isAdmin())) return unauthorized();
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Validation failed" }, { status: 422 });

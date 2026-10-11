@@ -70,7 +70,7 @@ export function ProjectsExplorer({
   // A shared link that already picks 2+ projects (e.g. after a bulk upload) opens the comparison.
   const [showCompare, setShowCompare] = useState(initial.cmp.length >= 2);
   const [search, setSearch] = useState((initial.values.q as string) ?? "");
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   // On phones the panel is a bottom sheet. The page wrapper keeps a transform from
   // its entry animation, which would pin `position: fixed` to the wrapper, so the
   // sheet is portalled to <body> there.

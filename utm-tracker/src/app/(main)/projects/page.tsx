@@ -6,7 +6,8 @@ import { queryProjects } from "@/lib/projects/query";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProjectsPage({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
+export default async function ProjectsPage(props: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const searchParams = await props.searchParams;
   const [{ state, result, types, rows }, views] = await Promise.all([
     queryProjects(prisma, searchParams, { admin: true }),
     prisma.savedView.findMany({ orderBy: { createdAt: "asc" }, select: { id: true, name: true, query: true } }),

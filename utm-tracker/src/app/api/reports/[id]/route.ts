@@ -17,7 +17,8 @@ const patchSchema = z
   .strict();
 
 /** Publish / unpublish, change visibility, rename the event. */
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   if (!(await isAdmin())) return unauthorized();
   const parsed = patchSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Validation failed" }, { status: 422 });
@@ -47,7 +48,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   return NextResponse.json(report);
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   if (!(await isAdmin())) return unauthorized();
   await prisma.$transaction(async (tx) => {
     const r = await tx.report.findUnique({ where: { id: params.id }, select: { projectId: true } });

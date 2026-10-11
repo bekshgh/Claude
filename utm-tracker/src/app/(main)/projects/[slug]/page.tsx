@@ -19,7 +19,8 @@ function similarQuery(typeKey: string, registrants: number | null) {
   return p.toString().replace(/%2C/g, ",");
 }
 
-export default async function ProjectPage({ params }: { params: { slug: string } }) {
+export default async function ProjectPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const [project, types, settings] = await Promise.all([
     prisma.project.findUnique({
       where: { slug: params.slug },
