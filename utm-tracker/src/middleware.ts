@@ -23,7 +23,10 @@ export async function middleware(req: NextRequest) {
     // Report pages check status/visibility themselves (drafts & private → admins only).
     pathname.startsWith("/report/") ||
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon")
+    pathname.startsWith("/favicon") ||
+    // Tab / home-screen icons from src/app/icon.png and apple-icon.png.
+    pathname === "/icon.png" ||
+    pathname === "/apple-icon.png"
   ) {
     return NextResponse.next();
   }
