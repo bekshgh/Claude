@@ -161,7 +161,8 @@ export default function GuidePage() {
               <li>В Tilda откройте форму → <strong>Настройки → Сбор данных (Data capture)</strong>.</li>
               <li>Добавьте сервис <strong>Webhook</strong>.</li>
               <li>Вставьте URL из вкладки <strong>Webhook</strong> нашего трекера.</li>
-              <li>Допишите к URL <Code>?secret=ВАШ_СЕКРЕТ</Code> или добавьте заголовок <Code>X-Webhook-Secret</Code>.</li>
+              <li>Добавьте заголовок <Code>X-Webhook-Secret</Code> со значением секрета. Если заголовок добавить нельзя, допишите к URL <Code>?secret=ВАШ_СЕКРЕТ</Code> — это работает, но адреса попадают в логи серверов, поэтому заголовок надёжнее.</li>
+              <li>Без секрета запрос (и «Отправить тест») получит ошибку 401.</li>
               <li>Сохраните и нажмите «Отправить тест».</li>
             </ol>
           </Section>
